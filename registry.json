@@ -1,24 +1,36 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "inertia-pagination",
+  "name": "micto-ui-kit",
   "homepage": "https://micto-ui-kit.misangono.net",
   "items": [
+    {
+      "name": "confirm",
+      "type": "registry:component",
+      "title": "Global Confirm",
+      "description": "A global, stacked confirmation system with a promise-based API and async support.",
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "path": "registry/new-york/ui/confirm.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": ["react", "global"]
+    },
     {
       "name": "inertia-pagination",
       "type": "registry:component",
       "title": "Inertia Pagination",
-      "description": "A pagination component for Laravel and Inertia responses.",
-      "registryDependencies": ["button"],
+      "description": "A pagination component optimized for Laravel and Inertia responses.",
+      "registryDependencies": ["button", "pagination"],
+      "dependencies": ["@inertiajs/react"],
       "files": [
         {
-          "path": "registry/new-york/blocks/inertia-pagination/inertia-pagination.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/new-york/ui/pagination.tsx",
+          "path": "registry/new-york/inertia/inertia-pagination.tsx",
           "type": "registry:component"
         }
-      ]
+      ],
+      "categories": ["inertia", "react", "component"]
     }
   ]
 }

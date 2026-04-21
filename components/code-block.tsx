@@ -1,9 +1,11 @@
 import * as React from "react"
 
 import { CopyButton } from "@/components/copy-button"
+import { cn } from "@/lib/utils"
 
 type Props = {
   code: string
+  html?: string
   language?: "shell" | "tsx"
   className?: string
 }
@@ -116,23 +118,28 @@ function highlightWithPattern(
   return result
 }
 
-export function CodeBlock({ code, language = "tsx", className }: Props) {
+export function CodeBlock({ code, html, language = "tsx", className }: Props) {
   return (
     <div
-      className={[
+      className={cn(
         "relative overflow-hidden rounded-xl border border-border/60 bg-muted/20",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+        className
+      )}
     >
       <CopyButton
         value={code}
         className="absolute top-2 right-2 z-10 text-foreground/60 hover:text-foreground"
       />
-      <pre className="overflow-x-auto px-4 py-4 pr-14 text-sm leading-6 text-foreground/85">
-        <code>{renderHighlightedCode(code, language)}</code>
-      </pre>
+      {html ? (
+        <div 
+          className="shiki-container px-4 py-4 pr-14 text-sm leading-6 overflow-x-auto [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre]:!m-0 [&_code]:!grid"
+          dangerouslySetInnerHTML={{ __html: html }} 
+        />
+      ) : (
+        <pre className="overflow-x-auto px-4 py-4 pr-14 text-sm leading-6 text-foreground/85">
+          <code>{renderHighlightedCode(code, language)}</code>
+        </pre>
+      )}
     </div>
   )
 }

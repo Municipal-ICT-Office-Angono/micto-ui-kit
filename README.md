@@ -1,35 +1,45 @@
-# Inertia Pagination Registry
+# MICTO UI KIT
 
-This repository is a focused `shadcn` registry for a single component:
-`inertia-pagination`.
+A professional shadcn-based component library and registry designed for the local development ecosystem of Angono.
 
-## Included
+## Features
 
-- `InertiaPagination` for Laravel and Inertia paginator link arrays.
-- Minimal shadcn-style button and pagination primitives used by the component.
-- A small preview page for local development.
+- **Registry-First Architecture**: Components are distributed via a remote shadcn registry.
+- **Automated Documentation**: Live code previews and syntax-highlighted examples.
+- **Inertia Integration**: specialized components for Laravel Inertia applications.
+- **Modern Aesthetics**: Premium dark/light mode support and command palette search (⌘K).
 
-## Commands
+## Quick Start
+
+### Local Development
+
+1. Install dependencies:
+
+   ```bash
+   pnpm install
+   ```
+
+2. Run the documentation site:
+
+   ```bash
+   pnpm dev
+   ```
+
+3. Build the registry:
+
+   ```bash
+   pnpm registry:build
+   ```
+
+## Using the Registry
+
+You can add components from this kit directly to your own project using the shadcn CLI:
 
 ```bash
-pnpm install
-pnpm dev
-pnpm lint
-pnpm registry:build
-```
-
-## Install From Registry
-
-```bash
-pnpm dlx shadcn@latest add https://micto-ui-kit.misangono.net/r/inertia-pagination.json
 npx shadcn@latest add https://micto-ui-kit.misangono.net/r/inertia-pagination.json
 ```
 
-## Usage
+## Related Links
 
-```tsx
-import { Link } from "@inertiajs/react";
-import { InertiaPagination } from "@/components/inertia-pagination";
-
-<InertiaPagination links={links} LinkComponent={Link} />;
-```
+- **Documentation**: [https://micto-ui-kit.misangono.net](https://micto-ui-kit.misangono.net)
+- **Repository**: [Municipal-ICT-Office-Angono/micto-ui-kit](https://github.com/Municipal-ICT-Office-Angono/micto-ui-kit)

@@ -1,9 +1,15 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MoreHorizontalIcon,
+} from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+
+type PaginationLinkSize = "default" | "sm" | "lg" | "icon" | null | undefined
 
 function Pagination({
   className,
@@ -43,9 +49,7 @@ function PaginationLink({
   ...props
 }: React.ComponentProps<"a"> & {
   isActive?: boolean
-  size?: React.ComponentProps<typeof Slot> extends never
-    ? never
-    : "default" | "sm" | "lg" | "icon" | null | undefined
+  size?: PaginationLinkSize
   asChild?: boolean
 }) {
   const Comp = asChild ? Slot : "a"
