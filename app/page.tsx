@@ -6,10 +6,8 @@ import {
   CheckCircle2,
   Layout,
   Database,
-  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { SiteFooter } from "@/components/site-footer";
 
 export default function Home() {
@@ -29,9 +27,9 @@ export default function Home() {
                 <span className="text-primary text-balance">Art Capital.</span>
               </h1>
               <p className="max-w-[540px] text-lg lg:text-xl text-muted-foreground leading-relaxed">
-                Empowering Angono’s developers with a professional UI Kit that stands tall. 
-                Fusing the creative spirit of the Art Capital with high-performance 
-                Inertia.js components.
+                Empowering Angono’s developers with a professional UI Kit that
+                stands tall. Fusing the creative spirit of the Art Capital with
+                high-performance Inertia.js components.
               </p>
             </div>
 

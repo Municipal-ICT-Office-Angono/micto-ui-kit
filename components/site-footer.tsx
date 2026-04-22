@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Command } from "lucide-react";
 
 export function SiteFooter() {
   return (

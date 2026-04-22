@@ -10,13 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 import { ComponentPreview } from "@/components/component-preview";
 import { getCode, highlightCode } from "@/lib/get-code";
 import { DocsHeader } from "@/components/docs-header";
 import { DocsSectionHeading } from "@/components/docs-section-heading";
 import ConfirmDemo from "@/registry/new-york/example/confirm-demo";
-import Link from "next/link";
 
 const installCommands = [
   {
@@ -105,7 +103,8 @@ const propsData = [
     name: "onCancel",
     type: "() => void",
     default: "undefined",
-    description: "Optional callback called when the dialog is dismissed or cancelled.",
+    description:
+      "Optional callback called when the dialog is dismissed or cancelled.",
   },
   {
     name: "size",

@@ -10,13 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 import { ComponentPreview } from "@/components/component-preview";
 import { getCode, highlightCode } from "@/lib/get-code";
 import { DocsHeader } from "@/components/docs-header";
 import { DocsSectionHeading } from "@/components/docs-section-heading";
 import InertiaPaginationDemo from "@/registry/new-york/example/inertia-pagination-demo";
-import Link from "next/link";
 
 const installCommands = [
   {
