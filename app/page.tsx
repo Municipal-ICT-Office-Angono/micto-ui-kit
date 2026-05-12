@@ -23,13 +23,13 @@ export default function Home() {
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left gap-8 animate-in fade-in slide-in-from-left-8 duration-1000">
             <div className="flex flex-col gap-4">
               <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]">
-                Build Giants for the <br />
-                <span className="text-primary text-balance">Art Capital.</span>
+                Build Digital Giants in the 
+                <span className="text-primary text-balance"> Art Capital.</span>
               </h1>
               <p className="max-w-[540px] text-lg lg:text-xl text-muted-foreground leading-relaxed">
-                Empowering Angono’s developers with a professional UI Kit that
-                stands tall. Fusing the creative spirit of the Art Capital with
-                high-performance Inertia.js components.
+               Empowering MICTO developers with a design system that stands tall. 
+               We fuse Angono’s creative heritage with high-performance React and Inertia.js
+              components to build robust, scalable municipal applications.
               </p>
             </div>
 
@@ -37,7 +37,7 @@ export default function Home() {
               <Button
                 asChild
                 size="lg"
-                className="rounded-full shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all px-8"
+                className="hover:shadow-primary/30 transition-all px-8"
               >
                 <Link href="/docs/introduction">
                   Get Started
@@ -48,7 +48,7 @@ export default function Home() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="rounded-full px-8 backdrop-blur-sm"
+                className="px-8 backdrop-blur-sm"
               >
                 <Link href="/docs/components/confirm-dialog">
                   Explore Components

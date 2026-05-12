@@ -72,6 +72,45 @@
         "react",
         "component"
       ]
+    },
+    {
+      "name": "file-uploader",
+      "type": "registry:component",
+      "title": "File Uploader",
+      "description": "A beautiful drag-and-drop file uploader supporting local accumulation, direct async uploads, image blob thumbnails, and avatar profiles.",
+      "registryDependencies": [
+        "button",
+        "badge"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/ui/file-uploader.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
+    },
+    {
+      "name": "permission-guard",
+      "type": "registry:component",
+      "title": "Permission Guard",
+      "description": "A premium RBAC and wildcard permission gating suite supporting stealth unmounts, visual cloning disable modes, and glowing frosted-glass overlays.",
+      "registryDependencies": [
+        "button"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/ui/permission-guard.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
     }
   ]
 }

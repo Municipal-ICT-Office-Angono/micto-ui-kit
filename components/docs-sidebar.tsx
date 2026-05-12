@@ -41,6 +41,14 @@ export const navData = [
         title: "Search Select",
         url: "/docs/components/search-select",
       },
+      {
+        title: "File Uploader",
+        url: "/docs/components/file-uploader",
+      },
+      {
+        title: "Permission Guard",
+        url: "/docs/components/permission-guard",
+      },
     ],
   },
   {

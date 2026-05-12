@@ -1,0 +1,254 @@
+import * as React from "react";
+import { CodeBlock } from "@/components/code-block";
+import { InstallCommandTabs } from "@/components/install-command-tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ComponentPreview } from "@/components/component-preview";
+import { getCode, highlightCode } from "@/lib/get-code";
+import { DocsHeader } from "@/components/docs-header";
+import { DocsSectionHeading } from "@/components/docs-section-heading";
+import FileUploaderDemo from "@/registry/new-york/example/file-uploader-demo";
+
+const installCommands = [
+  {
+    label: "pnpm",
+    value:
+      "pnpm dlx shadcn@latest add https://micto-ui-kit.misangono.net/r/file-uploader.json",
+  },
+  {
+    label: "npm",
+    value:
+      "npx shadcn@latest add https://micto-ui-kit.misangono.net/r/file-uploader.json",
+  },
+];
+
+const basicUsageCode = `import { useState } from "react"
+import { FileUploader } from "@/components/ui/file-uploader"
+
+export default function DocumentForm() {
+  const [files, setFiles] = useState<File[]>([])
+
+  return (
+    <FileUploader 
+      value={files} 
+      onChange={setFiles} 
+      accept={["image/*", "application/pdf"]}
+      maxSize={5} // 5MB limit
+      multiple // allows picking multiple items
+      placeholder="Select file to upload..."
+    />
+  )
+}`;
+
+const avatarUsageCode = `import { useState } from "react"
+import { FileUploader } from "@/components/ui/file-uploader"
+
+export default function ProfileSettings() {
+  const [profile, setProfile] = useState<File[]>([])
+
+  return (
+    <FileUploader 
+      value={profile} 
+      onChange={setProfile} 
+      accept={["image/*"]}
+      variant="avatar" // renders profile circular crop
+    />
+  )
+}`;
+
+const propsData = [
+  {
+    name: "value",
+    type: "File[]",
+    default: "[]",
+    description: "The list of raw Files held in the local state (Mode A: Form Mode).",
+  },
+  {
+    name: "onChange",
+    type: "(files: File[]) => void",
+    default: "undefined",
+    description: "State setter callback triggered when files are chosen or dismissed (Mode A).",
+  },
+  {
+    name: "onUpload",
+    type: "(file: File, onProgress: (progress: number) => void) => Promise<string>",
+    default: "undefined",
+    description:
+      "Remote uploader handler. If supplied, files are uploaded immediately, tracking progress (Mode B: Remote Mode).",
+  },
+  {
+    name: "onUploadComplete",
+    type: "(urls: string[]) => void",
+    default: "undefined",
+    description: "Callback triggered with successfully uploaded string URLs when direct uploads finish (Mode B).",
+  },
+  {
+    name: "multiple",
+    type: "boolean",
+    default: "false",
+    description: "Allows dropping and choosing multiple files concurrently.",
+  },
+  {
+    name: "maxFiles",
+    type: "number",
+    default: "10",
+    description: "Maximum file quantity limit cap.",
+  },
+  {
+    name: "maxSize",
+    type: "number",
+    default: "5",
+    description: "Maximum allowable size limit for a single file in megabytes (MB).",
+  },
+  {
+    name: "accept",
+    type: "string[]",
+    default: "[]",
+    description: "Supported MIME formats or extension filters, e.g. ['image/*', 'application/pdf'].",
+  },
+  {
+    name: "variant",
+    type: "'default' | 'avatar'",
+    default: "'default'",
+    description: "Layout theme. Renders standard dropzone grid or circular bubble profile settings.",
+  },
+];
+
+export default async function FileUploaderPage() {
+  const previewRawCode = getCode(
+    "registry/new-york/example/file-uploader-demo.tsx",
+  );
+  const previewHtml = await highlightCode(previewRawCode);
+  const basicUsageHtml = await highlightCode(basicUsageCode);
+  const avatarUsageHtml = await highlightCode(avatarUsageCode);
+
+  const headerBadges = (
+    <>
+      <Badge
+        variant="secondary"
+        className="rounded-md px-2 py-0.5 text-[11px] uppercase tracking-wider"
+      >
+        React
+      </Badge>
+      <Badge
+        variant="outline"
+        className="rounded-md px-2 py-0.5 text-[11px] uppercase tracking-wider border-primary/20 bg-primary/5 text-primary font-medium"
+      >
+        Native Drag & Drop
+      </Badge>
+    </>
+  );
+
+  return (
+    <div className="mx-auto max-w-4xl space-y-12 pb-20 mt-8">
+      <DocsHeader
+        title="File Uploader"
+        description="A beautiful drag-and-drop file uploader supporting local accumulation, direct async uploads, image blob thumbnails, and avatar profiles."
+        badges={headerBadges}
+      />
+
+      {/* Main Content */}
+      <div className="space-y-16">
+        {/* Preview Section */}
+        <section className="space-y-6">
+          <DocsSectionHeading
+            title="Interactive Demo"
+            description="Toggle through standard forms, avatar profile picture updates, and live-streaming upload progress bars."
+          />
+          <ComponentPreview code={previewRawCode} html={previewHtml}>
+            <FileUploaderDemo />
+          </ComponentPreview>
+        </section>
+
+        {/* Installation Section */}
+        <section className="space-y-6">
+          <DocsSectionHeading title="Installation" />
+          <div className="rounded-xl border bg-muted/40 p-1">
+            <InstallCommandTabs
+              commands={installCommands}
+              defaultValue="pnpm"
+            />
+          </div>
+        </section>
+
+        {/* Usage A Section */}
+        <section className="space-y-6">
+          <DocsSectionHeading
+            title="Form File Collection"
+            description="Allows standard local image or document gathering. Files are saved in state arrays to submit together on form actions."
+          />
+          <div className="overflow-hidden rounded-xl border">
+            <CodeBlock code={basicUsageCode} html={basicUsageHtml} language="tsx" />
+          </div>
+        </section>
+
+        {/* Usage B Section */}
+        <section className="space-y-6">
+          <DocsSectionHeading
+            title="Avatar Mode Setup"
+            description="Saves a single file inside an elegant circular profile settings overlay, perfect for user settings edit screens."
+          />
+          <div className="overflow-hidden rounded-xl border">
+            <CodeBlock code={avatarUsageCode} html={avatarUsageHtml} language="tsx" />
+          </div>
+        </section>
+
+        {/* Props Section */}
+        <section className="space-y-6">
+          <DocsSectionHeading
+            title="API Reference"
+            description="Configure the component using the following properties."
+          />
+          <div className="rounded-xl border overflow-hidden shadow-sm bg-background">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/50 hover:bg-muted/50">
+                  <TableHead className="w-[150px] font-bold text-foreground/80 lowercase tracking-tight">
+                    Prop
+                  </TableHead>
+                  <TableHead className="font-bold text-foreground/80 lowercase tracking-tight">
+                    Type
+                  </TableHead>
+                  <TableHead className="font-bold text-foreground/80 lowercase tracking-tight">
+                    Default
+                  </TableHead>
+                  <TableHead className="text-right font-bold text-foreground/80 lowercase tracking-tight">
+                    Description
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {propsData.map((prop) => (
+                  <TableRow
+                    key={prop.name}
+                    className="border-b transition-colors hover:bg-muted/5 font-sans"
+                  >
+                    <TableCell className="font-mono text-xs font-semibold text-primary/80">
+                      {prop.name}
+                    </TableCell>
+                    <TableCell className="font-mono text-xs text-blue-600 dark:text-blue-400">
+                      {prop.type}
+                    </TableCell>
+                    <TableCell className="font-mono text-xs text-muted-foreground/70">
+                      {prop.default}
+                    </TableCell>
+                    <TableCell className="text-right text-xs leading-relaxed max-w-[300px] text-muted-foreground">
+                      {prop.description}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
