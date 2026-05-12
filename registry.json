@@ -51,6 +51,27 @@
         "react",
         "component"
       ]
+    },
+    {
+      "name": "search-select",
+      "type": "registry:component",
+      "title": "Search Select",
+      "description": "A beautiful searchable combobox supporting single/multi selection, custom avatars, description lines, and debounced API searching.",
+      "registryDependencies": [
+        "button",
+        "popover",
+        "command"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/ui/search-select.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
     }
   ]
 }

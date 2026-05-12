@@ -37,6 +37,10 @@ export const navData = [
         title: "Server Pagination",
         url: "/docs/components/server-pagination",
       },
+      {
+        title: "Search Select",
+        url: "/docs/components/search-select",
+      },
     ],
   },
   {
@@ -58,7 +62,7 @@ export function DocsSidebar() {
       <div className="flex flex-col gap-8">
         {navData.map((section) => (
           <div key={section.title} className="flex flex-col gap-3">
-            <h4 className="px-2 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
+            <h4 className="px-2 text-xs font-bold uppercase tracking-wide text-muted-foreground/90">
               {section.title}
             </h4>
             <div className="flex flex-col gap-1">
@@ -69,7 +73,7 @@ export function DocsSidebar() {
                     key={item.url}
                     href={item.url}
                     className={cn(
-                      "flex h-8 items-center px-3 text-[13px] font-medium transition-colors hover:text-foreground rounded-md",
+                      "flex h-8 items-center px-3 text-sm font-medium transition-colors hover:text-foreground rounded-md",
                       isActive
                         ? "bg-muted font-semibold text-foreground"
                         : "text-muted-foreground/70 hover:bg-muted/50",
