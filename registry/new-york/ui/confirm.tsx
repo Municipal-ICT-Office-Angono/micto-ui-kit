@@ -88,7 +88,7 @@ export function ConfirmProvider({
     <div className={cn("fixed inset-0 z-[100] flex items-center justify-center p-4", className)}>
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-background/80 backdrop-blur-2xs transition-opacity"
         onClick={() => {
           const top = activeRequests[activeRequests.length - 1];
           if (top && top.dismissable !== false && !top.isLoading) {

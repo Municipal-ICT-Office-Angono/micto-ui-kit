@@ -29,7 +29,8 @@ type Props = {
   size?: "default" | "sm" | "lg" | "icon" | null | undefined;
   position?: "start" | "center" | "end";
   className?: string;
-  LinkComponent?: React.ComponentType<InertiaLikeLinkProps>;
+  LinkComponent?: React.ComponentType<any>;
+  linkProps?: Record<string, any>;
 };
 
 export function InertiaPagination({
@@ -38,6 +39,7 @@ export function InertiaPagination({
   position = "center",
   className,
   LinkComponent,
+  linkProps,
 }: Props) {
   const cleanLabel = (label: string) =>
     label.replace(/&laquo;|&raquo;/g, "").trim();
@@ -46,6 +48,18 @@ export function InertiaPagination({
     center: "justify-center",
     end: "justify-end",
   }[position];
+
+  const getRelativeUrl = (urlString: string | null): string => {
+    if (!urlString) return "#";
+    try {
+      // Parse fully qualified URLs (e.g., http://your-laravel-server.test/users?page=2)
+      const parsed = new URL(urlString);
+      return parsed.pathname + parsed.search + parsed.hash;
+    } catch {
+      // If it fails, it is already a relative URL or simple path hash
+      return urlString;
+    }
+  };
 
   if (!links || links.length <= 1) return null;
 
@@ -57,6 +71,7 @@ export function InertiaPagination({
           const isNext = link.label.includes("Next");
           const isEllipsis = link.label === "...";
           const isDisabled = !link.url;
+          const relativeUrl = getRelativeUrl(link.url);
           const content = (
             <>
               {isPrev && <ChevronLeftIcon className="h-4 w-4" />}
@@ -87,15 +102,16 @@ export function InertiaPagination({
                 >
                   {LinkComponent ? (
                     <LinkComponent
-                      href={link.url ?? "#"}
+                      href={relativeUrl}
                       preserveState
                       preserveScroll
+                      {...linkProps}
                     >
                       {content}
                     </LinkComponent>
                   ) : (
                     <a
-                      href={link.url ?? "#"}
+                      href={relativeUrl}
                       aria-disabled={isDisabled || undefined}
                     >
                       {content}
@@ -110,3 +126,4 @@ export function InertiaPagination({
     </Pagination>
   );
 }
+

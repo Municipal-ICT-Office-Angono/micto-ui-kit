@@ -31,6 +31,26 @@
         }
       ],
       "categories": ["inertia", "react", "component"]
+    },
+    {
+      "name": "server-pagination",
+      "type": "registry:component",
+      "title": "Server Pagination",
+      "description": "A universal pagination component tailored for standard React, Next.js, and TanStack Router, supporting dynamic callbacks and relative SEO links.",
+      "registryDependencies": [
+        "button",
+        "pagination"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/ui/server-pagination.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
     }
   ]
 }

@@ -33,6 +33,10 @@ export const navData = [
         title: "Confirm Dialog",
         url: "/docs/components/confirm-dialog",
       },
+      {
+        title: "Server Pagination",
+        url: "/docs/components/server-pagination",
+      },
     ],
   },
   {
