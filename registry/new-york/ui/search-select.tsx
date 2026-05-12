@@ -166,16 +166,23 @@ export function SearchSelect({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
+        <div
           role="combobox"
           aria-expanded={open}
-          disabled={disabled}
+          tabIndex={disabled ? -1 : 0}
           className={cn(
-            "w-full h-auto min-h-10 justify-between px-3 py-2 text-left font-normal border-input hover:bg-transparent rounded-lg",
+            "flex w-full h-auto min-h-10 items-center justify-between px-3 py-2 text-left text-sm font-normal border border-input rounded-lg bg-background shadow-xs ring-offset-background cursor-pointer hover:bg-muted/10 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors",
+            disabled && "cursor-not-allowed opacity-50 hover:bg-transparent",
             selectedValues.length === 0 && "text-muted-foreground",
             className
           )}
+          onKeyDown={(e) => {
+            if (disabled) return;
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setOpen((prev) => !prev);
+            }
+          }}
         >
           <div className="flex flex-wrap gap-1.5 items-center max-w-[92%]">
             {getSelectedLabels.length === 0 ? (
@@ -216,7 +223,7 @@ export function SearchSelect({
             )}
           </div>
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50 ml-2" />
-        </Button>
+        </div>
       </PopoverTrigger>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 rounded-xl shadow-xl border overflow-hidden" align="start">
         <Command shouldFilter={!onSearch}>
