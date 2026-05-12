@@ -49,6 +49,10 @@ export const navData = [
         title: "Permission Guard",
         url: "/docs/components/permission-guard",
       },
+      {
+        title: "Table Toolbar",
+        url: "/docs/components/table-toolbar",
+      },
     ],
   },
   {

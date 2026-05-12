@@ -111,6 +111,26 @@
         "react",
         "component"
       ]
+    },
+    {
+      "name": "table-toolbar",
+      "type": "registry:component",
+      "title": "Table Toolbar",
+      "description": "A beautiful reactive grid toolbar that smoothly morphs filters into bulk action trays or bottom floating consoles upon selecting records.",
+      "registryDependencies": [
+        "button",
+        "badge"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/ui/table-toolbar.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
     }
   ]
 }
