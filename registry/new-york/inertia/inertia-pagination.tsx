@@ -6,8 +6,10 @@ import {
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
@@ -15,13 +17,6 @@ type PaginationLinkData = {
   active: boolean;
   label: string;
   url: string | null;
-};
-
-type InertiaLikeLinkProps = {
-  href: string;
-  children: React.ReactNode;
-  preserveState?: boolean;
-  preserveScroll?: boolean;
 };
 
 type Props = {
@@ -33,6 +28,21 @@ type Props = {
   linkProps?: Record<string, any>;
 };
 
+const cleanLabel = (label: string) =>
+  label.replace(/&laquo;|&raquo;/g, "").trim();
+
+const getRelativeUrl = (urlString: string | null): string => {
+  if (!urlString) return "#";
+  try {
+    // Parse fully qualified URLs (e.g., http://your-laravel-server.test/users?page=2)
+    const parsed = new URL(urlString);
+    return parsed.pathname + parsed.search + parsed.hash;
+  } catch {
+    // If it fails, it is already a relative URL or simple path hash
+    return urlString;
+  }
+};
+
 export function InertiaPagination({
   links,
   size = "icon",
@@ -41,27 +51,13 @@ export function InertiaPagination({
   LinkComponent,
   linkProps,
 }: Props) {
-  const cleanLabel = (label: string) =>
-    label.replace(/&laquo;|&raquo;/g, "").trim();
+  if (!links || links.length <= 1) return null;
+
   const positionClass = {
     start: "justify-start",
     center: "justify-center",
     end: "justify-end",
-  }[position];
-
-  const getRelativeUrl = (urlString: string | null): string => {
-    if (!urlString) return "#";
-    try {
-      // Parse fully qualified URLs (e.g., http://your-laravel-server.test/users?page=2)
-      const parsed = new URL(urlString);
-      return parsed.pathname + parsed.search + parsed.hash;
-    } catch {
-      // If it fails, it is already a relative URL or simple path hash
-      return urlString;
-    }
-  };
-
-  if (!links || links.length <= 1) return null;
+  }[position] || "justify-center";
 
   return (
     <Pagination className={cn(positionClass, className)}>
@@ -72,33 +68,85 @@ export function InertiaPagination({
           const isEllipsis = link.label === "...";
           const isDisabled = !link.url;
           const relativeUrl = getRelativeUrl(link.url);
-          const content = (
-            <>
-              {isPrev && <ChevronLeftIcon className="h-4 w-4" />}
-              {isPrev || isNext ? (
-                <span className="sr-only">{cleanLabel(link.label)}</span>
-              ) : (
-                cleanLabel(link.label)
-              )}
-              {isNext && <ChevronRightIcon className="h-4 w-4" />}
-            </>
-          );
 
           return (
             <PaginationItem key={`${link.label}-${index}`}>
               {isEllipsis ? (
                 <PaginationEllipsis />
+              ) : isPrev ? (
+                LinkComponent ? (
+                  <PaginationLink
+                    aria-label="Go to previous page"
+                    size="default"
+                    className={cn(
+                      "gap-1 px-2.5 sm:pl-2.5",
+                      isDisabled && "pointer-events-none opacity-50"
+                    )}
+                    asChild
+                    aria-disabled={isDisabled || undefined}
+                    tabIndex={isDisabled ? -1 : undefined}
+                  >
+                    <LinkComponent
+                      href={relativeUrl}
+                      preserveState
+                      preserveScroll
+                      {...linkProps}
+                    >
+                      <ChevronLeftIcon className="h-4 w-4" />
+                      <span>Previous</span>
+                    </LinkComponent>
+                  </PaginationLink>
+                ) : (
+                  <PaginationPrevious
+                    href={relativeUrl}
+                    className={cn(isDisabled && "pointer-events-none opacity-50")}
+                    aria-disabled={isDisabled || undefined}
+                    tabIndex={isDisabled ? -1 : undefined}
+                  />
+                )
+              ) : isNext ? (
+                LinkComponent ? (
+                  <PaginationLink
+                    aria-label="Go to next page"
+                    size="default"
+                    className={cn(
+                      "gap-1 px-2.5 sm:pr-2.5",
+                      isDisabled && "pointer-events-none opacity-50"
+                    )}
+                    asChild
+                    aria-disabled={isDisabled || undefined}
+                    tabIndex={isDisabled ? -1 : undefined}
+                  >
+                    <LinkComponent
+                      href={relativeUrl}
+                      preserveState
+                      preserveScroll
+                      {...linkProps}
+                    >
+                      <span>Next</span>
+                      <ChevronRightIcon className="h-4 w-4" />
+                    </LinkComponent>
+                  </PaginationLink>
+                ) : (
+                  <PaginationNext
+                    href={relativeUrl}
+                    className={cn(isDisabled && "pointer-events-none opacity-50")}
+                    aria-disabled={isDisabled || undefined}
+                    tabIndex={isDisabled ? -1 : undefined}
+                  />
+                )
               ) : (
-                <Button
-                  asChild
-                  variant={link.active ? "outline" : "ghost"}
+                <PaginationLink
+                  isActive={link.active}
                   size={size}
-                  disabled={isDisabled}
-                  aria-current={link.active ? "page" : undefined}
+                  asChild={!!LinkComponent}
+                  href={relativeUrl}
                   className={cn(
                     link.active && "pointer-events-none font-semibold",
-                    isDisabled && "pointer-events-none opacity-50",
+                    isDisabled && "pointer-events-none opacity-50"
                   )}
+                  aria-disabled={isDisabled || undefined}
+                  tabIndex={isDisabled ? -1 : undefined}
                 >
                   {LinkComponent ? (
                     <LinkComponent
@@ -107,17 +155,12 @@ export function InertiaPagination({
                       preserveScroll
                       {...linkProps}
                     >
-                      {content}
+                      {cleanLabel(link.label)}
                     </LinkComponent>
                   ) : (
-                    <a
-                      href={relativeUrl}
-                      aria-disabled={isDisabled || undefined}
-                    >
-                      {content}
-                    </a>
+                    cleanLabel(link.label)
                   )}
-                </Button>
+                </PaginationLink>
               )}
             </PaginationItem>
           );
@@ -126,4 +169,5 @@ export function InertiaPagination({
     </Pagination>
   );
 }
+
 

@@ -14,6 +14,7 @@ import {
   Camera,
   RefreshCw,
   Upload,
+  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +41,11 @@ export interface FileUploaderProps {
   /** Fired after successful remote uploads, returning the list of remote URLs */
   onUploadComplete?: (urls: string[]) => void;
 
+  /** Edit Mode: Pre-existing file URLs from server/database */
+  initialUrls?: string[];
+  /** Callback fired when a pre-existing file URL is removed */
+  onRemoveInitial?: (url: string) => void;
+
   /** Constraints */
   multiple?: boolean;
   maxFiles?: number;
@@ -51,6 +57,8 @@ export interface FileUploaderProps {
   className?: string;
   disabled?: boolean;
   variant?: "default" | "avatar";
+  /** Fallback initials to show in avatar mode if no image is present */
+  fallbackInitials?: string;
 }
 
 // Helper to generate a unique key for each raw File
@@ -86,6 +94,8 @@ export function FileUploader({
   onChange,
   onUpload,
   onUploadComplete,
+  initialUrls = [],
+  onRemoveInitial,
   multiple = false,
   maxFiles = 10,
   maxSize = 5, // Default 5MB
@@ -94,9 +104,11 @@ export function FileUploader({
   className,
   disabled = false,
   variant = "default",
+  fallbackInitials,
 }: FileUploaderProps) {
   const [isDragging, setIsDragging] = React.useState(false);
   const [localQueue, setLocalQueue] = React.useState<Record<string, FileStatus>>({});
+  const [localInitialUrls, setLocalInitialUrls] = React.useState<string[]>(initialUrls || []);
   const [errors, setErrors] = React.useState<string[]>([]);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -109,6 +121,13 @@ export function FileUploader({
       Object.values(previewUrlsRef.current).forEach((url) => URL.revokeObjectURL(url));
     };
   }, []);
+
+  // Synchronize initialUrls prop to local state
+  React.useEffect(() => {
+    if (initialUrls) {
+      setLocalInitialUrls(initialUrls);
+    }
+  }, [initialUrls]);
 
   const getPreviewUrl = (file: File) => {
     const key = getFileKey(file);
@@ -133,6 +152,11 @@ export function FileUploader({
     }
   }, [value, onUpload]);
 
+  // Determine actual constraints depending on uploader variant
+  const isAvatar = variant === "avatar";
+  const actualMultiple = isAvatar ? false : multiple;
+  const actualMaxFiles = isAvatar ? 1 : maxFiles;
+
   const handleFiles = async (fileList: FileList) => {
     if (disabled) return;
     setErrors([]);
@@ -141,19 +165,19 @@ export function FileUploader({
     const validIncoming: File[] = [];
     const newErrors: string[] = [];
 
-    // Calculate current queue capacity
-    const currentCount = onUpload 
+    // Calculate current queue capacity including remaining server-side files
+    const currentCount = (onUpload 
       ? Object.keys(localQueue).length 
-      : value.length;
+      : value.length) + localInitialUrls.length;
 
-    if (!multiple && incomingFiles.length > 1) {
+    if (!actualMultiple && incomingFiles.length > 1) {
       newErrors.push("Multi-selection is disabled. Only a single file is allowed.");
       setErrors(newErrors);
       return;
     }
 
-    if (multiple && currentCount + incomingFiles.length > maxFiles) {
-      newErrors.push(`Maximum file limit exceeded. You can only upload up to ${maxFiles} files.`);
+    if (actualMultiple && currentCount + incomingFiles.length > actualMaxFiles) {
+      newErrors.push(`Maximum file limit exceeded. You can only upload up to ${actualMaxFiles} files.`);
       setErrors(newErrors);
       return;
     }
@@ -180,11 +204,17 @@ export function FileUploader({
 
     // --- Mode A: Local State Accumulation ---
     if (!onUpload) {
-      if (multiple) {
-        const mergedFiles = [...value, ...validIncoming].slice(0, maxFiles);
+      if (actualMultiple) {
+        const mergedFiles = [...value, ...validIncoming].slice(0, actualMaxFiles);
         onChange?.(mergedFiles);
       } else {
         onChange?.([validIncoming[0]]);
+        // In single file mode, if a new image is selected, clear existing database URL
+        if (localInitialUrls.length > 0) {
+          const removedUrl = localInitialUrls[0];
+          setLocalInitialUrls([]);
+          onRemoveInitial?.(removedUrl);
+        }
       }
       return;
     }
@@ -194,13 +224,20 @@ export function FileUploader({
     const uploadPromises: Promise<string | undefined>[] = [];
 
     // Reset single selection if multi is off
-    if (!multiple) {
+    if (!actualMultiple) {
       Object.keys(previewUrlsRef.current).forEach((key) => {
         URL.revokeObjectURL(previewUrlsRef.current[key]);
         delete previewUrlsRef.current[key];
       });
       // Clear status lists
       Object.keys(newStatuses).forEach((key) => delete newStatuses[key]);
+
+      // Clear existing server URL in single/avatar mode
+      if (localInitialUrls.length > 0) {
+        const removedUrl = localInitialUrls[0];
+        setLocalInitialUrls([]);
+        onRemoveInitial?.(removedUrl);
+      }
     }
 
     validIncoming.forEach((file) => {
@@ -307,6 +344,35 @@ export function FileUploader({
     }
   };
 
+  const handleRemoveAvatar = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    // 1. Clear any raw upload queue items
+    const firstKey = Object.keys(localQueue)[0];
+    if (firstKey) {
+      if (previewUrlsRef.current[firstKey]) {
+        URL.revokeObjectURL(previewUrlsRef.current[firstKey]);
+        delete previewUrlsRef.current[firstKey];
+      }
+      setLocalQueue((prev) => {
+        const next = { ...prev };
+        delete next[firstKey];
+        return next;
+      });
+      if (!onUpload) {
+        onChange?.([]);
+      }
+    }
+
+    // 2. Clear any existing database image URLs
+    if (localInitialUrls.length > 0) {
+      const removedUrl = localInitialUrls[0];
+      setLocalInitialUrls([]);
+      onRemoveInitial?.(removedUrl);
+    }
+  };
+
   const triggerBrowse = () => {
     if (!disabled) {
       fileInputRef.current?.click();
@@ -338,8 +404,13 @@ export function FileUploader({
   if (variant === "avatar") {
     const firstKey = Object.keys(localQueue)[0];
     const firstItem = firstKey ? localQueue[firstKey] : undefined;
-    const avatarUrl = firstItem?.file ? getPreviewUrl(firstItem.file) : undefined;
+    const localAvatarUrl = firstItem?.file ? getPreviewUrl(firstItem.file) : undefined;
     const isUploading = firstItem?.status === "uploading";
+    const progress = firstItem?.progress || 0;
+
+    // Unified avatar preview url selection (prioritizes local file, then initial url)
+    const avatarUrl = localAvatarUrl || (localInitialUrls.length > 0 ? localInitialUrls[0] : undefined);
+    const initials = fallbackInitials?.trim().substring(0, 2).toUpperCase();
 
     return (
       <div className={cn("flex flex-col items-center gap-3", className)}>
@@ -347,27 +418,52 @@ export function FileUploader({
           type="file"
           ref={fileInputRef}
           className="hidden"
-          disabled={disabled}
+          disabled={disabled || isUploading}
           accept={accept?.join(",")}
           onChange={handleFileInputChange}
         />
         
-        <div className="relative">
+        <div className="relative flex items-center justify-center">
+          {/* Circular SVG Progress Ring surrounding the avatar during uploads */}
+          {isUploading && (
+            <svg className="absolute inset-0 h-full w-full -rotate-90 pointer-events-none scale-102 z-20">
+              <circle
+                cx="48"
+                cy="48"
+                r="45"
+                className="stroke-muted/30"
+                strokeWidth="3"
+                fill="transparent"
+              />
+              <circle
+                cx="48"
+                cy="48"
+                r="45"
+                className="stroke-primary transition-all duration-300"
+                strokeWidth="3"
+                fill="transparent"
+                strokeDasharray={2 * Math.PI * 45}
+                strokeDashoffset={2 * Math.PI * 45 * (1 - progress / 100)}
+                strokeLinecap="round"
+              />
+            </svg>
+          )}
+
           <div
             role="button"
-            tabIndex={disabled ? -1 : 0}
-            onClick={triggerBrowse}
+            tabIndex={disabled || isUploading ? -1 : 0}
+            onClick={isUploading ? undefined : triggerBrowse}
             onKeyDown={(e) => {
-              if (e.key === "Enter") triggerBrowse();
+              if (e.key === "Enter" && !isUploading) triggerBrowse();
             }}
             className={cn(
               "relative group flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-muted-foreground/30 bg-muted/40 overflow-hidden outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all hover:border-primary/50",
               isDragging && "border-primary bg-primary/5 scale-95",
-              disabled && "cursor-not-allowed opacity-60 hover:border-muted-foreground/30"
+              (disabled || isUploading) && "cursor-not-allowed opacity-60 hover:border-muted-foreground/30"
             )}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
+            onDragOver={isUploading ? undefined : handleDragOver}
+            onDragLeave={isUploading ? undefined : handleDragLeave}
+            onDrop={isUploading ? undefined : handleDrop}
           >
             {avatarUrl ? (
               <>
@@ -376,29 +472,34 @@ export function FileUploader({
                   alt="Profile Preview"
                   className="h-full w-full object-cover transition-transform group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Camera className="h-5 w-5 text-white" />
-                </div>
+                {!disabled && (
+                  <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200">
+                    <Camera className="h-5 w-5 text-white mb-0.5" />
+                    <span className="text-[9px] font-bold text-white uppercase tracking-wider">Change</span>
+                  </div>
+                )}
               </>
             ) : isUploading ? (
-              <div className="flex flex-col items-center gap-1">
-                <RefreshCw className="h-5 w-5 animate-spin text-primary" />
-                <span className="text-[10px] font-medium text-muted-foreground">
-                  {firstItem?.progress}%
-                </span>
+              <div className="flex flex-col items-center justify-center gap-0.5 z-10 animate-pulse">
+                <span className="text-xs font-bold text-primary font-mono">{progress}%</span>
+                <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-tight">Uploading</span>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center text-muted-foreground group-hover:text-foreground transition-colors">
-                <Camera className="h-5 w-5 shrink-0" />
+              <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-primary/5 to-primary/15 text-primary font-semibold group-hover:from-primary/10 group-hover:to-primary/20 transition-all duration-300">
+                {initials ? (
+                  <span className="text-xl font-bold tracking-tight text-primary/80">{initials}</span>
+                ) : (
+                  <Camera className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
+                )}
               </div>
             )}
           </div>
 
-          {avatarUrl && !disabled && firstItem && (
+          {avatarUrl && !disabled && !isUploading && (
             <button
               type="button"
-              onClick={(e) => removeFile(firstKey, firstItem.file, e)}
-              className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border bg-background text-muted-foreground hover:text-foreground shadow-md transition-all hover:scale-110 active:scale-95 focus:outline-hidden focus:ring-1 focus:ring-ring"
+              onClick={handleRemoveAvatar}
+              className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border bg-background text-muted-foreground hover:text-foreground shadow-md transition-all hover:scale-110 active:scale-95 focus:outline-hidden focus:ring-1 focus:ring-ring z-30"
               title="Remove profile image"
             >
               <X className="h-3 w-3" />
@@ -422,7 +523,7 @@ export function FileUploader({
         type="file"
         ref={fileInputRef}
         className="hidden"
-        multiple={multiple}
+        multiple={actualMultiple}
         disabled={disabled}
         accept={accept?.join(",")}
         onChange={handleFileInputChange}
@@ -475,9 +576,69 @@ export function FileUploader({
         </div>
       )}
 
-      {/* File Queue List */}
-      {activeQueue.length > 0 && (
-        <div className="rounded-xl border overflow-hidden bg-background divide-y">
+      {/* File Queue List containing both pre-existing server URLs and newly uploaded local files */}
+      {(activeQueue.length > 0 || localInitialUrls.length > 0) && (
+        <div className="rounded-xl border overflow-hidden bg-background divide-y shadow-xs">
+          
+          {/* Section A: Pre-existing database file URLs */}
+          {localInitialUrls.map((url, idx) => {
+            const fileName = url.substring(url.lastIndexOf("/") + 1) || `file-${idx}`;
+            const isImage = url.match(/\.(jpeg|jpg|gif|png|webp|svg)/i);
+
+            return (
+              <div
+                key={`initial-${url}-${idx}`}
+                className="flex items-center gap-3.5 p-3.5 transition-colors hover:bg-muted/10 bg-muted/5"
+              >
+                {/* Thumbnail Preview or Icon */}
+                {isImage ? (
+                  <img
+                    src={url}
+                    alt={fileName}
+                    className="h-10 w-10 rounded-lg object-cover shrink-0 border"
+                  />
+                ) : (
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted border shrink-0 text-slate-500">
+                    <FileText className="h-5 w-5" />
+                  </div>
+                )}
+
+                {/* File Metadata */}
+                <div className="flex-1 min-w-0 leading-tight">
+                  <p className="text-sm font-medium text-foreground truncate">
+                    {fileName}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Server Asset
+                  </p>
+                </div>
+
+                {/* Status Indicator & Deletion */}
+                <div className="flex items-center gap-3">
+                  <Badge variant="secondary" className="text-[10px] uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border-emerald-500/15 py-0.5 px-2">
+                    Saved
+                  </Badge>
+
+                  {!disabled && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 rounded-md hover:bg-muted hover:text-foreground text-muted-foreground/60 p-0"
+                      onClick={() => {
+                        setLocalInitialUrls((prev) => prev.filter((u) => u !== url));
+                        onRemoveInitial?.(url);
+                      }}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Section B: Client-side files currently uploading or completed */}
           {activeQueue.map(([key, item]) => {
             const isUploading = item.status === "uploading";
             const isSuccess = item.status === "success";

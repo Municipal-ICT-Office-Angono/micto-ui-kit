@@ -43,3 +43,6 @@ npx shadcn@latest add https://micto-ui-kit.misangono.net/r/inertia-pagination.js
 
 - **Documentation**: [https://micto-ui-kit.misangono.net](https://micto-ui-kit.misangono.net)
 - **Repository**: [Municipal-ICT-Office-Angono/micto-ui-kit](https://github.com/Municipal-ICT-Office-Angono/micto-ui-kit)
+
+
+

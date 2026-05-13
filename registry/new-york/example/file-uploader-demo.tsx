@@ -5,121 +5,175 @@ import { FileUploader } from "@/components/ui/file-uploader";
 import { Button } from "@/components/ui/button";
 
 export default function FileUploaderDemo() {
-  const [formFiles, setFormFiles] = React.useState<File[]>([]);
+  // 1. Text input states for the form
+  const [firstName, setFirstName] = React.useState("Nehry");
+  const [lastName, setLastName] = React.useState("Guinto");
+
+  // 2. Local multipart file collection states (Mode A: State-driven)
   const [avatarFiles, setAvatarFiles] = React.useState<File[]>([]);
-  const [asyncLog, setAsyncLog] = React.useState<string[]>([]);
+  const [documentFiles, setDocumentFiles] = React.useState<File[]>([]);
 
-  // Simulated Async Uploader mapping progress ticks
-  const handleAsyncUpload = async (file: File, onProgress: (pct: number) => void): Promise<string> => {
-    setAsyncLog((prev) => [...prev, `Started upload for: "${file.name}"`]);
-    
-    // Simulate real chunked API stream upload over 2.5 seconds
-    let currentPct = 0;
-    while (currentPct < 100) {
-      await new Promise((resolve) => setTimeout(resolve, 250));
-      currentPct += Math.floor(Math.random() * 15) + 10;
-      if (currentPct > 100) currentPct = 100;
-      onProgress(currentPct);
-    }
+  // 3. Edit Mode Preloaded Server URLs (Edit-side state tracking)
+  const [avatarInitialUrl, setAvatarInitialUrl] = React.useState<string[]>([
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop"
+  ]);
+  const [documentInitialUrls, setDocumentInitialUrls] = React.useState<string[]>([
+    "https://storage.angono.gov.ph/uploads/verification-id-2025.pdf"
+  ]);
 
-    setAsyncLog((prev) => [...prev, `Upload success: "${file.name}" -> resolved remote URL`]);
-    return `https://storage.angono.gov.ph/uploads/${Date.now()}-${file.name}`;
-  };
+  // Console output logging state
+  const [consoleLogs, setConsoleLogs] = React.useState<string[]>([]);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(
-      `Mock Form Submitted!\nFiles gathered in state: ${formFiles.length}\nFiles detailed: ${formFiles.map(f => f.name).join(", ")}`
-    );
-    console.log("Submitting standard multipart Files:", formFiles);
+    
+    // Clear and log the payload structure
+    const newLogs: string[] = [];
+    newLogs.push("========================================");
+    newLogs.push("🚀 INITIATING MULTIPART FORM SUBMISSION");
+    newLogs.push("========================================");
+    newLogs.push(`Text Field [first_name]: "${firstName}"`);
+    newLogs.push(`Text Field [last_name]: "${lastName}"`);
+    
+    // Log Avatar payload
+    if (avatarFiles.length > 0) {
+      newLogs.push(`📷 Avatar: [NEW RAW FILE] -> "${avatarFiles[0].name}" (${(avatarFiles[0].size / 1024).toFixed(1)} KB)`);
+    } else if (avatarInitialUrl.length > 0) {
+      newLogs.push(`📷 Avatar: [KEPT SERVER URL] -> "${avatarInitialUrl[0]}"`);
+    } else {
+      newLogs.push(`📷 Avatar: [DELETED / CLEARED]`);
+    }
+
+    // Log Supporting Documents payload
+    newLogs.push(`📁 Documents Kept: [${documentInitialUrls.length}]`);
+    documentInitialUrls.forEach((url, idx) => {
+      newLogs.push(`   -> Server File [${idx}]: "${url}"`);
+    });
+
+    newLogs.push(`📁 Documents Uploaded: [${documentFiles.length}]`);
+    documentFiles.forEach((file, idx) => {
+      newLogs.push(`   -> Raw File [${idx}]: "${file.name}" (${(file.size / 1024).toFixed(1)} KB)`);
+    });
+
+    newLogs.push("========================================");
+    newLogs.push("🎉 Payload structured! Ready to send to server node...");
+    
+    setConsoleLogs(newLogs);
+    alert("Form values gathered locally in state! Check the Live Submission Console below to see the payload structure.");
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto py-4 space-y-12">
-      {/* 1. Local State Form Accumulator */}
-      <form onSubmit={handleFormSubmit} className="space-y-4 rounded-xl border border-border bg-card p-6 shadow-sm">
-        <div className="flex flex-col gap-1.5">
-          <h4 className="text-sm font-semibold tracking-tight text-foreground">
-            Form Mode (Local File State)
+    <div className="w-full max-w-xl mx-auto py-4 space-y-8">
+      {/* Unified Profile Settings & Local Saving Form */}
+      <form onSubmit={handleFormSubmit} className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-6">
+        <div className="flex flex-col gap-1.5 border-b pb-4">
+          <h4 className="text-base font-semibold tracking-tight text-foreground">
+            Account Profile Settings
           </h4>
           <p className="text-xs text-muted-foreground">
-            Saves raw file objects inside local states. Max size: 2MB. Only JPG, PNG, and PDF files are allowed.
+            Demonstrates a single edit form containing text fields, a profile avatar, and attachments. All files are collected **locally** in state and saved in a single unified request.
           </p>
         </div>
-        <div className="pt-2">
-          <FileUploader
-            value={formFiles}
-            onChange={setFormFiles}
-            maxFiles={3}
-            maxSize={2}
-            accept={["image/*", "application/pdf"]}
-            multiple
-            placeholder="Drag and drop images or PDFs, or click to browse..."
-          />
+
+        {/* Form Grid */}
+        <div className="space-y-6">
+          {/* Avatar & Personal Info Row */}
+          <div className="flex flex-col sm:flex-row gap-6 items-center">
+            {/* Avatar - Fully Local Mode */}
+            <div className="shrink-0 flex flex-col items-center gap-1.5">
+              <span className="text-xs font-semibold text-muted-foreground">Profile Picture</span>
+              <FileUploader
+                value={avatarFiles}
+                onChange={setAvatarFiles}
+                initialUrls={avatarInitialUrl}
+                onRemoveInitial={() => {
+                  setAvatarInitialUrl([]);
+                  setConsoleLogs((prev) => [...prev, "❌ Profile Picture URL cleared from state"]);
+                }}
+                fallbackInitials="JD"
+                accept={["image/*"]}
+                variant="avatar"
+                className="scale-105"
+              />
+            </div>
+
+            {/* Inputs */}
+            <div className="flex-1 w-full space-y-3.5">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">First Name</label>
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-full h-9 rounded-lg border bg-background px-3 text-xs focus:outline-hidden focus:ring-1 focus:ring-primary"
+                  required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">Last Name</label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full h-9 rounded-lg border bg-background px-3 text-xs focus:outline-hidden focus:ring-1 focus:ring-primary"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Verification Supporting Documents */}
+          <div className="space-y-2 border-t pt-4">
+            <div className="space-y-1 mb-2.5">
+              <label className="text-xs font-semibold text-foreground">Verification Attachments</label>
+              <p className="text-[10px] text-muted-foreground">Attach proof of identity (e.g. Passport, Drivers License). Maximum 5MB.</p>
+            </div>
+            
+            <FileUploader
+              value={documentFiles}
+              onChange={setDocumentFiles}
+              initialUrls={documentInitialUrls}
+              onRemoveInitial={(url) => {
+                setDocumentInitialUrls((prev) => prev.filter((u) => u !== url));
+                setConsoleLogs((prev) => [...prev, `❌ Server file flagged for deletion: ${url}`]);
+              }}
+              maxFiles={4}
+              maxSize={5}
+              accept={["image/*", "application/pdf"]}
+              multiple
+              placeholder="Upload verification certificates or photos..."
+            />
+          </div>
         </div>
-        <div className="flex justify-end pt-2">
-          <Button type="submit" disabled={formFiles.length === 0} className="rounded-lg text-xs h-9 px-4">
-            Submit Form ({formFiles.length} files)
+
+        {/* Submit */}
+        <div className="flex justify-end pt-2 border-t">
+          <Button type="submit" className="rounded-lg text-xs h-9 px-5">
+            Save Profile Changes
           </Button>
         </div>
       </form>
 
-      {/* 2. Circular Profile Picture Avatar View */}
-      <div className="space-y-4 rounded-xl border border-border bg-card p-6 shadow-sm flex flex-col sm:flex-row sm:items-center gap-6">
-        <div className="flex-1 space-y-1.5">
-          <h4 className="text-sm font-semibold tracking-tight text-foreground">
-            Avatar Selector Variant
-          </h4>
-          <p className="text-xs text-muted-foreground">
-            An elegant profile picture uploader with a circular hover filter. Drag or pick an image to test local image rendering.
-          </p>
-        </div>
-        <div className="shrink-0 flex items-center justify-center">
-          <FileUploader
-            value={avatarFiles}
-            onChange={setAvatarFiles}
-            maxSize={1}
-            accept={["image/*"]}
-            variant="avatar"
-          />
-        </div>
-      </div>
-
-      {/* 3. Simulated Async Streaming */}
-      <div className="space-y-4 rounded-xl border border-border bg-card p-6 shadow-sm">
-        <div className="flex flex-col gap-1.5">
-          <h4 className="text-sm font-semibold tracking-tight text-foreground">
-            Async API Stream (Immediate Remote Mode)
-          </h4>
-          <p className="text-xs text-muted-foreground">
-            Immediately starts simulated parallel server requests, displaying real-time loading percentages and success ticks.
-          </p>
-        </div>
-        <div className="pt-2">
-          <FileUploader
-            onUpload={handleAsyncUpload}
-            onUploadComplete={(urls) => console.log("Uploads complete! Server paths returned:", urls)}
-            maxSize={50}
-            multiple
-            placeholder="Directly stream files to our storage node..."
-          />
-        </div>
-
-        {asyncLog.length > 0 && (
-          <div className="pt-3 border-t">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">
-              Network Console Output
+      {/* Live Submission Console Logs */}
+      {consoleLogs.length > 0 && (
+        <div className="space-y-2 rounded-xl border border-border bg-card p-6 shadow-sm">
+          <div className="flex flex-col gap-1">
+            <h5 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Live Multipart Request Payload Console
+            </h5>
+            <p className="text-[10px] text-muted-foreground leading-tight">
+              Shows how the client state is compiled into a single multipart save request. Notice that no S3 API uploads were fired beforehand!
             </p>
-            <div className="bg-muted p-3 rounded-lg max-h-[110px] overflow-y-auto font-mono text-[10px] leading-relaxed text-primary space-y-0.5">
-              {asyncLog.map((log, index) => (
-                <div key={index} className="truncate">
-                  {`> ${log}`}
-                </div>
-              ))}
-            </div>
           </div>
-        )}
-      </div>
+          <div className="bg-slate-950 p-4 rounded-lg overflow-x-auto font-mono text-[10px] leading-relaxed text-emerald-400 max-h-[220px] overflow-y-auto border border-emerald-950/40">
+            {consoleLogs.map((log, index) => (
+              <div key={index} className="whitespace-pre truncate">
+                {log}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

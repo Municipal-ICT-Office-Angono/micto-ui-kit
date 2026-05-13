@@ -34,15 +34,25 @@ import { FileUploader } from "@/components/ui/file-uploader"
 
 export default function DocumentForm() {
   const [files, setFiles] = useState<File[]>([])
+  
+  // Track pre-existing server files on edit
+  const [existingUrls, setExistingUrls] = useState<string[]>([
+    "https://storage.gov.ph/uploads/existing-document.pdf"
+  ])
 
   return (
     <FileUploader 
       value={files} 
       onChange={setFiles} 
+      initialUrls={existingUrls}
+      onRemoveInitial={(removedUrl) => {
+        setExistingUrls(prev => prev.filter(url => url !== removedUrl))
+        console.log("Flagged database ID for deletion:", removedUrl)
+      }}
       accept={["image/*", "application/pdf"]}
-      maxSize={5} // 5MB limit
-      multiple // allows picking multiple items
-      placeholder="Select file to upload..."
+      maxSize={5} 
+      multiple 
+      placeholder="Upload supporting docs..."
     />
   )
 }`;
@@ -51,14 +61,22 @@ const avatarUsageCode = `import { useState } from "react"
 import { FileUploader } from "@/components/ui/file-uploader"
 
 export default function ProfileSettings() {
-  const [profile, setProfile] = useState<File[]>([])
+  const [profileFiles, setProfileFiles] = useState<File[]>([])
+  
+  // Pre-load existing avatar URL or fallback to NH
+  const [avatarUrl, setAvatarUrl] = useState<string[]>([
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop"
+  ])
 
   return (
     <FileUploader 
-      value={profile} 
-      onChange={setProfile} 
+      value={profileFiles} 
+      onChange={setProfileFiles} 
+      initialUrls={avatarUrl}
+      onRemoveInitial={() => setAvatarUrl([])}
+      fallbackInitials="NH"
       accept={["image/*"]}
-      variant="avatar" // renders profile circular crop
+      variant="avatar" 
     />
   )
 }`;
@@ -90,10 +108,22 @@ const propsData = [
     description: "Callback triggered with successfully uploaded string URLs when direct uploads finish (Mode B).",
   },
   {
+    name: "initialUrls",
+    type: "string[]",
+    default: "[]",
+    description: "Pre-existing server URLs to display in the uploader queue during Edit scenarios.",
+  },
+  {
+    name: "onRemoveInitial",
+    type: "(url: string) => void",
+    default: "undefined",
+    description: "Callback triggered when a user deletes a pre-existing server URL, notifying the parent form to delete or unlink it.",
+  },
+  {
     name: "multiple",
     type: "boolean",
     default: "false",
-    description: "Allows dropping and choosing multiple files concurrently.",
+    description: "Allows dropping and choosing multiple files concurrently (auto-forces false in avatar mode).",
   },
   {
     name: "maxFiles",
@@ -118,6 +148,12 @@ const propsData = [
     type: "'default' | 'avatar'",
     default: "'default'",
     description: "Layout theme. Renders standard dropzone grid or circular bubble profile settings.",
+  },
+  {
+    name: "fallbackInitials",
+    type: "string",
+    default: "undefined",
+    description: "Circular placeholder typography characters shown when no avatar image or raw local file is present.",
   },
 ];
 
