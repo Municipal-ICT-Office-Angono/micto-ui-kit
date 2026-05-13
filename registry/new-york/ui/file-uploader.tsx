@@ -122,12 +122,11 @@ export function FileUploader({
     };
   }, []);
 
-  // Synchronize initialUrls prop to local state
+  // Synchronize initialUrls prop to local state (serialized string prevents infinite render loops)
+  const serializedInitialUrls = initialUrls?.join(",") || "";
   React.useEffect(() => {
-    if (initialUrls) {
-      setLocalInitialUrls(initialUrls);
-    }
-  }, [initialUrls]);
+    setLocalInitialUrls(initialUrls || []);
+  }, [serializedInitialUrls]);
 
   const getPreviewUrl = (file: File) => {
     const key = getFileKey(file);
@@ -138,7 +137,8 @@ export function FileUploader({
     return previewUrlsRef.current[key];
   };
 
-  // Synchronize Mode A files
+  // Synchronize Mode A files (serialized string key comparison prevents infinite render loops)
+  const valueKeys = value ? value.map(getFileKey).join(",") : "";
   React.useEffect(() => {
     if (!onUpload && value) {
       setLocalQueue((prev) => {
@@ -150,7 +150,7 @@ export function FileUploader({
         return next;
       });
     }
-  }, [value, onUpload]);
+  }, [valueKeys, onUpload]);
 
   // Determine actual constraints depending on uploader variant
   const isAvatar = variant === "avatar";
