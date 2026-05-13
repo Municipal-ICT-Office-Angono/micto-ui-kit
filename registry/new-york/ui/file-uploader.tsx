@@ -318,9 +318,11 @@ export function FileUploader({
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    if (e.target.files && e.target.files.length > 0) {
       handleFiles(e.target.files);
     }
+    // Reset value so selecting/uploading the exact same file again triggers onChange
+    e.target.value = "";
   };
 
   const removeFile = (key: string, file: File, e: React.MouseEvent) => {
