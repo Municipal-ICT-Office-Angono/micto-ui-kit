@@ -30,6 +30,10 @@ export const navData = [
       //   url: "/docs/components/pagination",
       // },
       {
+        title: "Activity Timeline",
+        url: "/docs/components/activity-timeline",
+      },
+      {
         title: "Confirm Dialog",
         url: "/docs/components/confirm-dialog",
       },

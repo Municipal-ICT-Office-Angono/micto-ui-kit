@@ -183,6 +183,29 @@
         "react",
         "hook"
       ]
+    },
+    {
+      "name": "activity-timeline",
+      "type": "registry:component",
+      "title": "Activity Timeline",
+      "description": "A composable and data-driven timeline / stepper component system designed for municipal document routing histories, leave application steppers, and system audit logs.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "avatar",
+        "tooltip",
+        "card"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/ui/activity-timeline.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
     }
   ]
 }
