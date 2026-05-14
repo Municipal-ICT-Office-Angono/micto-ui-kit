@@ -112,9 +112,10 @@ export function FileUploader({
   const previewUrlsRef = React.useRef<Record<string, string>>({});
 
   React.useEffect(() => {
+    const urls = previewUrlsRef.current;
     return () => {
       // Clean up all object URLs when component unmounts
-      Object.values(previewUrlsRef.current).forEach((url) => URL.revokeObjectURL(url));
+      Object.values(urls).forEach((url) => URL.revokeObjectURL(url));
     };
   }, []);
 
@@ -122,6 +123,7 @@ export function FileUploader({
   const serializedInitialUrls = initialUrls?.join(",") || "";
   React.useEffect(() => {
     setLocalInitialUrls(initialUrls || []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serializedInitialUrls]);
 
   const getPreviewUrl = (file: File) => {
@@ -146,6 +148,7 @@ export function FileUploader({
         return next;
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valueKeys, onUpload]);
 
   // Determine actual constraints depending on uploader variant
@@ -316,12 +319,12 @@ export function FileUploader({
     e.preventDefault();
     setIsDragging(false);
     if (disabled || !e.dataTransfer.files) return;
-    handleFiles(e.dataTransfer.files);
+    void handleFiles(e.dataTransfer.files);
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      handleFiles(e.target.files);
+      void handleFiles(e.target.files);
     }
     // Reset value so selecting/uploading the exact same file again triggers onChange
     e.target.value = "";
@@ -473,6 +476,7 @@ export function FileUploader({
           >
             {avatarUrl ? (
               <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={avatarUrl}
                   alt="Profile Preview"
@@ -598,11 +602,14 @@ export function FileUploader({
               >
                 {/* Thumbnail Preview or Icon */}
                 {isImage ? (
-                  <img
-                    src={url}
-                    alt={fileName}
-                    className="h-10 w-10 rounded-lg object-cover shrink-0 border"
-                  />
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={url}
+                      alt={fileName}
+                      className="h-10 w-10 rounded-lg object-cover shrink-0 border"
+                    />
+                  </>
                 ) : (
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted border shrink-0 text-slate-500">
                     <FileText className="h-5 w-5" />
@@ -660,11 +667,14 @@ export function FileUploader({
                 <div className="flex items-center gap-3.5">
                   {/* Thumbnail Preview or Icon */}
                   {isImage && previewUrl ? (
-                    <img
-                      src={previewUrl}
-                      alt={item.file.name}
-                      className="h-10 w-10 rounded-lg object-cover shrink-0 border"
-                    />
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={previewUrl}
+                        alt={item.file.name}
+                        className="h-10 w-10 rounded-lg object-cover shrink-0 border"
+                      />
+                    </>
                   ) : (
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted border shrink-0">
                       {renderFileIcon(item.file)}

@@ -29,7 +29,7 @@ export function CopyButton({ value, className }: Props) {
       type="button"
       variant="ghost"
       size="sm"
-      onClick={handleCopy}
+      onClick={() => { void handleCopy() }}
       className={cn(
         "h-7 w-7 px-0 text-muted-foreground hover:text-foreground",
         className

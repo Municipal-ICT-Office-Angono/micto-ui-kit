@@ -25,6 +25,7 @@ export interface UseTableQueryOptions<TData> {
   queryKey: unknown[];
   /** Fetcher function. Receives current table params, must return a paginated result. */
   queryFn: (params: TableQueryParams) => Promise<TableQueryResult<TData>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<TData, any>[];
   /** When set, column visibility persists to localStorage. */
   tableId?: string;
@@ -42,6 +43,7 @@ export interface UseTableQueryOptions<TData> {
 export interface UseTableQueryReturn<TData> {
   // Spread directly onto <DataTable />
   data: TData[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<TData, any>[];
   isLoading: boolean;
   isFetching: boolean;
@@ -141,7 +143,7 @@ export function useTableQuery<TData>({
     tableId,
     // Advanced access
     queryResult,
-    refetch: queryResult.refetch,
+    refetch: () => { void queryResult.refetch(); },
     currentParams: params,
   };
 }

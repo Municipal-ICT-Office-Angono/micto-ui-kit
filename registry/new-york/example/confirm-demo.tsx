@@ -6,7 +6,7 @@ import { confirm } from "@/components/ui/confirm"
 
 export default function ConfirmDemo() {
   const triggerSimple = () => {
-    confirm({
+    void confirm({
       title: "Account Update",
       body: "Your profile has been saved successfully.",
       icon: "info",
@@ -15,20 +15,20 @@ export default function ConfirmDemo() {
   }
 
   const triggerStack = () => {
-    confirm({
+    void confirm({
       title: "First Alert",
       body: "This is the first layer of the stack.",
       icon: "info",
     })
     setTimeout(() => {
-      confirm({
+      void confirm({
         title: "Second Alert",
         body: "Look! I pushed the previous one back.",
         icon: "warning",
       })
     }, 200)
     setTimeout(() => {
-      confirm({
+      void confirm({
         title: "Danger Zone",
         body: "Now we have a complete stack of confirmations.",
         icon: "danger",
@@ -38,7 +38,7 @@ export default function ConfirmDemo() {
   }
 
   const triggerAsync = () => {
-    confirm({
+    void confirm({
       title: "Syncing Data",
       body: "This will start a background sync that takes about 2 seconds.",
       onConfirm: async () => {

@@ -61,6 +61,10 @@ export const navData = [
         title: "Data Table",
         url: "/docs/components/data-table",
       },
+      {
+        title: "Document Viewer",
+        url: "/docs/components/document-viewer",
+      },
     ],
   },
   {

@@ -25,6 +25,7 @@ export interface SearchSelectOption {
   label: string;
   description?: string;
   avatar?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
@@ -39,6 +40,7 @@ export interface SearchSelectProps {
   value?: string | string[];
 
   /** Event fired when selections change */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange?: (value: any) => void;
 
   /** Support selecting multiple options simultaneously */
@@ -114,7 +116,7 @@ export function SearchSelect({
       }
     };
 
-    fetchResults();
+    void fetchResults();
 
     return () => {
       isMounted = false;
@@ -168,6 +170,7 @@ export function SearchSelect({
         <div
           role="combobox"
           aria-expanded={open}
+          aria-controls="radix-combobox"
           tabIndex={disabled ? -1 : 0}
           className={cn(
             "flex w-full h-auto min-h-10 items-center justify-between px-3 py-2 text-left text-sm font-normal border border-input rounded-lg bg-background shadow-xs ring-offset-background cursor-pointer hover:bg-muted/10 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-colors",
@@ -200,6 +203,7 @@ export function SearchSelect({
                     onClick={(e) => handleRemove(item.value, e)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         handleRemove(item.value, e as any);
                       }
                     }}
@@ -211,11 +215,14 @@ export function SearchSelect({
             ) : (
               <div className="flex items-center gap-2 truncate">
                 {getSelectedLabels[0]?.avatar && (
-                  <img
-                    src={getSelectedLabels[0].avatar}
-                    alt={getSelectedLabels[0].label}
-                    className="h-4 w-4 rounded-full object-cover"
-                  />
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={getSelectedLabels[0].avatar}
+                      alt={getSelectedLabels[0].label}
+                      className="h-4 w-4 rounded-full object-cover"
+                    />
+                  </>
                 )}
                 <span className="truncate">{getSelectedLabels[0]?.label}</span>
               </div>
@@ -268,11 +275,14 @@ export function SearchSelect({
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           {item.avatar && (
-                            <img
-                              src={item.avatar}
-                              alt={item.label}
-                              className="h-8 w-8 rounded-full object-cover shrink-0 border border-muted"
-                            />
+                            <>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={item.avatar}
+                                alt={item.label}
+                                className="h-8 w-8 rounded-full object-cover shrink-0 border border-muted"
+                              />
+                            </>
                           )}
                           <div className="flex flex-col min-w-0 leading-tight">
                             <span className="font-medium text-sm text-foreground truncate">

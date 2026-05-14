@@ -24,8 +24,8 @@ type Props = {
   size?: "default" | "sm" | "lg" | "icon" | null | undefined;
   position?: "start" | "center" | "end";
   className?: string;
-  LinkComponent?: React.ComponentType<any>;
-  linkProps?: Record<string, any>;
+  LinkComponent?: React.ComponentType<{ href: string; [key: string]: unknown }>;
+  linkProps?: Record<string, unknown>;
 };
 
 const cleanLabel = (label: string) =>

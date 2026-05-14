@@ -116,7 +116,7 @@ export default function PermissionGuardDemo() {
                 Document Actions (Hide / Disable Modes)
               </h5>
               <p className="text-xs text-muted-foreground">
-                The delete button uses <code className="font-mono bg-muted px-1 py-0.5 rounded">mode="hide"</code>. The edit button uses <code className="font-mono bg-muted px-1 py-0.5 rounded">mode="disable"</code>.
+                The delete button uses <code className="font-mono bg-muted px-1 py-0.5 rounded">mode=&quot;hide&quot;</code>. The edit button uses <code className="font-mono bg-muted px-1 py-0.5 rounded">mode=&quot;disable&quot;</code>.
               </p>
             </div>
 

@@ -32,7 +32,7 @@ export interface ServerPaginationProps {
   /** Helper function that maps a page number to a relative URL string */
   createPageHref?: (page: number) => string;
   /** Custom routing link component (Next.js Link, TanStack Router Link, etc.) */
-  LinkComponent?: React.ComponentType<any>;
+  LinkComponent?: React.ComponentType<{ href: string; onClick?: React.MouseEventHandler<HTMLAnchorElement>; children?: React.ReactNode; [key: string]: unknown }>;
 }
 
 export function ServerPagination({

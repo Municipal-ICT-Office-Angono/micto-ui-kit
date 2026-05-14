@@ -150,6 +150,7 @@ function ConfirmDialog({
       } catch (error) {
         setIsLoading(false);
         updateLoading(request.id, false);
+        console.error(error);
         return;
       }
     }
@@ -264,7 +265,7 @@ function ConfirmDialog({
           <Button
             variant={request.icon === "danger" ? "destructive" : "default"}
             size={request.size === "sm" ? "sm" : "default"}
-            onClick={handleConfirm}
+            onClick={() => { void handleConfirm(); }}
             disabled={isLoading}
             className="rounded-lg font-semibold min-w-[80px]"
           >

@@ -117,18 +117,6 @@ export default function TableToolbarDemo() {
           onClearSelection={() => setSelectedIds([])}
           variant={viewVariant}
           
-          /* Left Filters (Active when selectedCount === 0) */
-          children={
-            <div className="flex items-center gap-2 w-full max-w-xs relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <Input
-                placeholder="Search registry..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 pl-8 text-xs rounded-lg focus-visible:ring-1"
-              />
-            </div>
-          }
           
           /* Standard Right Actions (Active when selectedCount === 0) */
           actions={
@@ -153,7 +141,17 @@ export default function TableToolbarDemo() {
               </ToolbarAction>
             </>
           }
-        />
+        >
+          <div className="flex items-center gap-2 w-full max-w-xs relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Search registry..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-8 pl-8 text-xs rounded-lg focus-visible:ring-1"
+              />
+            </div>
+          </TableToolbar>
 
         {/* WORKSPACE DATA ROW TABLE */}
         <div className="rounded-xl border overflow-hidden mt-4 bg-background">

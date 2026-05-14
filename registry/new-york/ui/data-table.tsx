@@ -83,6 +83,7 @@ export interface DataTableToolbarProps<TData> {
 export interface DataTableProps<TData> {
   // Core
   data: TData[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<TData, any>[];
 
   // Identity (localStorage key)
@@ -143,6 +144,7 @@ export interface DataTableProps<TData> {
 
 export interface UseDataTableOptions<TData> {
   data: TData[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<TData, any>[];
   tableId?: string;
   pageSize?: number;
@@ -231,9 +233,10 @@ export function useDataTable<TData>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const rows = table.getSelectedRowModel().rows;
   const selectedRows = React.useMemo(
-    () => table.getSelectedRowModel().rows.map((r) => r.original),
-    [rowSelection, table]
+    () => rows.map((r) => r.original),
+    [rows]
   );
 
   return { table, sorting, globalFilter, setGlobalFilter, pagination, rowSelection, selectedRows, columnVisibility };
@@ -437,9 +440,10 @@ export function DataTable<TData>({
   }, [selectedRows, onRowSelectionChange]);
 
   // Notify parent of sort changes
+  const currentSorting = table.getState().sorting;
   React.useEffect(() => {
-    if (onSortingChange) onSortingChange(table.getState().sorting);
-  }, [table.getState().sorting, onSortingChange]);
+    if (onSortingChange) onSortingChange(currentSorting);
+  }, [currentSorting, onSortingChange]);
 
   // Debounced search
   const searchTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);

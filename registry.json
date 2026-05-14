@@ -206,6 +206,31 @@
         "react",
         "component"
       ]
+    },
+    {
+      "name": "document-viewer",
+      "type": "registry:component",
+      "title": "Document Viewer",
+      "description": "A feature-rich, responsive, and composable document viewing component system designed for Municipal LGU Document Management Systems, Ordinance Archives, and Purchase Request tracking.",
+      "registryDependencies": [
+        "button",
+        "tooltip",
+        "badge",
+        "tabs",
+        "sheet",
+        "dialog"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/ui/document-viewer.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "viewer"
+      ]
     }
   ]
 }
