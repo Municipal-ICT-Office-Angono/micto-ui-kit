@@ -50,13 +50,13 @@ export default function ConfirmDemo() {
 
   return (
     <div className="flex flex-wrap gap-4 justify-center">
-      <Button onClick={triggerSimple} variant="outline" className="h-11 px-6 shadow-sm">
+      <Button onClick={triggerSimple} variant="outline" className="h-11 px-6">
         Simple Alert
       </Button>
-      <Button onClick={triggerStack} variant="secondary" className="h-11 px-6 shadow-sm">
+      <Button onClick={triggerStack} variant="secondary" className="h-11 px-6">
         Trigger Stack (3)
       </Button>
-      <Button onClick={triggerAsync} className="h-11 px-6 shadow-md shadow-primary/20">
+      <Button onClick={triggerAsync} className="h-11 px-6">
         Async Lifecycle
       </Button>
     </div>

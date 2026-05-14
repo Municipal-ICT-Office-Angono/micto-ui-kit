@@ -21,38 +21,48 @@ const data = {
       title: "Getting Started",
       url: "#",
       items: [
-        {
-          title: "Introduction",
-          url: "/docs/introduction",
-        },
-        {
-          title: "Installation",
-          url: "/docs/installation",
-        },
+        { title: "Introduction", url: "/docs/introduction" },
+        { title: "Installation", url: "/docs/installation" },
       ],
     },
     {
-      title: "React",
+      title: "Data Display",
       url: "#",
       items: [
-        {
-          title: "Button",
-          url: "/docs/components/button",
-        },
-        {
-          title: "Pagination",
-          url: "/docs/components/pagination",
-        },
+        { title: "Data Table", url: "/docs/components/data-table" },
+        { title: "Table Toolbar", url: "/docs/components/table-toolbar" },
+        { title: "Activity Timeline", url: "/docs/components/activity-timeline" },
       ],
     },
     {
-      title: "React Inertia",
+      title: "Forms & Selection",
       url: "#",
       items: [
-        {
-          title: "Inertia Pagination",
-          url: "/docs/components/inertia-pagination",
-        },
+        { title: "File Uploader", url: "/docs/components/file-uploader" },
+        { title: "Search Select", url: "/docs/components/search-select" },
+      ],
+    },
+    {
+      title: "Overlays & Feedback",
+      url: "#",
+      items: [
+        { title: "Confirm Dialog", url: "/docs/components/confirm-dialog" },
+        { title: "Document Viewer", url: "/docs/components/document-viewer" },
+      ],
+    },
+    {
+      title: "Security",
+      url: "#",
+      items: [
+        { title: "Permission Guard", url: "/docs/components/permission-guard" },
+      ],
+    },
+    {
+      title: "Pagination",
+      url: "#",
+      items: [
+        { title: "Server Pagination", url: "/docs/components/server-pagination" },
+        { title: "Inertia Pagination", url: "/docs/components/inertia-pagination" },
       ],
     },
   ],

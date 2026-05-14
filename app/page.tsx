@@ -4,170 +4,181 @@ import {
   MoveRight,
   Search,
   CheckCircle2,
-  Layout,
-  Database,
+  Sliders,
+  CheckSquare,
+  ShieldCheck,
+  UploadCloud,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteFooter } from "@/components/site-footer";
 
 export default function Home() {
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] flex flex-col overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute inset-0 -z-10 mesh-gradient opacity-40" />
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+    <div className="relative min-h-[calc(100vh-4rem)] flex flex-col overflow-hidden bg-background font-sans">
+      {/* Crisp Dotted Pattern Background */}
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-border/50" />
 
-      <div className="container relative mx-auto px-6 py-20 lg:py-32">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Left Column: Content */}
-          <div className="flex flex-col items-center text-center lg:items-start lg:text-left gap-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+      <div className="container relative mx-auto px-6 py-16 lg:py-28 flex-1 flex flex-col justify-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          {/* Left Column: Content (7 cols) */}
+          <div className="lg:col-span-7 flex flex-col items-center text-center lg:items-start lg:text-left gap-8 animate-in fade-in slide-in-from-left-8 duration-700">
             <div className="flex flex-col gap-4">
-              <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]">
-                Build Digital Giants in the 
-                <span className="text-primary text-balance"> Art Capital.</span>
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.08] text-foreground">
+                Build Digital Giants in the {" "}
+                <span className="text-primary mt-1.5">Art Capital.</span>
               </h1>
-              <p className="max-w-[540px] text-lg lg:text-xl text-muted-foreground leading-relaxed">
-               Empowering MICTO developers with a design system that stands tall. 
-               We fuse Angono’s creative heritage with high-performance React and Inertia.js
-              components to build robust, scalable municipal applications.
+              <p className="max-w-[560px] text-base sm:text-lg text-muted-foreground leading-relaxed">
+                Empowering MICTO developers with a modern, technology-driven design system. 
+                We fuse Angono’s creative heritage with high-performance React and Laravel Inertia.js components to craft innovative municipal web applications.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 mt-2">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mt-2">
               <Button
                 asChild
                 size="lg"
-                className="hover:shadow-primary/30 transition-all px-8"
+                className="transition-all px-7 h-12 text-sm font-semibold shadow-md"
               >
                 <Link href="/docs/introduction">
                   Get Started
-                  <MoveRight className="ml-2 h-4 w-4" />
+                  <MoveRight className="ml-2 size-4" />
                 </Link>
               </Button>
               <Button
                 asChild
                 variant="outline"
                 size="lg"
-                className="px-8 backdrop-blur-sm"
+                className="px-7 h-12 text-sm font-semibold border-border hover:bg-muted/40"
               >
-                <Link href="/docs/components/confirm-dialog">
-                  Explore Components
+                <Link href="/docs/components/data-table">
+                  Browse Components
                 </Link>
               </Button>
             </div>
 
-            <div className="flex items-center gap-6 mt-4 text-sm text-muted-foreground/60">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 mt-4 pt-4 border-t border-border/60 text-xs text-muted-foreground/80 font-medium">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-primary/60" />
-                <span>React, InertiaJS compatible</span>
+                <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
+                <span>TanStack Table v8</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
+                <span>Inertia.js Native</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
+                <span>Accessible RBAC</span>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Visual Playground */}
-          <div className="relative h-[400px] lg:h-[500px] w-full flex items-center justify-center animate-in fade-in zoom-in duration-1000 delay-200 mt-12 lg:mt-0 scale-75 sm:scale-100 transition-transform">
-            {/* Background Glow */}
-            <div className="absolute inset-0 bg-primary/10 blur-[120px] rounded-full scale-150 rotate-12" />
-
-            {/* Component Cards */}
-            <div className="relative w-full h-full flex items-center justify-center">
-              {/* Floating Card 1: Confirm snippet */}
-              <div className="absolute top-0 left-0 p-6 glass bg-card/40 rounded-2xl w-64 rotate-[-6deg] shadow-2xl animate-float z-1 translate-x-4 translate-y-4">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="size-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                      <Layout className="size-4 text-primary" />
-                    </div>
-                    <span className="font-semibold text-sm">Delete Page?</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-normal">
-                    This action is permanent and will remove all associated
-                    data.
-                  </p>
-                  <div className="flex justify-end gap-2 mt-2">
-                    <div className="h-7 w-16 rounded bg-muted/50" />
-                    <div className="h-7 w-16 rounded bg-primary shadow-sm shadow-primary/20" />
-                  </div>
+          {/* Right Column: Visual Playground Mockup (5 cols) */}
+          <div className="lg:col-span-5 relative w-full flex items-center justify-center animate-in fade-in zoom-in duration-700 delay-150">
+            <div className="w-full max-w-lg rounded-2xl border bg-card text-card-foreground shadow-2xl overflow-hidden flex flex-col">
+              {/* Mockup Header Bar */}
+              <div className="px-4 py-3 border-b bg-muted/40 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="size-3 rounded-full bg-red-500/80" />
+                  <div className="size-3 rounded-full bg-amber-500/80" />
+                  <div className="size-3 rounded-full bg-emerald-500/80" />
                 </div>
+                <div className="text-[11px] font-mono text-muted-foreground bg-background px-3 py-0.5 rounded-md border shadow-2xs">
+                  micto-ui-kit.misangono.net
+                </div>
+                <div className="size-4" />
               </div>
 
-              {/* Floating Card 2: Main UI showcase */}
-              <div className="p-1 items-stretch glass rounded-3xl w-80 shadow-2xl z-10 scale-105 border-primary/20">
-                <div className="bg-background rounded-[22px] p-6 flex flex-col gap-6">
-                  <div className="flex items-center justify-between">
+              {/* Mockup Body Content */}
+              <div className="p-6 space-y-6">
+                {/* Search & Actions Bar */}
+                <div className="flex items-center gap-3 justify-between">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+                    <div className="h-9 w-full rounded-lg border bg-muted/20 pl-9 pr-3 text-xs flex items-center text-muted-foreground/70">
+                      Search municipal records...
+                    </div>
+                  </div>
+                  <div className="h-9 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-medium flex items-center gap-1.5 shadow-sm">
+                    <Sliders className="size-3.5" />
+                    <span>Filter</span>
+                  </div>
+                </div>
+
+                {/* Data Table Mock */}
+                <div className="rounded-xl border overflow-hidden">
+                  <div className="bg-muted/50 px-4 py-2 flex items-center justify-between border-b text-[11px] font-semibold text-muted-foreground uppercase tracking-wider font-mono">
                     <div className="flex items-center gap-3">
-                      <div className="size-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-                        <Database className="size-5 text-primary-foreground" />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-sm">Real-time Data</h4>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
-                          Inertia Native
-                        </p>
-                      </div>
+                      <CheckSquare className="size-3.5 text-primary" />
+                      <span>Employee Name</span>
                     </div>
+                    <span>Status</span>
                   </div>
 
-                  <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40">
-                      <Search className="size-4" />
-                    </div>
-                    <div className="w-full h-10 rounded-lg border bg-muted/10 pl-10" />
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="flex items-center gap-3 p-2 rounded-lg border border-transparent hover:border-border hover:bg-muted/5 transition-all group"
-                      >
-                        <div className="size-8 rounded-md bg-muted group-hover:scale-105 transition-transform" />
-                        <div className="flex-1 space-y-1.5">
-                          <div className="h-2 w-1/2 rounded bg-muted" />
-                          <div className="h-2 w-1/3 rounded bg-muted/80" />
-                        </div>
+                  <div className="divide-y divide-border/60 text-xs">
+                    <div className="px-4 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors">
+                      <div className="flex items-center gap-3 font-medium">
+                        <div className="size-3.5 rounded border border-muted-foreground/40" />
+                        <span>Nehry Dedoro</span>
                       </div>
-                    ))}
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        Active
+                      </span>
+                    </div>
+
+                    <div className="px-4 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors">
+                      <div className="flex items-center gap-3 font-medium">
+                        <div className="size-3.5 rounded border border-muted-foreground/40" />
+                        <span>Erwin Robles</span>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        Active
+                      </span>
+                    </div>
+
+                    <div className="px-4 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors">
+                      <div className="flex items-center gap-3 font-medium text-muted-foreground">
+                        <div className="size-3.5 rounded border border-muted-foreground/40" />
+                        <span>Ian Aguinaldo</span>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-500/10 text-zinc-500 border border-zinc-500/20">
+                        Archived
+                      </span>
+                    </div>
+                     <div className="px-4 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors">
+                      <div className="flex items-center gap-3 font-medium text-muted-foreground">
+                        <div className="size-3.5 rounded border border-muted-foreground/40" />
+                        <span>Keith Cruz</span>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-500/10 text-zinc-500 border border-zinc-500/20">
+                        Archived
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Floating Card 3: Status snippet */}
-              <div className="absolute bottom-4 right-0 p-5 bg-card rounded-2xl w-56 rotate-[8deg] shadow-2xl translate-y-4 z-20 -translate-x-4">
-                <div className="flex items-center gap-4">
-                  <div className="relative size-12">
-                    <svg className="size-full" viewBox="0 0 100 100">
-                      <circle
-                        className="text-muted/20 stroke-current"
-                        strokeWidth="10"
-                        fill="transparent"
-                        r="40"
-                        cx="50"
-                        cy="50"
-                      />
-                      <circle
-                        className="text-primary stroke-current"
-                        strokeWidth="10"
-                        strokeDasharray="251.2"
-                        strokeDashoffset="60"
-                        strokeLinecap="round"
-                        fill="transparent"
-                        r="40"
-                        cx="50"
-                        cy="50"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold">
-                      75%
+                {/* Overlays Widget Panel */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="rounded-xl border p-4 bg-muted/10 space-y-2 flex flex-col justify-between">
+                    <div className="flex items-center justify-between text-muted-foreground">
+                      <UploadCloud className="size-4 text-sky-600 dark:text-sky-400" />
+                      <span className="text-[10px] font-mono">100%</span>
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-semibold">File Uploader</p>
+                      <p className="text-[10px] text-muted-foreground">Strict MIME checking</p>
                     </div>
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-bold leading-tight">
-                      Optimization
-                    </span>
-                    <span className="text-[10px] text-muted-foreground">
-                      System Healthy
-                    </span>
+
+                  <div className="rounded-xl border p-4 bg-muted/10 space-y-2 flex flex-col justify-between">
+                    <div className="flex items-center justify-between text-muted-foreground">
+                      <ShieldCheck className="size-4 text-emerald-600 dark:text-emerald-400" />
+                      <span className="text-[10px] font-mono">RBAC</span>
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-semibold">Permission Guard</p>
+                      <p className="text-[10px] text-muted-foreground">Role ownership</p>
+                    </div>
                   </div>
                 </div>
               </div>

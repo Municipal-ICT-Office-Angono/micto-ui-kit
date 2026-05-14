@@ -41,8 +41,8 @@ export function ComponentPreview({
       </div>
 
       <TabsContent value="preview" className="mt-0 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-        <div className="relative rounded-xl border bg-slate-50/50 dark:bg-slate-900/50 min-h-[350px] flex items-center justify-center p-10 overflow-hidden shadow-sm">
-          <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20" />
+        <div className="relative rounded-xl border bg-background min-h-[350px] flex items-center justify-center p-10 overflow-hidden shadow-sm">
+          <div className="absolute inset-0 bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-40" />
           <div className="relative w-full flex justify-center animate-in fade-in zoom-in-95 duration-500">
             {children}
           </div>
