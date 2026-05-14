@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import {
-  UploadCloud,
   FileText,
   FileSpreadsheet,
   FileArchive,
@@ -10,11 +9,8 @@ import {
   X,
   AlertCircle,
   CheckCircle2,
-  Loader2,
   Camera,
-  RefreshCw,
   Upload,
-  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -208,10 +204,13 @@ export function FileUploader({
         const mergedFiles = [...value, ...validIncoming].slice(0, actualMaxFiles);
         onChange?.(mergedFiles);
       } else {
-        onChange?.([validIncoming[0]]);
+        const firstIncoming = validIncoming[0];
+        if (firstIncoming) {
+          onChange?.([firstIncoming]);
+        }
         // In single file mode, if a new image is selected, clear existing database URL
-        if (localInitialUrls.length > 0) {
-          const removedUrl = localInitialUrls[0];
+        const removedUrl = localInitialUrls[0];
+        if (removedUrl) {
           setLocalInitialUrls([]);
           onRemoveInitial?.(removedUrl);
         }
@@ -226,15 +225,18 @@ export function FileUploader({
     // Reset single selection if multi is off
     if (!actualMultiple) {
       Object.keys(previewUrlsRef.current).forEach((key) => {
-        URL.revokeObjectURL(previewUrlsRef.current[key]);
-        delete previewUrlsRef.current[key];
+        const url = previewUrlsRef.current[key];
+        if (url) {
+          URL.revokeObjectURL(url);
+          delete previewUrlsRef.current[key];
+        }
       });
       // Clear status lists
       Object.keys(newStatuses).forEach((key) => delete newStatuses[key]);
 
       // Clear existing server URL in single/avatar mode
-      if (localInitialUrls.length > 0) {
-        const removedUrl = localInitialUrls[0];
+      const removedUrl = localInitialUrls[0];
+      if (removedUrl) {
         setLocalInitialUrls([]);
         onRemoveInitial?.(removedUrl);
       }
@@ -325,13 +327,14 @@ export function FileUploader({
     e.target.value = "";
   };
 
-  const removeFile = (key: string, file: File, e: React.MouseEvent) => {
+  const removeFile = (key: string, e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
 
     // Clean up preview blob URL
-    if (previewUrlsRef.current[key]) {
-      URL.revokeObjectURL(previewUrlsRef.current[key]);
+    const previewUrl = previewUrlsRef.current[key];
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
       delete previewUrlsRef.current[key];
     }
 
@@ -353,8 +356,9 @@ export function FileUploader({
     // 1. Clear any raw upload queue items
     const firstKey = Object.keys(localQueue)[0];
     if (firstKey) {
-      if (previewUrlsRef.current[firstKey]) {
-        URL.revokeObjectURL(previewUrlsRef.current[firstKey]);
+      const previewUrl = previewUrlsRef.current[firstKey];
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
         delete previewUrlsRef.current[firstKey];
       }
       setLocalQueue((prev) => {
@@ -368,8 +372,8 @@ export function FileUploader({
     }
 
     // 2. Clear any existing database image URLs
-    if (localInitialUrls.length > 0) {
-      const removedUrl = localInitialUrls[0];
+    const removedUrl = localInitialUrls[0];
+    if (removedUrl) {
       setLocalInitialUrls([]);
       onRemoveInitial?.(removedUrl);
     }
@@ -704,7 +708,7 @@ export function FileUploader({
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 rounded-md hover:bg-muted hover:text-foreground text-muted-foreground/60 p-0"
-                        onClick={(e) => removeFile(key, item.file, e)}
+                        onClick={(e) => removeFile(key, e)}
                       >
                         <X className="h-4 w-4" />
                       </Button>

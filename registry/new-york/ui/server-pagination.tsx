@@ -11,7 +11,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 export interface ServerPaginationProps {
   /** The current active page number (1-indexed) */
