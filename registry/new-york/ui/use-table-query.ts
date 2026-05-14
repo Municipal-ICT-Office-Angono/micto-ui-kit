@@ -11,6 +11,7 @@ export interface TableQueryParams {
   pageSize: number;
   search: string;
   sorting: SortingState;
+  trashed: boolean;
 }
 
 export interface TableQueryResult<TData> {
@@ -21,7 +22,7 @@ export interface TableQueryResult<TData> {
 }
 
 export interface UseTableQueryOptions<TData> {
-  /** Base query key — page/pageSize/search/sorting are appended automatically. */
+  /** Base query key — page/pageSize/search/sorting/trashed are appended automatically. */
   queryKey: unknown[];
   /** Fetcher function. Receives current table params, must return a paginated result. */
   queryFn: (params: TableQueryParams) => Promise<TableQueryResult<TData>>;
@@ -36,6 +37,8 @@ export interface UseTableQueryOptions<TData> {
   /** Debounce delay for the search input in ms. Default: 300 */
   searchDebounceMs?: number;
   initialSorting?: SortingState;
+  /** Enable "Show Trashed" toggle. Default: false */
+  enableTrashed?: boolean;
   /** Passthrough to useQuery. Default: true */
   enabled?: boolean;
 }
@@ -59,6 +62,10 @@ export interface UseTableQueryReturn<TData> {
   manualSorting: true;
   onSortingChange: (sorting: SortingState) => void;
   tableId?: string;
+  // Trashed
+  enableTrashed: boolean;
+  trashed: boolean;
+  onTrashedChange: (trashed: boolean) => void;
   // Direct access for advanced use
   queryResult: UseQueryResult<TableQueryResult<TData>>;
   refetch: () => void;
@@ -77,6 +84,7 @@ export function useTableQuery<TData>({
   pageSizeOptions,
   searchDebounceMs = 300,
   initialSorting = [],
+  enableTrashed = false,
   enabled = true,
 }: UseTableQueryOptions<TData>): UseTableQueryReturn<TData> {
   const [page, setPage] = React.useState(1);
@@ -84,6 +92,7 @@ export function useTableQuery<TData>({
   const [search, setSearch] = React.useState("");
   const [debouncedSearch, setDebouncedSearch] = React.useState("");
   const [sorting, setSorting] = React.useState<SortingState>(initialSorting);
+  const [trashed, setTrashed] = React.useState(false);
 
   // Debounce search
   React.useEffect(() => {
@@ -99,15 +108,21 @@ export function useTableQuery<TData>({
     setPage(1);
   }, [sorting]);
 
+  // Reset to page 1 when trashed changes
+  React.useEffect(() => {
+    setPage(1);
+  }, [trashed]);
+
   const params: TableQueryParams = {
     page,
     pageSize,
     search: debouncedSearch,
     sorting,
+    trashed,
   };
 
   const queryResult = useQuery({
-    queryKey: [...queryKey, page, pageSize, debouncedSearch, sorting],
+    queryKey: [...queryKey, page, pageSize, debouncedSearch, sorting, trashed],
     queryFn: () => queryFn(params),
     enabled,
     placeholderData: keepPreviousData, // keeps stale data visible while fetching next page
@@ -121,6 +136,10 @@ export function useTableQuery<TData>({
   const handleSearchChange = (value: string) => {
     setSearch(value);
     // actual debounced reset happens in the useEffect above
+  };
+
+  const handleTrashedChange = (value: boolean) => {
+    setTrashed(value);
   };
 
   return {
@@ -141,6 +160,10 @@ export function useTableQuery<TData>({
     manualSorting: true,
     onSortingChange: setSorting,
     tableId,
+    // Trashed
+    enableTrashed,
+    trashed,
+    onTrashedChange: handleTrashedChange,
     // Advanced access
     queryResult,
     refetch: () => { void queryResult.refetch(); },

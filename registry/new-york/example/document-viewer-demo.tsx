@@ -61,8 +61,8 @@ export default function DocumentViewerDemo() {
         </div>
 
         <DocumentViewer
-          url="https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf"
-          title="Resolution No. 2026-042: Digital Governance Act"
+          url="/assets/files/ra-12254.pdf"
+          title="Republic Act No. 12254"
           onDownload={handleDownload}
           onPrint={handlePrint}
         >
@@ -90,11 +90,11 @@ export default function DocumentViewerDemo() {
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between py-1 border-b border-border/40">
                     <span className="text-muted-foreground">Tracking ID:</span>
-                    <span className="font-mono font-medium">ORD-2026-042</span>
+                    <span className="font-mono font-medium">RA-12254</span>
                   </div>
                   <div className="flex justify-between py-1 border-b border-border/40">
                     <span className="text-muted-foreground">Classification:</span>
-                    <Badge variant="outline" className="text-[10px] bg-blue-50 text-blue-600 border-blue-200">Municipal Ordinance</Badge>
+                    <Badge variant="outline" className="text-[10px] bg-blue-50 text-blue-600 border-blue-200">Republic Act</Badge>
                   </div>
                   <div className="flex justify-between py-1 border-b border-border/40">
                     <span className="text-muted-foreground">Pages:</span>

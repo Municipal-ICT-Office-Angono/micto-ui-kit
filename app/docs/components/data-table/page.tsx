@@ -117,28 +117,81 @@ const serverUsageCode = `// Server-side pagination — you own the page state
   onSearchChange={setSearch}   // debounced 300ms, fires your API
 />`;
 
-const queryHookCode = `import { useTableQuery } from "@/components/ui/use-table-query"
+const queryHookCode = `import * as React from "react"
+import {
+  DataTable,
+  createColumnHelper,
+  selectionColumn,
+  indexColumn,
+  rowActionsColumn,
+} from "@/components/ui/data-table"
+import { useTableQuery } from "@/components/ui/use-table-query"
+import { Button } from "@/components/ui/button"
+import { Plus, Eye, Pencil, Trash2 } from "lucide-react"
 
-function EmployeesPage() {
+// 1. Define your data shape
+type Employee = {
+  id: string;
+  name: string;
+  department: string;
+  status: "active" | "inactive";
+}
+
+// 2. Define columns once
+const col = createColumnHelper<Employee>()
+const columns = [
+  selectionColumn<Employee>(),
+  indexColumn<Employee>(),
+  col.accessor("name", { header: "Full Name" }),
+  col.accessor("department", { header: "Department" }),
+  rowActionsColumn<Employee>({
+    actions: (row) => [
+      { label: "View Profile", icon: Eye,    onClick: (r) => console.log("View", r) },
+      { label: "Edit",         icon: Pencil, onClick: (r) => console.log("Edit", r) },
+      { label: "Delete",       icon: Trash2, variant: "destructive", onClick: (r) => console.log("Delete", r) },
+    ],
+  }),
+]
+
+// 3. Mock API fetcher simulating server response
+async function fetchEmployees(params: {
+  page: number;
+  pageSize: number;
+  search: string;
+  trashed: boolean;
+}) {
+  const res = await fetch(
+    \`/api/employees?page=\${params.page}&limit=\${params.pageSize}&search=\${params.search}&trashed=\${params.trashed ? 1 : 0}\`
+  )
+  return res.json() // Expected: { data: Employee[], totalPages: number, totalCount: number, currentPage: number }
+}
+
+// 4. Put it all together in your Page component
+export default function EmployeesPage() {
   const table = useTableQuery({
     queryKey: ["employees"],
-    queryFn: ({ page, pageSize, search, sorting }) =>
-      api.employees.list({ page, pageSize, search, sorting }),
-    columns,
-    tableId: "employees-table",
-    initialPageSize: 25,
+    queryFn: fetchEmployees,
+    columns, // Pass columns into the hook so they are returned for prop spreading
+    tableId: "employees-server-table",
+    initialPageSize: 10,
     pageSizeOptions: [10, 25, 50],
-    searchDebounceMs: 400,
+    searchDebounceMs: 300,
+    enableTrashed: true, // Enables the "Show Trashed" toggle
   })
 
   return (
     <DataTable
-      {...table}                     // spreads ALL pagination/sorting/search props
+      {...table} // Spreads data, columns, isLoading, pagination, search, sorting, and trashed props!
       enableRowSelection
       enableColumnVisibility
-      onRowClick={(row) => router.push(\`/employees/\${row.id}\`)}
+      onRowClick={(row) => console.log("Row clicked:", row)}
       toolbarProps={{
-        actions: <Button>Add Employee</Button>,
+        actions: (
+          <Button size="sm" className="h-8 text-xs">
+            <Plus className="size-3.5 mr-1.5" />
+            Add Employee
+          </Button>
+        ),
       }}
     />
   )
@@ -180,6 +233,28 @@ const columns = [
     ],
   }),
 ]`;
+
+const trashedUsageCode = `// Trashed / Archived Records Toggle Usage
+// Seamlessly switch between active and soft-deleted records.
+
+function TrashedExample() {
+  const [isTrashed, setIsTrashed] = React.useState(false)
+
+  // In client mode, swap data. In server mode, pass trashed to your API.
+  const currentData = isTrashed ? trashedEmployees : activeEmployees
+
+  return (
+    <DataTable
+      data={currentData}
+      columns={columns}
+      enableTrashed
+      trashed={isTrashed}
+      onTrashedChange={setIsTrashed}
+      trashedLabel="Show Trashed"
+      trashedActiveLabel="Viewing Trashed"
+    />
+  )
+}`;
 
 // ─── Props Tables ─────────────────────────────────────────────────────────────
 
@@ -228,6 +303,14 @@ const interactionProps = [
   { name: "onCellClick", type: "(value, columnId, row, event) => void", default: "undefined", description: "Called when a specific cell is clicked. Useful for clipboard copy or inline drill-down." },
 ];
 
+const trashedProps = [
+  { name: "enableTrashed", type: "boolean", default: "false", description: "Adds a 'Show Trashed' toggle button to the toolbar for viewing archived/soft-deleted records." },
+  { name: "trashed", type: "boolean", default: "undefined", description: "Controlled trashed state. When omitted, internal state is managed automatically." },
+  { name: "onTrashedChange", type: "(trashed: boolean) => void", default: "undefined", description: "Called when the user toggles the trashed filter. Server mode re-fetches data." },
+  { name: "trashedLabel", type: "string", default: "'Show Trashed'", description: "Label for the inactive toggle button." },
+  { name: "trashedActiveLabel", type: "string", default: "'Viewing Trashed'", description: "Label for the active tinted badge toggle." },
+];
+
 const presentationProps = [
   { name: "density", type: "'compact' | 'default' | 'comfortable'", default: "'default'", description: "Controls row height and font size. compact=xs padding, comfortable=relaxed padding." },
   { name: "stickyHeader", type: "boolean", default: "false", description: "Makes the table header sticky on scroll. Best for long tables inside a bounded container." },
@@ -272,6 +355,7 @@ export default async function DataTablePage() {
   const flatUsageHtml = await highlightCode(flatUsageCode, "tsx");
   const serverUsageHtml = await highlightCode(serverUsageCode, "tsx");
   const queryHookHtml = await highlightCode(queryHookCode, "tsx");
+  const trashedUsageHtml = await highlightCode(trashedUsageCode, "tsx");
   const columnFactoriesHtml = await highlightCode(columnFactoriesCode, "tsx");
 
   const headerBadges = (
@@ -292,7 +376,7 @@ export default async function DataTablePage() {
     <div className="mx-auto max-w-4xl space-y-12 pb-20 mt-8">
       <DocsHeader
         title="Data Table"
-        description="A fully-featured, generic data table built on TanStack Table v8. Supports server/client pagination, sorting, global search, column visibility with localStorage persistence, row selection, bulk actions, and skeleton loading — all opt-in."
+        description="A fully-featured, generic data table built on TanStack Table v8. Supports server/client pagination, sorting, global search, column visibility with localStorage persistence, row selection, bulk actions, trashed/archived record filter toggle, and skeleton loading — all opt-in."
         badges={headerBadges}
       />
       <div className="space-y-16">
@@ -373,6 +457,17 @@ export default async function DataTablePage() {
           </div>
         </section>
 
+        {/* Trashed Usage */}
+        <section className="space-y-6">
+          <DocsSectionHeading
+            title="Trashed / Archived Toggle"
+            description="Toggle soft-deleted records in and out of the active view. Shows an indicator pill in the toolbar and a dismissible warning banner when viewing archived data."
+          />
+          <div className="overflow-hidden rounded-xl border">
+            <CodeBlock code={trashedUsageCode} html={trashedUsageHtml} language="tsx" />
+          </div>
+        </section>
+
         {/* Column Factories */}
         <section className="space-y-6">
           <DocsSectionHeading
@@ -412,6 +507,12 @@ export default async function DataTablePage() {
         <section className="space-y-6">
           <DocsSectionHeading title="Interaction Props" description="Sorting, column visibility, row selection, and click handlers." />
           <PropsTable data={interactionProps} />
+        </section>
+
+        {/* Props: Trashed Filter */}
+        <section className="space-y-6">
+          <DocsSectionHeading title="Trashed Filter Props" description="Optional toggle for soft-deleted / archived records." />
+          <PropsTable data={trashedProps} />
         </section>
 
         {/* Props: Presentation */}

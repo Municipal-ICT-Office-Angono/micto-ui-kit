@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
-import { ZoomIn, ZoomOut, RotateCw, Download, Printer, Maximize2, Minimize2, FileText, PanelRight, PanelLeft } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { ZoomIn, ZoomOut, RotateCw, Download, Printer, Maximize2, Minimize2, FileText, PanelRight, PanelLeft, X } from "lucide-react";
 
 // ─── Types & Context ──────────────────────────────────────────────────────────
 
@@ -25,6 +25,7 @@ interface DocumentViewerContextValue {
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   sidebarPosition: "left" | "right";
   fileType: DocumentType;
+  isDialog?: boolean;
   onDownload?: () => void;
   onPrint?: () => void;
 }
@@ -51,12 +52,13 @@ export interface DocumentViewerProps extends React.HTMLAttributes<HTMLDivElement
   title?: string;
   initialScale?: number;
   sidebarPosition?: "left" | "right";
+  isDialog?: boolean;
   onDownload?: () => void;
   onPrint?: () => void;
 }
 
 export const DocumentViewer = React.forwardRef<HTMLDivElement, DocumentViewerProps>(
-  ({ className, url, title, initialScale = 1, sidebarPosition = "right", onDownload, onPrint, children, ...props }, ref) => {
+  ({ className, url, title, initialScale = 1, sidebarPosition = "right", isDialog = false, onDownload, onPrint, children, ...props }, ref) => {
     const [scale, setScale] = React.useState(initialScale);
     const [rotation, setRotation] = React.useState(0);
     const [isFullscreen, setIsFullscreen] = React.useState(false);
@@ -84,6 +86,7 @@ export const DocumentViewer = React.forwardRef<HTMLDivElement, DocumentViewerPro
           setSidebarOpen,
           sidebarPosition,
           fileType,
+          isDialog,
           onDownload,
           onPrint,
         }}
@@ -116,7 +119,7 @@ export interface DocumentViewerToolbarProps extends React.HTMLAttributes<HTMLDiv
 }
 
 export const DocumentViewerToolbar = React.forwardRef<HTMLDivElement, DocumentViewerToolbarProps>(
-  ({ className, showZoom = true, showRotate = true, showFullscreen = true, showSidebarToggle = true, actions, ...props }, ref) => {
+  ({ className, showZoom = true, showRotate = true, showFullscreen, showSidebarToggle = true, actions, ...props }, ref) => {
     const {
       title,
       scale,
@@ -127,6 +130,7 @@ export const DocumentViewerToolbar = React.forwardRef<HTMLDivElement, DocumentVi
       setSidebarOpen,
       sidebarPosition,
       fileType,
+      isDialog,
       onDownload,
       onPrint,
     } = React.useContext(DocumentViewerContext);
@@ -135,6 +139,8 @@ export const DocumentViewerToolbar = React.forwardRef<HTMLDivElement, DocumentVi
     const handleZoomOut = () => setScale((s) => Math.max(0.5, s - 0.25));
     const handleResetZoom = () => setScale(1);
     const handleRotateCw = () => setRotation((r) => (r + 90) % 360);
+
+    const effectiveShowFullscreen = showFullscreen ?? !isDialog;
 
     return (
       <div
@@ -250,7 +256,7 @@ export const DocumentViewerToolbar = React.forwardRef<HTMLDivElement, DocumentVi
             </TooltipProvider>
           )}
 
-          {showFullscreen && (
+          {effectiveShowFullscreen && (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -264,6 +270,22 @@ export const DocumentViewerToolbar = React.forwardRef<HTMLDivElement, DocumentVi
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">{isFullscreen ? "Exit Fullscreen" : "Fullscreen"}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+
+          {isDialog && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DialogClose asChild>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 px-0 text-muted-foreground hover:text-foreground ml-1">
+                      <X className="size-4" />
+                      <span className="sr-only">Close</span>
+                    </Button>
+                  </DialogClose>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Close Viewer</TooltipContent>
               </Tooltip>
             </TooltipProvider>
           )}
@@ -363,9 +385,9 @@ export function DocumentViewerDialog({ trigger, url, title, children }: Document
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-5xl h-[85vh] p-0 overflow-hidden flex flex-col rounded-xl border-border/60 shadow-xl bg-background">
+      <DialogContent showCloseButton={false} className="max-w-[92vw] sm:max-w-[92vw] !w-[1400px] h-[92vh] p-0 overflow-hidden flex flex-col rounded-xl border-border/60 shadow-xl bg-background">
         <DialogTitle className="sr-only">{title ?? "Document Viewer Modal"}</DialogTitle>
-        <DocumentViewer url={url} title={title} className="border-0 shadow-none h-full rounded-none">
+        <DocumentViewer url={url} title={title} isDialog className="border-0 shadow-none h-full rounded-none">
           {children}
         </DocumentViewer>
       </DialogContent>

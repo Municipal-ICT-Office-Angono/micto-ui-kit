@@ -40,6 +40,12 @@ const MOCK_EMPLOYEES: Employee[] = [
   { id: "12", employeeNo: "EMP-012", name: "Grace Tan",      department: "Finance",     position: "Cashier",           status: "active" },
 ];
 
+const TRASHED_EMPLOYEES: Employee[] = [
+  { id: "t1", employeeNo: "EMP-050", name: "Rico Manalo",    department: "Admin",       position: "Clerk III",         status: "inactive" },
+  { id: "t2", employeeNo: "EMP-051", name: "Dolores Cruz",   department: "Finance",     position: "Bookkeeper",        status: "inactive" },
+  { id: "t3", employeeNo: "EMP-052", name: "Felix Ramos",    department: "Engineering", position: "Foreman",           status: "inactive" },
+];
+
 // ─── Status Badge ─────────────────────────────────────────────────────────────
 
 const STATUS_STYLES: Record<Employee["status"], string> = {
@@ -114,6 +120,9 @@ const FLAT_COLUMNS = [
 export default function DataTableDemo() {
   const [selectedEmployees, setSelectedEmployees] = React.useState<Employee[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isTrashed, setIsTrashed] = React.useState(false);
+
+  const tableData = isTrashed ? TRASHED_EMPLOYEES : MOCK_EMPLOYEES;
 
   const simulateLoad = () => {
     setIsLoading(true);
@@ -128,7 +137,7 @@ export default function DataTableDemo() {
         <div className="space-y-1">
           <h3 className="text-sm font-bold">Full-Featured Table</h3>
           <p className="text-xs text-muted-foreground">
-            Row selection · Sorting · Search · Column visibility · Page size · Bulk actions
+          Row selection · Sorting · Search · Column visibility · Page size · Bulk actions · Trashed toggle
           </p>
         </div>
 
@@ -139,7 +148,7 @@ export default function DataTableDemo() {
         </div>
 
         <DataTable<Employee>
-          data={MOCK_EMPLOYEES}
+          data={tableData}
           columns={columns}
           tableId="demo-employees"
           isLoading={isLoading}
@@ -148,6 +157,9 @@ export default function DataTableDemo() {
           enableRowSelection
           enableColumnVisibility
           enableSorting
+          enableTrashed
+          trashed={isTrashed}
+          onTrashedChange={setIsTrashed}
           pagination="client"
           pageSize={5}
           pageSizeOptions={[5, 10, 25]}

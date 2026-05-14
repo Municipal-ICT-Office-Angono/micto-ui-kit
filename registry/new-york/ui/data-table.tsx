@@ -25,6 +25,8 @@ import {
   Search,
   SlidersHorizontal,
   X,
+  Archive,
+  ArchiveRestore,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -125,6 +127,13 @@ export interface DataTableProps<TData> {
   // Row Selection
   enableRowSelection?: boolean | ((row: Row<TData>) => boolean);
   onRowSelectionChange?: (rows: TData[]) => void;
+
+  // Trashed / Soft-Delete Filter
+  enableTrashed?: boolean;
+  trashed?: boolean;
+  onTrashedChange?: (trashed: boolean) => void;
+  trashedLabel?: string;
+  trashedActiveLabel?: string;
 
   // Interactions
   onRowClick?: (row: TData, event: React.MouseEvent<HTMLTableRowElement>) => void;
@@ -401,6 +410,11 @@ export function DataTable<TData>({
   initialColumnVisibility,
   enableRowSelection = false,
   onRowSelectionChange,
+  enableTrashed = false,
+  trashed: controlledTrashed,
+  onTrashedChange,
+  trashedLabel = "Show Trashed",
+  trashedActiveLabel = "Viewing Trashed",
   onRowClick,
   onCellClick,
   density = "default",
@@ -410,6 +424,15 @@ export function DataTable<TData>({
   tableRef,
 }: DataTableProps<TData>) {
   const isServerPagination = paginationMode === "server";
+
+  // Trashed toggle state (uncontrolled fallback if no controlled prop)
+  const [internalTrashed, setInternalTrashed] = React.useState(false);
+  const isTrashed = controlledTrashed ?? internalTrashed;
+  const handleTrashedToggle = () => {
+    const next = !isTrashed;
+    setInternalTrashed(next);
+    onTrashedChange?.(next);
+  };
 
   const serverPageCount = isServerPagination && totalPages ? totalPages : undefined;
 
@@ -524,6 +547,32 @@ export function DataTable<TData>({
     </DropdownMenu>
   ) : null;
 
+  // Trashed toggle node
+  const trashedToggleNode = enableTrashed ? (
+    <Button
+      variant={isTrashed ? "default" : "outline"}
+      size="sm"
+      className={cn(
+        "h-8 gap-1.5 text-xs transition-all",
+        isTrashed && "bg-destructive/10 text-destructive border-destructive/30 hover:bg-destructive/20 hover:text-destructive"
+      )}
+      onClick={handleTrashedToggle}
+    >
+      {isTrashed ? (
+        <>
+          <ArchiveRestore className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline">{trashedActiveLabel}</span>
+          <X className="h-3 w-3 ml-0.5 opacity-60" />
+        </>
+      ) : (
+        <>
+          <Archive className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline">{trashedLabel}</span>
+        </>
+      )}
+    </Button>
+  ) : null;
+
   // Build toolbar
   const toolbarNode = showToolbar
     ? toolbar ?? (
@@ -533,6 +582,7 @@ export function DataTable<TData>({
           variant={toolbarProps?.toolbarVariant ?? "inline"}
           actions={
             <>
+              {trashedToggleNode}
               {columnToggleNode}
               {toolbarProps?.actions}
             </>
@@ -553,6 +603,21 @@ export function DataTable<TData>({
     <div className={cn("flex flex-col gap-3", className)}>
       {/* Toolbar */}
       {toolbarNode}
+
+      {/* Trashed indicator banner */}
+      {enableTrashed && isTrashed && (
+        <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-destructive/20 bg-destructive/5 text-xs">
+          <Archive className="h-3.5 w-3.5 text-destructive shrink-0" />
+          <span className="text-destructive font-medium">Showing trashed records</span>
+          <span className="text-muted-foreground">—</span>
+          <button
+            onClick={handleTrashedToggle}
+            className="text-primary hover:underline font-medium"
+          >
+            Show Active Records
+          </button>
+        </div>
+      )}
 
       {/* Table */}
       <div className={cn("rounded-md border overflow-hidden bg-background", tableClassName)}>
