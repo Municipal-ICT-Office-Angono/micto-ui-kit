@@ -100,49 +100,49 @@ export function TableToolbar({
     return (
       <div
         className={cn(
-          "relative w-full h-12 overflow-hidden border rounded-md bg-background shadow-xs",
+          "relative w-full min-h-12 h-auto overflow-hidden border rounded-md bg-background shadow-xs",
           className
         )}
       >
         {/* Layer 1: Standard Search and Filters Row */}
         <div
           className={cn(
-            "absolute inset-0 flex items-center justify-between px-4 gap-4 transition-all duration-300 ease-in-out",
+            "relative sm:absolute inset-0 flex flex-col sm:flex-row items-stretch sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-0 gap-2 sm:gap-4 transition-all duration-300 ease-in-out w-full",
             isSelected
-              ? "opacity-0 -translate-y-full pointer-events-none"
-              : "opacity-100 translate-y-0"
+              ? "opacity-0 sm:-translate-y-full pointer-events-none hidden sm:flex"
+              : "opacity-100 sm:translate-y-0 flex"
           )}
         >
-          <div className="flex flex-1 items-center gap-2 overflow-x-auto scrollbar-none py-1">
+          <div className="flex flex-1 items-center gap-2 overflow-x-auto scrollbar-none py-0.5 w-full">
             {children}
           </div>
           {actions && (
-            <div className="flex items-center gap-2 shrink-0">{actions}</div>
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 overflow-x-auto scrollbar-none w-full sm:w-auto pb-0.5 sm:pb-0">{actions}</div>
           )}
         </div>
 
         {/* Layer 2: Bulk Selection Action Trays */}
         <div
           className={cn(
-            "absolute inset-0 flex items-center justify-between px-4 gap-4 bg-muted/50 transition-all duration-300 ease-in-out border-l-2 border-primary",
+            "relative sm:absolute inset-0 flex flex-col sm:flex-row items-start sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-0 gap-2 sm:gap-4 bg-muted/50 transition-all duration-300 ease-in-out border-l-2 border-primary w-full",
             isSelected
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-full pointer-events-none"
+              ? "opacity-100 sm:translate-y-0 flex"
+              : "opacity-0 sm:translate-y-full pointer-events-none hidden sm:flex"
           )}
         >
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {onClearSelection && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7"
+                className="h-7 w-7 shrink-0"
                 onClick={onClearSelection}
                 type="button"
               >
                 <X className="h-4 w-4 text-muted-foreground" />
               </Button>
             )}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 shrink-0">
               <Badge variant="secondary">
                 {selectedCount}
               </Badge>
@@ -150,7 +150,7 @@ export function TableToolbar({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 overflow-x-auto scrollbar-none w-full sm:w-auto py-0.5 min-w-0">
             {bulkActions}
           </div>
         </div>
@@ -164,15 +164,15 @@ export function TableToolbar({
       {/* Standard base row */}
       <div
         className={cn(
-          "flex w-full items-center justify-between gap-4 p-1 bg-background rounded-md",
+          "flex flex-col sm:flex-row w-full items-stretch sm:items-center justify-between gap-2.5 sm:gap-4 p-1 bg-background rounded-md",
           className
         )}
       >
-        <div className="flex flex-1 items-center gap-2 overflow-x-auto scrollbar-none py-1">
+        <div className="flex flex-1 items-center gap-2 overflow-x-auto scrollbar-none py-1 w-full sm:w-auto">
           {children}
         </div>
         {actions && (
-          <div className="flex items-center gap-2 shrink-0">{actions}</div>
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 overflow-x-auto scrollbar-none w-full sm:w-auto pb-0.5 sm:pb-0">{actions}</div>
         )}
       </div>
 

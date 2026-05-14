@@ -62,7 +62,17 @@ export const DocumentViewer = React.forwardRef<HTMLDivElement, DocumentViewerPro
     const [scale, setScale] = React.useState(initialScale);
     const [rotation, setRotation] = React.useState(0);
     const [isFullscreen, setIsFullscreen] = React.useState(false);
-    const [sidebarOpen, setSidebarOpen] = React.useState(true);
+    const [sidebarOpen, setSidebarOpen] = React.useState(!isDialog);
+
+    React.useEffect(() => {
+      if (isFullscreen) {
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+          document.body.style.overflow = originalOverflow;
+        };
+      }
+    }, [isFullscreen]);
 
     const fileType: DocumentType = React.useMemo(() => {
       const lower = url.toLowerCase();
@@ -358,7 +368,7 @@ export const DocumentViewerSidebar = React.forwardRef<HTMLDivElement, DocumentVi
       <div
         ref={ref}
         className={cn(
-          "flex flex-col border-border/60 bg-background/95 backdrop-blur-xs p-6 overflow-y-auto shrink-0 transition-all duration-300 ease-in-out shadow-xs",
+          "flex flex-col border-border/60 bg-background/95 backdrop-blur-xs p-6 overflow-y-auto shrink-0 transition-all duration-300 ease-in-out shadow-xs md:h-full md:max-h-full min-h-0",
           sidebarPosition === "left" ? "border-r order-first" : "border-l order-last",
           width,
           className

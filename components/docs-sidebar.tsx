@@ -38,12 +38,12 @@ export const navData = [
         url: "/docs/components/confirm-dialog",
       },
       {
-        title: "Server Pagination",
-        url: "/docs/components/server-pagination",
+        title: "Data Table",
+        url: "/docs/components/data-table",
       },
       {
-        title: "Search Select",
-        url: "/docs/components/search-select",
+        title: "Document Viewer",
+        url: "/docs/components/document-viewer",
       },
       {
         title: "File Uploader",
@@ -54,16 +54,16 @@ export const navData = [
         url: "/docs/components/permission-guard",
       },
       {
+        title: "Search Select",
+        url: "/docs/components/search-select",
+      },
+      {
+        title: "Server Pagination",
+        url: "/docs/components/server-pagination",
+      },
+      {
         title: "Table Toolbar",
         url: "/docs/components/table-toolbar",
-      },
-      {
-        title: "Data Table",
-        url: "/docs/components/data-table",
-      },
-      {
-        title: "Document Viewer",
-        url: "/docs/components/document-viewer",
       },
     ],
   },

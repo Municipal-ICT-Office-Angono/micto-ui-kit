@@ -40,10 +40,11 @@ export function DocsSearch() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="relative flex h-9 w-full items-center justify-start rounded-md border border-input/50 bg-muted/50 px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/40 md:w-[300px] lg:w-[400px]"
+        className="relative flex h-9 w-9 md:w-[300px] lg:w-[400px] items-center justify-center md:justify-start rounded-md border border-input/50 bg-muted/50 p-0 md:px-3 md:py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/40"
+        aria-label="Search documentation"
       >
-        <Search className="mr-2 size-4 text-muted-foreground/30" />
-        <span className="inline-flex">Search documentation...</span>
+        <Search className="size-4 md:mr-2 text-muted-foreground/80 md:text-muted-foreground/30" />
+        <span className="hidden md:inline-flex">Search documentation...</span>
         <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 md:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
