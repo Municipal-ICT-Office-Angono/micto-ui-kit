@@ -27,9 +27,55 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MICTO UI KIT",
+  metadataBase: new URL("https://micto-ui-kit.misangono.net"),
+  title: {
+    default: "MICTO UI Kit — Municipal ICT Office of Angono",
+    template: "%s | MICTO UI Kit",
+  },
   description:
-    "A collection of UI components and utilities for building modern web applications with shadcn/ui.",
+    "A professional, technology-driven React component library and design system specifically engineered for accessible, scalable municipal government applications. Built for Next.js and Laravel Inertia.js.",
+  keywords: [
+    "MICTO",
+    "Angono",
+    "Municipal ICT Office",
+    "React",
+    "Next.js",
+    "Laravel",
+    "Inertia.js",
+    "TanStack Table",
+    "shadcn/ui",
+    "Design System",
+    "Government Applications",
+  ],
+  authors: [{ name: "Municipal ICT Office of Angono", url: "https://misangono.net" }],
+  creator: "Municipal ICT Office of Angono",
+  openGraph: {
+    type: "website",
+    locale: "en_PH",
+    url: "https://micto-ui-kit.misangono.net",
+    title: "MICTO UI Kit — Build Digital Giants in the Art Capital",
+    description:
+      "A professional, technology-driven React component library and design system specifically engineered for accessible, scalable municipal government applications.",
+    siteName: "MICTO UI Kit",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MICTO UI Kit — Build Digital Giants in the Art Capital",
+    description:
+      "A professional, technology-driven React component library and design system specifically engineered for accessible, scalable municipal government applications.",
+    creator: "@MICTOAngono",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 import { ThemeProvider } from "@/components/theme-provider";

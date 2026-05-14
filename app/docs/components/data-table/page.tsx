@@ -197,6 +197,85 @@ export default function EmployeesPage() {
   )
 }`;
 
+const inertiaUsageCode = `import React from "react"
+import { router } from "@inertiajs/react"
+import {
+  DataTable,
+  createColumnHelper,
+  indexColumn,
+  rowActionsColumn,
+} from "@/components/ui/data-table"
+import { Button } from "@/components/ui/button"
+import { Plus, Eye, Pencil, Trash2 } from "lucide-react"
+
+type Employee = {
+  id: string;
+  name: string;
+  department: string;
+  deleted_at: string | null;
+}
+
+const col = createColumnHelper<Employee>()
+const columns = [
+  indexColumn<Employee>(),
+  col.accessor("name", { header: "Name" }),
+  col.accessor("department", { header: "Department" }),
+  rowActionsColumn<Employee>({
+    actions: (row) => [
+      { label: "View Profile", icon: Eye,    onClick: (r) => router.get(\`/employees/\${r.id}\`) },
+      { label: "Edit",         icon: Pencil, onClick: (r) => router.get(\`/employees/\${r.id}/edit\`) },
+      { label: "Delete",       icon: Trash2, variant: "destructive", onClick: (r) => router.delete(\`/employees/\${r.id}\`) },
+    ],
+  }),
+]
+
+export default function EmployeesIndex({ records, filters }: {
+  records: { data: Employee[]; current_page: number; last_page: number; total: number };
+  filters: { search?: string; sorting?: unknown; trashed?: string; pageSize?: number };
+}) {
+  // Helper to update Inertia URL params while preserving page state/scroll
+  const updateQuery = (newParams: Record<string, unknown>) => {
+    router.get(
+      window.location.pathname,
+      { ...filters, ...newParams },
+      { preserveState: true, preserveScroll: true }
+    )
+  }
+
+  return (
+    <DataTable
+      data={records.data}
+      columns={columns}
+      pagination="server"
+      currentPage={records.current_page}
+      totalPages={records.last_page}
+      totalCount={records.total}
+      pageSize={Number(filters.pageSize ?? 10)}
+      pageSizeOptions={[10, 25, 50]}
+
+      // Filter Handlers -> Triggers Inertia router.get()
+      onPageChange={(page) => updateQuery({ page })}
+      onPageSizeChange={(pageSize) => updateQuery({ pageSize, page: 1 })}
+      onSearchChange={(search) => updateQuery({ search, page: 1 })}
+      onSortingChange={(sorting) => updateQuery({ sorting, page: 1 })}
+
+      // Trashed / Soft Delete Toggle
+      enableTrashed={true}
+      trashed={filters.trashed === "true"}
+      onTrashedChange={(trashed) => updateQuery({ trashed, page: 1 })}
+
+      toolbarProps={{
+        actions: (
+          <Button size="sm" className="h-8 text-xs" onClick={() => router.get("/employees/create")}>
+            <Plus className="size-3.5 mr-1.5" />
+            Add Employee
+          </Button>
+        ),
+      }}
+    />
+  )
+}`
+
 const columnFactoriesCode = `import {
   selectionColumn,   // checkbox with select-all
   indexColumn,       // row number (#)
@@ -354,6 +433,7 @@ export default async function DataTablePage() {
   const basicUsageHtml = await highlightCode(basicUsageCode, "tsx");
   const flatUsageHtml = await highlightCode(flatUsageCode, "tsx");
   const serverUsageHtml = await highlightCode(serverUsageCode, "tsx");
+  const inertiaUsageHtml = await highlightCode(inertiaUsageCode, "tsx");
   const queryHookHtml = await highlightCode(queryHookCode, "tsx");
   const trashedUsageHtml = await highlightCode(trashedUsageCode, "tsx");
   const columnFactoriesHtml = await highlightCode(columnFactoriesCode, "tsx");
@@ -443,6 +523,17 @@ export default async function DataTablePage() {
           />
           <div className="overflow-hidden rounded-xl border">
             <CodeBlock code={serverUsageCode} html={serverUsageHtml} language="tsx" />
+          </div>
+        </section>
+
+        {/* Inertia.js Mode */}
+        <section className="space-y-6">
+          <DocsSectionHeading
+            title="Laravel Inertia.js Mode"
+            description="Seamlessly bind Laravel paginators to DataTable. All search, sort, and trashed filter events update the URL via Inertia router.get() with preserveState."
+          />
+          <div className="overflow-hidden rounded-xl border">
+            <CodeBlock code={inertiaUsageCode} html={inertiaUsageHtml} language="tsx" />
           </div>
         </section>
 
