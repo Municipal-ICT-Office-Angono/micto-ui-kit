@@ -10,7 +10,6 @@ import {
   Archive,
   Download,
   Search,
-  Filter,
   Eye,
   Settings2,
 } from "lucide-react";

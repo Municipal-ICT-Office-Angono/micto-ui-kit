@@ -131,6 +131,58 @@
         "react",
         "component"
       ]
+    },
+    {
+      "name": "data-table",
+      "type": "registry:component",
+      "title": "Data Table",
+      "description": "A fully-featured, generic data table built on TanStack Table v8. Supports server/client pagination, sorting, global search, column visibility with localStorage persistence, row selection, bulk actions, skeleton loading, and optional row/cell click handlers.",
+      "registryDependencies": [
+        "table",
+        "button",
+        "badge",
+        "input",
+        "skeleton",
+        "checkbox",
+        "select",
+        "dropdown-menu",
+        "table-toolbar",
+        "server-pagination"
+      ],
+      "dependencies": [
+        "@tanstack/react-table"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/ui/data-table.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "table"
+      ]
+    },
+    {
+      "name": "use-table-query",
+      "type": "registry:hook",
+      "title": "useTableQuery",
+      "description": "A companion hook that wires @tanstack/react-query to a DataTable instance. Manages page, pageSize, debounced search, and sorting state — returns a spread-ready object for <DataTable />.",
+      "dependencies": [
+        "@tanstack/react-query",
+        "@tanstack/react-table"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/ui/use-table-query.ts",
+          "type": "registry:hook"
+        }
+      ],
+      "categories": [
+        "react",
+        "hook"
+      ]
     }
   ]
 }

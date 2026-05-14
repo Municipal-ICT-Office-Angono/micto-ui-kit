@@ -53,6 +53,10 @@ export const navData = [
         title: "Table Toolbar",
         url: "/docs/components/table-toolbar",
       },
+      {
+        title: "Data Table",
+        url: "/docs/components/data-table",
+      },
     ],
   },
   {

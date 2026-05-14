@@ -32,10 +32,13 @@ export default function FileUploaderDemo() {
     logs.push(`Text Field [first_name]: "${firstName}"`);
     logs.push(`Text Field [last_name]: "${lastName}"`);
     
-    if (avatarFiles.length > 0) {
-      logs.push(`📷 Avatar: [NEW RAW FILE] -> "${avatarFiles[0].name}" (${(avatarFiles[0].size / 1024).toFixed(1)} KB)`);
-    } else if (avatarInitialUrl.length > 0) {
-      logs.push(`📷 Avatar: [KEPT SERVER URL] -> "${avatarInitialUrl[0]}"`);
+    const avatar = avatarFiles[0];
+    const avatarURL = avatarInitialUrl[0];
+
+    if (avatar) {
+      logs.push(`📷 Avatar: [NEW RAW FILE] -> "${avatar.name}" (${(avatar.size / 1024).toFixed(1)} KB)`);
+    } else if (avatarURL) {
+      logs.push(`📷 Avatar: [KEPT SERVER URL] -> "${avatarURL}"`);
     } else {
       logs.push(`📷 Avatar: [DELETED / CLEARED]`);
     }
