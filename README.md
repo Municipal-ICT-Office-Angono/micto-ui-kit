@@ -1,89 +1,108 @@
 # MICTO UI KIT
 
-A professional shadcn-based component library and registry designed for the local development ecosystem of Angono.
+![MICTO UI KIT](https://raw.githubusercontent.com/Municipal-ICT-Office-Angono/micto-ui-kit/main/public/og.png)
 
-## Features
+> A premium, metadata-driven UI component library and registry optimized for Municipal Government applications and LGU digital ecosystems.
 
-- **Registry-First Architecture**: Components are distributed via a remote shadcn registry.
-- **Automated Documentation**: Live code previews and syntax-highlighted examples.
-- **Inertia Integration**: specialized components for Laravel Inertia applications.
-- **Modern Aesthetics**: Premium dark/light mode support and command palette search (⌘K).
+The **MICTO UI KIT** is built on top of [shadcn/ui](https://ui.shadcn.com) and tailored specifically for the unique requirements of local government unit (LGU) software—from complex document routing and audit trails to high-performance data tables for procurement and payroll.
 
-## Quick Start
+---
 
-### Local Development
+## ✨ Features
 
-1. Install dependencies:
+- **📂 Categorized Registry**: Components are organized into `micto`, `inertia`, and `hooks` for clean architectural boundaries.
+- **🏷️ Metadata-Driven**: Component titles, descriptions, and categories are parsed directly from JSDoc tags.
+- **🛠️ Automation Engine**: Scaffolding tools that create UI, demos, and docs in one command.
+- **🚀 Inertia.js Ready**: specialized components designed for seamless integration with Laravel Inertia applications.
+- **📱 Responsive & Accessible**: Built with Radix UI and Tailwind CSS for maximum compatibility.
 
-   ```bash
-   pnpm install
-   ```
+---
 
-2. Run the documentation site:
+## 🏗️ The Three Pillars
 
-   ```bash
-   pnpm dev
-   ```
+Our registry is divided into three specialized categories to serve different architectural needs:
 
-3. Build the registry:
+| Category | Description | Registry Path |
+| :--- | :--- | :--- |
+| **Micto** | Core UI components (Data Tables, Timelines, Viewers). | `.../r/micto/[name].json` |
+| **Inertia** | Laravel Inertia specific bridges (Pagination, Forms). | `.../r/inertia/[name].json` |
+| **Hooks** | High-performance React logic (Table Queries, Auth). | `.../r/hooks/[name].json` |
 
-   ```bash
-   pnpm registry:build
-   ```
+---
+
+## 🚀 Quick Start
+
+### 1. Installation
+
+Install any component directly into your project using the shadcn CLI:
 
 ```bash
-npx shadcn@latest add https://micto-ui-kit.misangono.net/r/inertia-pagination.json
+# Install a UI component
+npx shadcn@latest add https://micto-ui-kit.misangono.net/r/micto/data-table.json
+
+# Install an Inertia component
+npx shadcn@latest add https://micto-ui-kit.misangono.net/r/inertia/inertia-pagination.json
+
+# Install a hook
+npx shadcn@latest add https://micto-ui-kit.misangono.net/r/hooks/use-table-query.json
 ```
 
-## Registry Management
+### 2. Local Development
 
-The project includes an automation engine to keep the component registry in sync with your source code.
+```bash
+# Install dependencies
+pnpm install
 
-### 1. Synchronizing Components
+# Run the documentation site
+pnpm dev
 
-To update `registry.json` based on your actual files and imports, run:
+# Build the registry manifests
+pnpm registry:build
+```
+
+---
+
+## 🛠️ Developer Workflow (Registry-as-Code)
+
+We treat our registry as code. All metadata is managed directly in the source files.
+
+### Synchronizing the Registry
+
+To synchronize `registry.json` with your actual source files and JSDoc metadata:
 
 ```bash
 pnpm registry:fresh
 ```
 
-This command will:
-- **Analyze Imports**: Automatically detect `registryDependencies` and npm `dependencies`.
-- **Sync Metadata**: Pull title, description, and categories from JSDoc.
-- **Rebuild**: Trigger a full shadcn build after updating the manifest.
+This script automatically:
+- **Parses JSDoc**: Extracts `@title`, `@description`, and `@categories`.
+- **Detects Imports**: Maps `registryDependencies` and `dependencies` automatically.
+- **Respects Privacy**: Skips components marked with `@hidden true`.
 
-### 2. Using JSDoc for Metadata
+### Scaffolding New Components
 
-You can define component metadata directly in the source file using JSDoc. The sync engine will prioritize these tags:
-
-```tsx
-/**
- * @title My Component
- * @description A professional LGU component.
- * @category react, document
- */
-export function MyComponent() { ... }
-```
-
-### 3. Scaffolding New Components
-
-To create a new component with all 4 necessary files (registry, link, demo, and docs), run:
+Create a production-ready component with documentation and demos in seconds:
 
 ```bash
 pnpm add:component
 ```
 
-Follow the prompts to provide the name, title, and description. The script will automatically:
-1. Create the **UI Component** with a premium base design.
-2. Create the **Local Link** (re-export).
-3. Create an **Interactive Demo**.
-4. Create the **Documentation Page**.
-5. Run `registry:fresh` to register it.
+The CLI will prompt you for a category (`micto`, `inertia`, or `hooks`) and automatically generate:
+1. **Registry Source** (with `"use client"` where applicable)
+2. **Local Re-export** (for internal doc usage)
+3. **Interactive Demo** (pre-populated with premium boilerplate)
+4. **Documentation Page** (featuring automatic installation tabs)
 
-## Related Links
+---
+
+## 📖 Related Links
 
 - **Documentation**: [https://micto-ui-kit.misangono.net](https://micto-ui-kit.misangono.net)
-- **Repository**: [Municipal-ICT-Office-Angono/micto-ui-kit](https://github.com/Municipal-ICT-Office-Angono/micto-ui-kit)
+- **Organization**: [Municipal ICT Office - Angono](https://github.com/Municipal-ICT-Office-Angono)
+- **Maintainer**: [Nehry Dedoro](https://github.com/nehry)
 
+---
 
-
+<div align="center">
+  Built with ❤️ by the Municipal ICT Office of Angono.
+</div>

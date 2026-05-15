@@ -8,7 +8,9 @@ import prompts from "prompts"
 const REGISTRY_PATH = path.join(process.cwd(), "registry.json")
 const PACKAGE_JSON_PATH = path.join(process.cwd(), "package.json")
 const UI_DIR = path.join(process.cwd(), "registry/new-york/ui")
+const MICTO_DIR = path.join(process.cwd(), "registry/new-york/micto")
 const INERTIA_DIR = path.join(process.cwd(), "registry/new-york/inertia")
+const HOOKS_DIR = path.join(process.cwd(), "registry/new-york/hooks")
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -21,6 +23,7 @@ interface RegistryItem {
   dependencies?: string[]
   files: { path: string; type: string }[]
   categories?: string[]
+  hidden?: boolean
 }
 
 interface Registry {
@@ -45,15 +48,21 @@ function getFilesRecursively(dir: string): string[] {
 }
 
 function parseJSDoc(content: string) {
-  const jsDocMatch = content.match(/\/\*\*([\s\S]*?)\*\//)
-  if (!jsDocMatch || !jsDocMatch[1]) return {}
+  // Find all JSDoc blocks
+  const jsDocBlocks = content.match(/\/\*\*([\s\S]*?)\*\//g) || []
+  
+  // Find the block that specifically contains a @title tag
+  const mainBlock = jsDocBlocks.find(block => block.includes("@title")) || ""
+  
+  const title = mainBlock.match(/@title\s+(.*)/)?.[1]?.trim()
+  const description = mainBlock.match(/@description\s+(.*)/)?.[1]?.trim()
+  const categoriesRaw = mainBlock.match(/@categor(?:y|ies)\s+(.*)/)?.[1]?.trim()
+  const categories = categoriesRaw ? categoriesRaw.split(",").map(c => c.trim()) : undefined
+  
+  // Look for @hidden anywhere in the file's JSDoc blocks
+  const hidden = jsDocBlocks.some(block => block.includes("@hidden"))
 
-  const jsDoc = jsDocMatch[1]
-  const title = jsDoc.match(/@title\s+(.*)/)?.[1]?.trim()
-  const description = jsDoc.match(/@description\s+(.*)/)?.[1]?.trim()
-  const categories = jsDoc.match(/@category\s+(.*)/)?.[1]?.trim()?.split(",").map(c => c.trim())
-
-  return { title, description, categories }
+  return { title, description, categories, hidden }
 }
 
 function extractDependencies(content: string, packageJson: any) {
@@ -98,12 +107,21 @@ async function main() {
   const packageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, "utf8"))
 
   const uiFiles = getFilesRecursively(UI_DIR)
+  const mictoFiles = getFilesRecursively(MICTO_DIR)
   const inertiaFiles = getFilesRecursively(INERTIA_DIR)
-  const allFiles = [...uiFiles, ...inertiaFiles]
+  const hooksFiles = getFilesRecursively(HOOKS_DIR)
+  const allFiles = [...uiFiles, ...mictoFiles, ...inertiaFiles, ...hooksFiles]
 
   const components = allFiles.map(file => {
     const relativePath = path.relative(process.cwd(), file).replace(/\\/g, "/")
-    const name = path.basename(file, path.extname(file))
+    const fileName = path.basename(file, path.extname(file))
+    
+    // Determine the category prefix based on the folder
+    let name = fileName
+    if (file.includes(MICTO_DIR)) name = `micto/${fileName}`
+    if (file.includes(HOOKS_DIR)) name = `hooks/${fileName}`
+    if (file.includes(INERTIA_DIR)) name = `inertia/${fileName}`
+    
     return { name, path: relativePath, fullPath: file }
   })
 
@@ -136,19 +154,23 @@ async function main() {
 
   for (const component of selectedComponents) {
     const content = fs.readFileSync(component.fullPath, "utf8")
+    const fileName = path.basename(component.fullPath, path.extname(component.fullPath))
     const meta = parseJSDoc(content)
     const { registryDependencies, dependencies } = extractDependencies(content, packageJson)
 
     const existingItemIndex = registry.items.findIndex(item => item.name === component.name)
     const existingItem = existingItemIndex !== -1 ? registry.items[existingItemIndex] : null
     
+    const cleanTitle = (str: string) => str.split(/[-/]/).pop()?.split("-").map((s: string) => s.charAt(0).toUpperCase() + s.slice(1)).join(" ") || str;
+    
     const newItem: RegistryItem = {
       name: component.name,
       type: "registry:component",
-      title: meta.title || (existingItem ? existingItem.title : component.name),
+      title: meta.title || cleanTitle(existingItem?.title || fileName),
       description: meta.description || (existingItem ? existingItem.description : ""),
       registryDependencies: registryDependencies.length > 0 ? registryDependencies : undefined,
       dependencies: dependencies.length > 0 ? dependencies : undefined,
+      hidden: meta.hidden || (existingItem ? existingItem.hidden : undefined),
       files: [
         {
           path: component.path,

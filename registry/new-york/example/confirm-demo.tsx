@@ -1,12 +1,12 @@
-"use client"
+﻿"use client"
 
 import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { confirm } from "@/components/ui/confirm"
+import { confirmDialog } from "@/components/micto/confirm-dialog"
 
 export default function ConfirmDemo() {
   const triggerSimple = () => {
-    void confirm({
+    void confirmDialog({
       title: "Account Update",
       body: "Your profile has been saved successfully.",
       icon: "info",
@@ -15,20 +15,20 @@ export default function ConfirmDemo() {
   }
 
   const triggerStack = () => {
-    void confirm({
+    void confirmDialog({
       title: "First Alert",
       body: "This is the first layer of the stack.",
       icon: "info",
     })
     setTimeout(() => {
-      void confirm({
+      void confirmDialog({
         title: "Second Alert",
         body: "Look! I pushed the previous one back.",
         icon: "warning",
       })
     }, 200)
     setTimeout(() => {
-      void confirm({
+      void confirmDialog({
         title: "Danger Zone",
         body: "Now we have a complete stack of confirmations.",
         icon: "danger",
@@ -38,7 +38,7 @@ export default function ConfirmDemo() {
   }
 
   const triggerAsync = () => {
-    void confirm({
+    void confirmDialog({
       title: "Syncing Data",
       body: "This will start a background sync that takes about 2 seconds.",
       onConfirm: async () => {
@@ -62,3 +62,4 @@ export default function ConfirmDemo() {
     </div>
   )
 }
+

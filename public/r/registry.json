@@ -4,132 +4,255 @@
   "homepage": "https://micto-ui-kit.misangono.net",
   "items": [
     {
-      "name": "confirm",
+      "name": "micto/activity-timeline",
       "type": "registry:component",
-      "title": "Global Confirm",
-      "description": "A global, stacked confirmation system with a promise-based API and async support.",
-      "registryDependencies": ["button"],
+      "title": "Activity Timeline",
+      "description": "A composable and data-driven timeline component for document routing history and audit trails.",
+      "registryDependencies": [
+        "avatar",
+        "tooltip"
+      ],
       "files": [
         {
-          "path": "registry/new-york/ui/confirm.tsx",
+          "path": "registry/new-york/micto/activity-timeline.tsx",
           "type": "registry:component"
         }
       ],
-      "categories": ["react", "global"]
+      "categories": [
+        "react",
+        "component"
+      ]
     },
     {
-      "name": "inertia-pagination",
+      "name": "micto/confirm-dialog",
+      "type": "registry:component",
+      "title": "Confirm Dialog",
+      "description": "A global, stacked confirmation system with a promise-based API and async support.",
+      "registryDependencies": [
+        "button",
+        "card"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/confirm-dialog.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "global"
+      ]
+    },
+    {
+      "name": "micto/data-card",
+      "type": "registry:component",
+      "title": "Data Card",
+      "description": "A professional good quality component",
+      "registryDependencies": [
+        "card"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/data-card.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
+    },
+    {
+      "name": "micto/data-table",
+      "type": "registry:component",
+      "title": "Data Table",
+      "description": "A fully-featured, generic data table built on TanStack Table v8. Supports server/client pagination, sorting, search, and visibility.",
+      "registryDependencies": [
+        "button",
+        "checkbox",
+        "input",
+        "skeleton",
+        "dropdown-menu",
+        "select",
+        "table"
+      ],
+      "dependencies": [
+        "zod",
+        "@tanstack/react-table"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/data-table.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "table"
+      ]
+    },
+    {
+      "name": "micto/document-viewer",
+      "type": "registry:component",
+      "title": "DocumentViewer",
+      "description": "A feature-rich, responsive, and composable document viewing component system.",
+      "registryDependencies": [
+        "button",
+        "tooltip",
+        "badge",
+        "dialog"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/document-viewer.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "viewer"
+      ]
+    },
+    {
+      "name": "micto/file-uploader",
+      "type": "registry:component",
+      "title": "File Uploader",
+      "description": "A beautiful drag-and-drop file uploader supporting local accumulation and async uploads.",
+      "registryDependencies": [
+        "badge",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/file-uploader.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
+    },
+    {
+      "name": "micto/permission-guard",
+      "type": "registry:component",
+      "title": "Permission Guard",
+      "description": "A premium RBAC and wildcard permission gating suite.",
+      "files": [
+        {
+          "path": "registry/new-york/micto/permission-guard.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
+    },
+    {
+      "name": "micto/search-select",
+      "type": "registry:component",
+      "title": "Search Select",
+      "description": "A beautiful searchable combobox supporting single/multi selection.",
+      "registryDependencies": [
+        "badge",
+        "command",
+        "popover"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/search-select.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
+    },
+    {
+      "name": "micto/server-pagination",
+      "type": "registry:component",
+      "title": "Server Pagination",
+      "description": "A universal pagination component tailored for standard React and Next.js.",
+      "registryDependencies": [
+        "pagination"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/server-pagination.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
+    },
+    {
+      "name": "micto/table-toolbar",
+      "type": "registry:component",
+      "title": "Table Toolbar",
+      "description": "A beautiful reactive grid toolbar that smoothly morphs filters into bulk action trays.",
+      "registryDependencies": [
+        "button",
+        "badge",
+        "card"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/table-toolbar.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component"
+      ]
+    },
+    {
+      "name": "inertia/inertia-pagination",
       "type": "registry:component",
       "title": "Inertia Pagination",
-      "description": "A pagination component optimized for Laravel and Inertia responses.",
-      "registryDependencies": ["button", "pagination"],
-      "dependencies": ["@inertiajs/react"],
+      "description": "A high-performance pagination component optimized for Laravel and Inertia.js responses.",
+      "registryDependencies": [
+        "pagination"
+      ],
       "files": [
         {
           "path": "registry/new-york/inertia/inertia-pagination.tsx",
           "type": "registry:component"
         }
       ],
-      "categories": ["inertia", "react", "component"]
-    },
-    {
-      "name": "server-pagination",
-      "type": "registry:component",
-      "title": "Server Pagination",
-      "description": "A universal pagination component tailored for standard React, Next.js, and TanStack Router, supporting dynamic callbacks and relative SEO links.",
-      "registryDependencies": [
-        "button",
-        "pagination"
-      ],
-      "files": [
-        {
-          "path": "registry/new-york/ui/server-pagination.tsx",
-          "type": "registry:component"
-        }
-      ],
       "categories": [
         "react",
-        "component"
+        "component",
+        "inertia"
       ]
     },
     {
-      "name": "search-select",
+      "name": "hooks/use-table-query",
       "type": "registry:component",
-      "title": "Search Select",
-      "description": "A beautiful searchable combobox supporting single/multi selection, custom avatars, description lines, and debounced API searching.",
-      "registryDependencies": [
-        "button",
-        "popover",
-        "command"
+      "title": "Query",
+      "description": "A high-performance TanStack Query wrapper for DataTable that manages server-side pagination, sorting, and searching state automatically.",
+      "dependencies": [
+        "@tanstack/react-query",
+        "@tanstack/react-table"
       ],
+      "hidden": true,
       "files": [
         {
-          "path": "registry/new-york/ui/search-select.tsx",
+          "path": "registry/new-york/hooks/use-table-query.ts",
           "type": "registry:component"
         }
       ],
       "categories": [
         "react",
-        "component"
-      ]
-    },
-    {
-      "name": "file-uploader",
-      "type": "registry:component",
-      "title": "File Uploader",
-      "description": "A beautiful drag-and-drop file uploader supporting local accumulation, direct async uploads, image blob thumbnails, and avatar profiles.",
-      "registryDependencies": [
-        "button",
-        "badge"
-      ],
-      "files": [
-        {
-          "path": "registry/new-york/ui/file-uploader.tsx",
-          "type": "registry:component"
-        }
-      ],
-      "categories": [
-        "react",
-        "component"
-      ]
-    },
-    {
-      "name": "permission-guard",
-      "type": "registry:component",
-      "title": "Permission Guard",
-      "description": "A premium RBAC and wildcard permission gating suite supporting stealth unmounts, visual cloning disable modes, and glowing frosted-glass overlays.",
-      "registryDependencies": [
-        "button"
-      ],
-      "files": [
-        {
-          "path": "registry/new-york/ui/permission-guard.tsx",
-          "type": "registry:component"
-        }
-      ],
-      "categories": [
-        "react",
-        "component"
-      ]
-    },
-    {
-      "name": "table-toolbar",
-      "type": "registry:component",
-      "title": "Table Toolbar",
-      "description": "A beautiful reactive grid toolbar that smoothly morphs filters into bulk action trays or bottom floating consoles upon selecting records.",
-      "registryDependencies": [
-        "button",
-        "badge"
-      ],
-      "files": [
-        {
-          "path": "registry/new-york/ui/table-toolbar.tsx",
-          "type": "registry:component"
-        }
-      ],
-      "categories": [
-        "react",
-        "component"
+        "hook",
+        "table"
       ]
     }
   ]

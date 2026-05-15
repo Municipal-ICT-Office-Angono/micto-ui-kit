@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
-import { FileUploader } from "@/components/ui/file-uploader";
+import { FileUploader } from "@/components/micto/file-uploader";
 import { Button } from "@/components/ui/button";
 
 export default function FileUploaderDemo() {
@@ -27,7 +27,7 @@ export default function FileUploaderDemo() {
     e.preventDefault();
     const logs: string[] = [];
     logs.push("========================================");
-    logs.push("🚀 INITIATING MULTIPART FORM SUBMISSION");
+    logs.push("ðŸš€ INITIATING MULTIPART FORM SUBMISSION");
     logs.push("========================================");
     logs.push(`Text Field [first_name]: "${firstName}"`);
     logs.push(`Text Field [last_name]: "${lastName}"`);
@@ -36,25 +36,25 @@ export default function FileUploaderDemo() {
     const avatarURL = avatarInitialUrl[0];
 
     if (avatar) {
-      logs.push(`📷 Avatar: [NEW RAW FILE] -> "${avatar.name}" (${(avatar.size / 1024).toFixed(1)} KB)`);
+      logs.push(`ðŸ“· Avatar: [NEW RAW FILE] -> "${avatar.name}" (${(avatar.size / 1024).toFixed(1)} KB)`);
     } else if (avatarURL) {
-      logs.push(`📷 Avatar: [KEPT SERVER URL] -> "${avatarURL}"`);
+      logs.push(`ðŸ“· Avatar: [KEPT SERVER URL] -> "${avatarURL}"`);
     } else {
-      logs.push(`📷 Avatar: [DELETED / CLEARED]`);
+      logs.push(`ðŸ“· Avatar: [DELETED / CLEARED]`);
     }
 
-    logs.push(`📁 Documents Kept: [${documentInitialUrls.length}]`);
+    logs.push(`ðŸ“ Documents Kept: [${documentInitialUrls.length}]`);
     documentInitialUrls.forEach((url, idx) => {
       logs.push(`   -> Server File [${idx}]: "${url}"`);
     });
 
-    logs.push(`📁 Documents Uploaded: [${documentFiles.length}]`);
+    logs.push(`ðŸ“ Documents Uploaded: [${documentFiles.length}]`);
     documentFiles.forEach((file, idx) => {
       logs.push(`   -> Raw File [${idx}]: "${file.name}" (${(file.size / 1024).toFixed(1)} KB)`);
     });
 
     logs.push("========================================");
-    logs.push("🎉 Payload compiled! Sent unified multipart request.");
+    logs.push("ðŸŽ‰ Payload compiled! Sent unified multipart request.");
     
     setFormLogs(logs);
     alert("Form gathered in state! Check the Live Submission Console below to see the payload.");
@@ -78,7 +78,7 @@ export default function FileUploaderDemo() {
     }
 
     const mockS3Url = `https://s3.ap-southeast-1.amazonaws.com/angono-assets/${Date.now()}-${file.name}`;
-    setAsyncLogs((prev) => [...prev, `✅ S3 Upload success! Saved to remote node: "${mockS3Url}"`]);
+    setAsyncLogs((prev) => [...prev, `âœ… S3 Upload success! Saved to remote node: "${mockS3Url}"`]);
     return mockS3Url;
   };
 
@@ -107,7 +107,7 @@ export default function FileUploaderDemo() {
                   initialUrls={avatarInitialUrl}
                   onRemoveInitial={() => {
                     setAvatarInitialUrl([]);
-                    setFormLogs((prev) => [...prev, "❌ Profile avatar URL cleared locally."]);
+                    setFormLogs((prev) => [...prev, "âŒ Profile avatar URL cleared locally."]);
                   }}
                   fallbackInitials="JD"
                   accept={["image/*"]}
@@ -153,7 +153,7 @@ export default function FileUploaderDemo() {
                 initialUrls={documentInitialUrls}
                 onRemoveInitial={(url) => {
                   setDocumentInitialUrls((prev) => prev.filter((u) => u !== url));
-                  setFormLogs((prev) => [...prev, `❌ Flagged server asset for deletion: ${url}`]);
+                  setFormLogs((prev) => [...prev, `âŒ Flagged server asset for deletion: ${url}`]);
                 }}
                 maxFiles={4}
                 maxSize={5}
@@ -226,7 +226,7 @@ export default function FileUploaderDemo() {
             <FileUploader
               onUpload={handleAsyncUpload}
               onUploadComplete={(urls) => {
-                setAsyncLogs((prev) => [...prev, `🎉 Group upload completed! Returned URLs: ${JSON.stringify(urls)}`]);
+                setAsyncLogs((prev) => [...prev, `ðŸŽ‰ Group upload completed! Returned URLs: ${JSON.stringify(urls)}`]);
               }}
               maxSize={10}
               multiple
@@ -255,3 +255,4 @@ export default function FileUploaderDemo() {
     </div>
   );
 }
+

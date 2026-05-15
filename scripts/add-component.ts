@@ -2,6 +2,7 @@ import fs from "fs"
 import path from "path"
 import { execSync } from "child_process"
 import prompts from "prompts"
+import { docsConfig } from "../config/docs"
 
 // ─── Utilities ───────────────────────────────────────────────────────────────
 
@@ -30,10 +31,21 @@ async function main() {
       validate: (value) => (value.length > 0 ? true : "Name is required"),
     },
     {
+      type: "select",
+      name: "folder",
+      message: "Target category:",
+      choices: [
+        { title: "Micto (UI Components)", value: "micto" },
+        { title: "Inertia (Laravel/Inertia Components)", value: "inertia" },
+        { title: "Hooks (React Hooks)", value: "hooks" },
+      ],
+      initial: 0,
+    },
+    {
       type: "text",
       name: "title",
       message: "Display title:",
-      initial: (prev) => toTitleCase(prev),
+      initial: (_, values) => toTitleCase(values.name),
     },
     {
       type: "text",
@@ -41,32 +53,48 @@ async function main() {
       message: "Short description:",
       initial: "A professional LGU component.",
     },
+    {
+      type: "multiselect",
+      name: "categories",
+      message: "Select tags (for search/filtering):",
+      choices: docsConfig.categories.map(c => ({ title: c.label, value: c.value })),
+    },
+    {
+      type: "toggle",
+      name: "showInNav",
+      message: "Show in navigation?",
+      initial: true,
+      active: "yes",
+      inactive: "no",
+    },
   ])
 
   if (!response.name) return
 
   const name = response.name.toLowerCase().trim()
+  const folder = response.folder
   const title = response.title
   const description = response.description
+  const categories = response.categories || ["react", "component"]
+  const showInNav = response.showInNav
   const pascalName = toPascalCase(name)
+  const isHook = folder === "hooks"
+  const ext = isHook ? "ts" : "tsx"
 
   const paths = {
-    registry: `registry/new-york/ui/${name}.tsx`,
-    link: `components/ui/${name}.tsx`,
+    registry: `registry/new-york/${folder}/${name}.${ext}`,
+    link: `components/${folder}/${name}.${ext}`,
     demo: `registry/new-york/example/${name}-demo.tsx`,
-    doc: `app/docs/components/${name}/page.tsx`,
+    doc: `app/docs/components/${folder}/${name}/page.tsx`,
   }
 
   // 1. Registry File
-  const registryContent = `import * as React from "react"
-import { cn } from "@/lib/utils"
-
-/**
+  const registryContent = `${!isHook ? '"use client";\n\n' : ""}/**
  * @title ${title}
  * @description ${description}
- * @category react, component
- */
-const ${pascalName} = React.forwardRef<
+ * @categories ${categories.join(", ")}${folder !== "micto" ? `, ${folder}` : ""}
+${!showInNav ? " * @hidden true\n" : ""}*/
+${isHook ? "" : 'import * as React from "react"\nimport { cn } from "@/lib/utils"\n\n'}export ${isHook ? "function" : "const"} ${isHook ? "use" + pascalName : pascalName} = ${isHook ? "() => {}" : `React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
@@ -79,20 +107,20 @@ const ${pascalName} = React.forwardRef<
     {...props}
   />
 ))
-${pascalName}.displayName = "${pascalName}"
+${pascalName}.displayName = "${pascalName}"`}
 
-export { ${pascalName} }
+${!isHook ? "" : "export type " + pascalName + "Params = {}"}
 `
 
   // 2. Link File
-  const linkContent = `export * from "@/registry/new-york/ui/${name}";\n`
+  const linkContent = `export * from "@/registry/new-york/${folder}/${name}";\n`
 
   // 3. Demo File
-  const demoContent = `import { ${pascalName} } from "@/components/ui/${name}"
+  const demoContent = `import { ${isHook ? "use" + pascalName : pascalName} } from "@/components/${folder}/${name}"
 
 export default function ${pascalName}Demo() {
   return (
-    <${pascalName} className="max-w-md">
+    <div className="max-w-md p-6 border rounded-xl bg-card">
       <div className="space-y-2">
         <h3 className="text-lg font-bold tracking-tight">${title} Demo</h3>
         <p className="text-sm text-muted-foreground">
@@ -104,28 +132,65 @@ export default function ${pascalName}Demo() {
           </div>
         </div>
       </div>
-    </${pascalName}>
+    </div>
   )
 }
 `
 
   // 4. Doc Page
   const docContent = `import * as React from "react";
+import { CodeBlock } from "@/components/code-block";
+import { InstallCommandTabs } from "@/components/install-command-tabs";
+import { Badge } from "@/components/ui/badge";
 import { ComponentPreview } from "@/components/component-preview";
 import { getCode, highlightCode } from "@/lib/get-code";
 import { DocsHeader } from "@/components/docs-header";
 import { DocsSectionHeading } from "@/components/docs-section-heading";
 import ${pascalName}Demo from "@/registry/new-york/example/${name}-demo";
 
+const installCommands = [
+  {
+    label: "pnpm",
+    value: "pnpm dlx shadcn@latest add https://micto-ui-kit.misangono.net/r/${folder}/${name}.json",
+  },
+  {
+    label: "npm",
+    value: "npx shadcn@latest add https://micto-ui-kit.misangono.net/r/${folder}/${name}.json",
+  },
+];
+
+const usageCode = \`import { ${isHook ? "use" + pascalName : pascalName} } from "@/components/${folder}/${name}"
+
+export default function Example() {
+  return (
+    <${isHook ? "div" : pascalName}>
+      {/* Implementation */}
+    </${isHook ? "div" : pascalName}>
+  )
+}\`;
+
 export default async function ${pascalName}Page() {
   const previewRawCode = getCode("registry/new-york/example/${name}-demo.tsx");
   const previewHtml = await highlightCode(previewRawCode);
+  const usageHtml = await highlightCode(usageCode, "tsx");
+
+  const headerBadges = (
+    <>
+      <Badge variant="secondary" className="rounded-md px-2 py-0.5 text-[11px] uppercase tracking-wider">
+        React
+      </Badge>
+      <Badge variant="outline" className="rounded-md px-2 py-0.5 text-[11px] uppercase tracking-wider border-primary/20 bg-primary/5 text-primary font-medium">
+        ${folder.charAt(0).toUpperCase() + folder.slice(1)}
+      </Badge>
+    </>
+  );
 
   return (
     <div className="mx-auto max-w-4xl space-y-12 pb-20 mt-8">
       <DocsHeader
         title="${title}"
         description="${description}"
+        badges={headerBadges}
       />
 
       <div className="space-y-16">
@@ -142,10 +207,20 @@ export default async function ${pascalName}Page() {
         <section className="space-y-6">
           <DocsSectionHeading
             title="Installation"
-            description="Install via the CLI."
+            description="Install via the shadcn CLI."
           />
-          <div className="rounded-xl border bg-muted/40 p-6 font-mono text-sm">
-            npx shadcn@latest add https://micto-ui-kit.misangono.net/r/${name}.json
+          <div className="rounded-xl border bg-muted/40 p-1">
+            <InstallCommandTabs commands={installCommands} defaultValue="pnpm" />
+          </div>
+        </section>
+
+        <section className="space-y-6">
+          <DocsSectionHeading
+            title="Usage"
+            description="How to use the component in your application."
+          />
+          <div className="overflow-hidden rounded-xl border">
+            <CodeBlock code={usageCode} html={usageHtml} language="tsx" />
           </div>
         </section>
       </div>
@@ -172,7 +247,7 @@ export default async function ${pascalName}Page() {
   try {
     execSync(`pnpm registry:fresh --all`, { stdio: "inherit" })
     console.log("\n✨ Success! Your new component is ready.")
-    console.log(`👉 Preview at: http://localhost:3000/docs/components/${name}`)
+    console.log(`👉 Preview at: http://localhost:3000/docs/components/${folder}/${name}`)
   } catch (error) {
     console.error("\n❌ Error during registry sync.")
   }

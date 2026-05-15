@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
-import { ServerPagination } from "@/components/ui/server-pagination";
+import { ServerPagination } from "@/components/micto/server-pagination";
 
 export default function ServerPaginationDemo() {
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -51,3 +51,4 @@ export default function ServerPaginationDemo() {
     </div>
   );
 }
+

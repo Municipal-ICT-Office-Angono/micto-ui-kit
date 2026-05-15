@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "micto/data-card",
+  "title": "Data Card",
+  "description": "A professional good quality component",
+  "registryDependencies": [
+    "card"
+  ],
+  "files": [
+    {
+      "path": "registry/new-york/micto/data-card.tsx",
+      "content": "import * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\nimport { Card } from \"@/components/ui/card\"\n\n/**\n * @title Data Card\n * @description A professional good quality component\n * @category react, component\n */\nconst DataCard = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, ...props }, ref) => (\n  <Card\n    ref={ref}\n    className={cn(\n      \"p-6 transition-all hover:shadow-md\",\n      className\n    )}\n    {...props}\n  />\n))\nDataCard.displayName = \"DataCard\"\n\nexport { DataCard }\n",
+      "type": "registry:component"
+    }
+  ],
+  "categories": [
+    "react",
+    "component"
+  ],
+  "type": "registry:component"
+}

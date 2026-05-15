@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DocsNavbar } from "@/components/docs-navbar";
-import { ConfirmProvider } from "@/components/ui/confirm";
+import { ConfirmProvider } from "@/components/micto/confirm-dialog";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +29,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://micto-ui-kit.misangono.net"),
   title: {
-    default: "MICTO UI Kit — Municipal ICT Office of Angono",
+    default: "MICTO UI KIT | Municipal ICT Office of Angono",
     template: "%s | MICTO UI Kit",
   },
   description:
@@ -53,14 +53,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_PH",
     url: "https://micto-ui-kit.misangono.net",
-    title: "MICTO UI Kit — Build Digital Giants in the Art Capital",
+    title: "MICTO UI Kit â€” Build Digital Giants in the Art Capital",
     description:
       "A professional, technology-driven React component library and design system specifically engineered for accessible, scalable municipal government applications.",
     siteName: "MICTO UI Kit",
   },
   twitter: {
     card: "summary_large_image",
-    title: "MICTO UI Kit — Build Digital Giants in the Art Capital",
+    title: "MICTO UI Kit â€” Build Digital Giants in the Art Capital",
     description:
       "A professional, technology-driven React component library and design system specifically engineered for accessible, scalable municipal government applications.",
     creator: "@MICTOAngono",
@@ -117,3 +117,4 @@ export default function RootLayout({
     </html>
   );
 }
+

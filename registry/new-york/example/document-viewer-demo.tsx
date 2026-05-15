@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import {
@@ -7,14 +7,14 @@ import {
   DocumentViewerCanvas,
   DocumentViewerSidebar,
   DocumentViewerDialog,
-} from "@/components/ui/document-viewer";
-import { ActivityTimelineList } from "@/components/ui/activity-timeline";
+} from "@/components/micto/document-viewer";
+import { ActivityTimelineList } from "@/components/micto/activity-timeline";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Stamp, Eye, FileSpreadsheet, Download } from "lucide-react";
 
-// ─── MOCK DATA: Routing Audit Trail ───────────────────────────────────────────
+// â”€â”€â”€ MOCK DATA: Routing Audit Trail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const ROUTING_HISTORY = [
   {
@@ -51,7 +51,7 @@ export default function DocumentViewerDemo() {
   return (
     <div className="w-full max-w-5xl mx-auto space-y-12 py-6">
 
-      {/* ── Example 1: Full DMS Ordinance Interface ── */}
+      {/* â”€â”€ Example 1: Full DMS Ordinance Interface â”€â”€ */}
       <section className="space-y-4">
         <div>
           <h3 className="text-sm font-bold text-foreground">Municipal Ordinance Viewer (Full DMS Mode)</h3>
@@ -102,7 +102,7 @@ export default function DocumentViewerDemo() {
                   </div>
                   <div className="flex justify-between py-1">
                     <span className="text-muted-foreground">Security:</span>
-                    <span className="text-emerald-600 font-medium">🔒 Encrypted / Signed</span>
+                    <span className="text-emerald-600 font-medium">ðŸ”’ Encrypted / Signed</span>
                   </div>
                 </div>
               </div>
@@ -118,12 +118,12 @@ export default function DocumentViewerDemo() {
         </DocumentViewer>
       </section>
 
-      {/* ── Example 2: Scanned Image Preview (Leave Form / Receipts) ── */}
+      {/* â”€â”€ Example 2: Scanned Image Preview (Leave Form / Receipts) â”€â”€ */}
       <section className="space-y-4">
         <div>
           <h3 className="text-sm font-bold text-foreground">Scanned Document Preview (Image Mode)</h3>
           <p className="text-xs text-muted-foreground">
-            Provides native zoom and 90° rotation controls for scanned citizen submissions or receipts.
+            Provides native zoom and 90Â° rotation controls for scanned citizen submissions or receipts.
           </p>
         </div>
 
@@ -139,7 +139,7 @@ export default function DocumentViewerDemo() {
         </DocumentViewer>
       </section>
 
-      {/* ── Example 3: Modal Lightbox Trigger ── */}
+      {/* â”€â”€ Example 3: Modal Lightbox Trigger â”€â”€ */}
       <section className="space-y-4">
         <div>
           <h3 className="text-sm font-bold text-foreground">Modal / Lightbox Overlay</h3>
@@ -192,3 +192,4 @@ export default function DocumentViewerDemo() {
     </div>
   );
 }
+
