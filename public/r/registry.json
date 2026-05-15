@@ -45,25 +45,6 @@
       ]
     },
     {
-      "name": "micto/data-card",
-      "type": "registry:component",
-      "title": "Data Card",
-      "description": "A professional good quality component",
-      "registryDependencies": [
-        "card"
-      ],
-      "files": [
-        {
-          "path": "registry/new-york/micto/data-card.tsx",
-          "type": "registry:component"
-        }
-      ],
-      "categories": [
-        "react",
-        "component"
-      ]
-    },
-    {
       "name": "micto/data-table",
       "type": "registry:component",
       "title": "Data Table",

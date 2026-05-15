@@ -25,7 +25,7 @@ export function DocsHeader({
         <ChevronRight className="size-3" />
         <span className="text-foreground font-medium">{title}</span>
       </div>
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col">
         <div className="space-y-2">
           <h1 className="text-2xl font-extrabold tracking-tight lg:text-3xl text-foreground font-heading">
             {title}
@@ -36,9 +36,12 @@ export function DocsHeader({
             </p>
           )}
         </div>
-        {badges && (
-          <div className="flex gap-2 shrink-0 items-center">{badges}</div>
+        <div className="flex w-full gap-2 justify-end xl:justify-end xl:items-end">
+          {badges && (
+          <div className="flex gap-2 shrink-0 items-center text-nowrap">{badges}</div>
         )}
+        </div>
+        
       </div>
       <Separator className="my-4" />
     </div>
