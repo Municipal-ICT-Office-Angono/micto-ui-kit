@@ -22,11 +22,11 @@ The **MICTO UI KIT** is built on top of [shadcn/ui](https://ui.shadcn.com) and t
 
 Our registry is divided into three specialized categories to serve different architectural needs:
 
-| Category | Description | Registry Path |
-| :--- | :--- | :--- |
-| **Micto** | Core UI components (Data Tables, Timelines, Viewers). | `.../r/micto/[name].json` |
+| Category    | Description                                           | Registry Path               |
+| :---------- | :---------------------------------------------------- | :-------------------------- |
+| **Micto**   | Core UI components (Data Tables, Timelines, Viewers). | `.../r/micto/[name].json`   |
 | **Inertia** | Laravel Inertia specific bridges (Pagination, Forms). | `.../r/inertia/[name].json` |
-| **Hooks** | High-performance React logic (Table Queries, Auth). | `.../r/hooks/[name].json` |
+| **Hooks**   | High-performance React logic (Table Queries, Auth).   | `.../r/hooks/[name].json`   |
 
 ---
 
@@ -75,6 +75,7 @@ pnpm registry:fresh
 ```
 
 This script automatically:
+
 - **Parses JSDoc**: Extracts `@title`, `@description`, and `@categories`.
 - **Detects Imports**: Maps `registryDependencies` and `dependencies` automatically.
 - **Respects Privacy**: Skips components marked with `@hidden true`.
@@ -88,6 +89,7 @@ pnpm add:component
 ```
 
 The CLI will prompt you for a category (`micto`, `inertia`, or `hooks`) and automatically generate:
+
 1. **Registry Source** (with `"use client"` where applicable)
 2. **Local Re-export** (for internal doc usage)
 3. **Interactive Demo** (pre-populated with premium boilerplate)

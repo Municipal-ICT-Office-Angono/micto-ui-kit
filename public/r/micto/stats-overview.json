@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "micto/stats-overview",
+  "title": "Stats Overview",
+  "description": "A beautiful status card for your dashboard",
+  "files": [
+    {
+      "path": "registry/new-york/micto/stats-overview.tsx",
+      "content": "\"use client\";\n\n/**\n * @title Stats Overview\n * @description A beautiful status card for your dashboard\n * @categories react\n*/\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nexport const StatsOverview = React.forwardRef<\n  HTMLDivElement,\n  React.HTMLAttributes<HTMLDivElement>\n>(({ className, ...props }, ref) => (\n  <div\n    ref={ref}\n    className={cn(\n      \"rounded-xl border bg-card p-6 text-card-foreground shadow-sm transition-all hover:shadow-md\",\n      className\n    )}\n    {...props}\n  />\n))\nStatsOverview.displayName = \"StatsOverview\"\n\n\n",
+      "type": "registry:component"
+    }
+  ],
+  "categories": [
+    "react"
+  ],
+  "type": "registry:component"
+}

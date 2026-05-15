@@ -254,6 +254,21 @@
         "hook",
         "table"
       ]
+    },
+    {
+      "name": "micto/stats-overview",
+      "type": "registry:component",
+      "title": "Stats Overview",
+      "description": "A beautiful status card for your dashboard",
+      "files": [
+        {
+          "path": "registry/new-york/micto/stats-overview.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react"
+      ]
     }
   ]
 }
