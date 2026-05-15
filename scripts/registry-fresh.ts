@@ -54,10 +54,19 @@ function parseJSDoc(content: string) {
   // Find the block that specifically contains a @title tag
   const mainBlock = jsDocBlocks.find(block => block.includes("@title")) || ""
   
-  const title = mainBlock.match(/@title\s+(.*)/)?.[1]?.trim()
-  const description = mainBlock.match(/@description\s+(.*)/)?.[1]?.trim()
-  const categoriesRaw = mainBlock.match(/@categor(?:y|ies)\s+(.*)/)?.[1]?.trim()
-  const categories = categoriesRaw ? categoriesRaw.split(",").map(c => c.trim()) : undefined
+  // Clean up the block: remove leading stars and trim lines
+  const cleanBlock = mainBlock
+    .replace(/^\/\*\*|\*\/$/g, "") // Remove /** and */
+    .split("\n")
+    .map(line => line.replace(/^\s*\*\s?/, "").trim()) // Remove leading * and trim
+    .join("\n")
+  
+  const title = cleanBlock.match(/@title\s+(.*)/)?.[1]?.trim()
+  const description = cleanBlock.match(/@description\s+(.*)/)?.[1]?.trim()
+  const categoriesRaw = cleanBlock.match(/@categor(?:y|ies)\s+(.*)/)?.[1]?.trim()
+  const categories = categoriesRaw 
+    ? categoriesRaw.split(",").map(c => c.trim()).filter(c => c && c !== "*/") 
+    : undefined
   
   // Look for @hidden anywhere in the file's JSDoc blocks
   const hidden = jsDocBlocks.some(block => block.includes("@hidden"))
@@ -148,6 +157,21 @@ async function main() {
   if (selectedComponents.length === 0) {
     console.log("❌ No components selected. Exiting.")
     return
+  }
+
+  // 3. Remove items from registry.json that no longer exist on disk
+  const initialCount = registry.items.length
+  registry.items = registry.items.filter(item => {
+    // Check if the primary file for the component still exists
+    const exists = item.files.some(f => fs.existsSync(path.join(process.cwd(), f.path)))
+    if (!exists) {
+      console.log(`🗑️  Removing from manifest (orphaned): ${item.name}`)
+    }
+    return exists
+  })
+
+  if (registry.items.length < initialCount) {
+    console.log(`🧹 Cleaned up ${initialCount - registry.items.length} orphaned components from manifest.\n`)
   }
 
   console.log(`\n🔄 Processing ${selectedComponents.length} components...\n`)

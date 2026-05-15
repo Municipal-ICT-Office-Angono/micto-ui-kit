@@ -9,7 +9,8 @@
     "lint": "next lint",
     "registry:build": "shadcn build",
     "registry:fresh": "tsx scripts/registry-fresh.ts",
-    "add:component": "tsx scripts/add-component.ts"
+    "add:component": "tsx scripts/add-component.ts",
+    "remove:component": "tsx scripts/remove-component.ts"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",

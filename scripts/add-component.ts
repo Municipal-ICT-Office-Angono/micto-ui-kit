@@ -94,10 +94,15 @@ async function main() {
  * @description ${description}
  * @categories ${categories.join(", ")}${folder !== "micto" ? `, ${folder}` : ""}
 ${!showInNav ? " * @hidden true\n" : ""}*/
-${isHook ? "" : 'import * as React from "react"\nimport { cn } from "@/lib/utils"\n\n'}export ${isHook ? "function" : "const"} ${isHook ? "use" + pascalName : pascalName} = ${isHook ? "() => {}" : `React.forwardRef<
+${isHook ? "" : 'import * as React from "react"\nimport { cn } from "@/lib/utils"\n\n'}export interface ${pascalName}Props ${isHook ? "= {}" : `extends React.HTMLAttributes<HTMLDivElement> {
+  title?: string
+  description?: string
+}`}
+
+export ${isHook ? "function" : "const"} ${isHook ? "use" + pascalName : pascalName} = ${isHook ? "() => {}" : `React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+  ${pascalName}Props
+>(({ className, title, description, children, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
@@ -105,11 +110,23 @@ ${isHook ? "" : 'import * as React from "react"\nimport { cn } from "@/lib/utils
       className
     )}
     {...props}
-  />
+  >
+    <div className="space-y-1.5">
+      {title && (
+        <h3 className="text-lg font-semibold leading-none tracking-tight">
+          {title}
+        </h3>
+      )}
+      {description && (
+        <p className="text-sm text-muted-foreground">
+          {description}
+        </p>
+      )}
+    </div>
+    {children && <div className="mt-4">{children}</div>}
+  </div>
 ))
 ${pascalName}.displayName = "${pascalName}"`}
-
-${!isHook ? "" : "export type " + pascalName + "Params = {}"}
 `
 
   // 2. Link File
@@ -119,19 +136,23 @@ ${!isHook ? "" : "export type " + pascalName + "Params = {}"}
   const demoContent = `import { ${isHook ? "use" + pascalName : pascalName} } from "@/components/${folder}/${name}"
 
 export default function ${pascalName}Demo() {
+  ${isHook ? `const {} = use${pascalName}()` : ""}
   return (
-    <div className="max-w-md p-6 border rounded-xl bg-card">
-      <div className="space-y-2">
-        <h3 className="text-lg font-bold tracking-tight">${title} Demo</h3>
-        <p className="text-sm text-muted-foreground">
-          ${description}
-        </p>
-        <div className="pt-4">
-          <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-            <div className="h-full w-2/3 bg-primary animate-pulse" />
+    <div className="flex items-center justify-center p-8">
+      <${isHook ? "div" : pascalName} 
+        title="${title} Example" 
+        description="This is a live demo of the ${title} component generated via the MICTO scaffolder."
+        className="max-w-[400px]"
+      >
+        <div className="flex items-center gap-2 pt-2">
+          <div className="h-2 flex-1 rounded-full bg-muted overflow-hidden">
+            <div className="h-full w-1/3 bg-primary animate-pulse" />
           </div>
+          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+            Processing
+          </span>
         </div>
-      </div>
+      </${isHook ? "div" : pascalName}>
     </div>
   )
 }
@@ -163,7 +184,10 @@ const usageCode = \`import { ${isHook ? "use" + pascalName : pascalName} } from 
 
 export default function Example() {
   return (
-    <${isHook ? "div" : pascalName}>
+    <${isHook ? "div" : pascalName} 
+      title="${title}"
+      description="${description}"
+    >
       {/* Implementation */}
     </${isHook ? "div" : pascalName}>
   )
