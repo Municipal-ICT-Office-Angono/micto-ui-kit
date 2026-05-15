@@ -231,6 +231,26 @@
         "component",
         "viewer"
       ]
+    },
+    {
+      "name": "reusable-tabs",
+      "type": "registry:component",
+      "title": "Reusable Tabs",
+      "description": "A simple tabs container for multiple screens or sub-pages that switches.",
+      "registryDependencies": [
+        "tabs"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/ui/reusable-tabs.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "viewer"
+      ]
     }
   ]
 }

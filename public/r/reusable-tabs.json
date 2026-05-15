@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "reusable-tabs",
+  "title": "Reusable Tabs",
+  "description": "A simple tabs container for multiple screens or sub-pages that switches.",
+  "registryDependencies": [
+    "tabs"
+  ],
+  "files": [
+    {
+      "path": "registry/new-york/ui/reusable-tabs.tsx",
+      "content": "\"use client\";\r\n\r\nimport {\r\n    Tabs,\r\n    TabsContent,\r\n    TabsList,\r\n    TabsTrigger,\r\n} from \"@/components/ui/tabs\"\r\n\r\n// ─── Types & Context ──────────────────────────────────────────────────────────\r\n\r\ninterface TabItem {\r\n    tabValue: string;\r\n    label: string;\r\n    content: React.ReactNode;\r\n}\r\n\r\n// ─── Data & Tab Switch Function ───────────────────────────────────────────────────────────\r\n\r\ninterface ReusableTabsProps {\r\n    tabs: TabItem[];\r\n    defaultValue?: string;\r\n    value: string | undefined;\r\n    onValueChange: (value: string) => void;\r\n}\r\n\r\nexport function ReusableTabs({ tabs, defaultValue, value, onValueChange }: ReusableTabsProps) {\r\n    return (\r\n        <Tabs\r\n            defaultValue={defaultValue}\r\n            onValueChange={onValueChange}\r\n            value={value}\r\n        >\r\n            <TabsList>\r\n                {tabs.map((tab) => {\r\n                    return (\r\n                        <TabsTrigger key={tab.tabValue} value={tab.tabValue}>{tab.label}</TabsTrigger>\r\n                    )\r\n                })}\r\n            </TabsList>\r\n            {tabs.map((tab) => (\r\n                <TabsContent key={tab.tabValue} value={tab.tabValue}>\r\n                    {tab.content}\r\n                </TabsContent>\r\n            ))}\r\n        </Tabs>\r\n    )\r\n}",
+      "type": "registry:component"
+    }
+  ],
+  "categories": [
+    "react",
+    "component",
+    "viewer"
+  ],
+  "type": "registry:component"
+}

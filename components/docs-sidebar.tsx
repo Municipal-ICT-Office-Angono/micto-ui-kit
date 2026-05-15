@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { title } from "process";
 
 export const navData = [
   {
@@ -64,6 +65,10 @@ export const navData = [
       {
         title: "Table Toolbar",
         url: "/docs/components/table-toolbar",
+      },
+      {
+        title: "Reusable Tabs",
+        url: "/docs/components/reusable-tabs",
       },
     ],
   },
