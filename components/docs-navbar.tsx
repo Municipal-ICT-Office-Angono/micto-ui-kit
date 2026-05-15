@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Command, Menu } from "lucide-react";
@@ -20,6 +21,7 @@ import { Github } from "lucide-react";
 
 export function DocsNavbar() {
   const pathname = usePathname();
+  const [open, setOpen] = React.useState(false);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -36,8 +38,8 @@ export function DocsNavbar() {
           </Link>
         </div>
 
-        <div className="flex flex-1 items-center justify-between gap-4 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
+        <div className="flex flex-1 items-center justify-end gap-1.5 md:gap-4">
+          <div className="w-auto md:flex-none">
             <DocsSearch />
           </div>
           
@@ -55,14 +57,14 @@ export function DocsNavbar() {
             <ModeToggle />
           </div>
 
-          <Sheet>
+          <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="size-5" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] pr-0">
+            <SheetContent side="left" className="w-5/6 sm:w-[320px] overflow-y-auto p-6">
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2 text-left">
                   <div className="flex aspect-square size-6 items-center justify-center rounded-[4px] bg-primary text-primary-foreground">
@@ -77,10 +79,10 @@ export function DocsNavbar() {
                   Navigation menu for mobile devices.
                 </SheetDescription>
               </SheetHeader>
-              <div className="mt-8 flex flex-col gap-8 pb-10">
+              <div className="mt-8 flex flex-col gap-8 pb-10 px-1">
                 {navData.map((section) => (
                   <div key={section.title} className="flex flex-col gap-3">
-                    <h4 className="px-2 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
+                    <h4 className="px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
                       {section.title}
                     </h4>
                     <div className="flex flex-col gap-1">
@@ -90,10 +92,11 @@ export function DocsNavbar() {
                           <Link
                             key={item.url}
                             href={item.url}
+                            onClick={() => setOpen(false)}
                             className={cn(
-                              "flex h-9 items-center px-3 text-sm font-medium transition-colors hover:text-foreground rounded-md",
+                              "flex h-10 items-center px-3.5 text-sm font-medium transition-colors hover:text-foreground rounded-lg",
                               isActive
-                                ? "bg-muted text-foreground"
+                                ? "bg-muted text-foreground font-semibold"
                                 : "text-muted-foreground/70 hover:bg-muted/50"
                             )}
                           >

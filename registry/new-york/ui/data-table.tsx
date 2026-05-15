@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { z } from "zod";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -166,11 +167,16 @@ export interface UseDataTableOptions<TData> {
   initialSorting?: SortingState;
 }
 
+const visibilitySchema = z.record(z.boolean());
+
 function loadVisibility(tableId: string): VisibilityState {
   if (typeof window === "undefined") return {};
   try {
     const raw = localStorage.getItem(`micto-dt-visibility-${tableId}`);
-    return raw ? (JSON.parse(raw) as VisibilityState) : {};
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    const result = visibilitySchema.safeParse(parsed);
+    return result.success ? result.data : {};
   } catch {
     return {};
   }
@@ -499,13 +505,13 @@ export function DataTable<TData>({
 
   // Search input node (shared between toolbar and standalone)
   const searchNode = enableSearch ? (
-    <div className="relative flex items-center">
+    <div className="relative flex items-center shrink-0 w-full sm:w-auto">
       <Search className="absolute left-2.5 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
       <Input
         placeholder={searchPlaceholder}
         value={globalFilter}
         onChange={(e) => handleSearch(e.target.value)}
-        className="h-8 pl-8 text-xs w-48 focus-visible:ring-1"
+        className="h-8 pl-8 text-xs w-full sm:w-64 focus-visible:ring-1"
       />
       {globalFilter && (
         <button

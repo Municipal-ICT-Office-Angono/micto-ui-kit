@@ -112,7 +112,7 @@ export default function ActivityTimelineDemo() {
 
         <Card className="border-border/60 shadow-sm overflow-hidden">
           <CardHeader className="bg-muted/30 pb-4 border-b border-border/40">
-            <div className="flex justify-between items-start">
+            <div className="flex flex-col sm:flex-row sm:justify-between items-start gap-3">
               <div>
                 <CardTitle className="text-base font-bold flex items-center gap-2">
                   <FileText className="size-4.5 text-primary" />
@@ -122,7 +122,7 @@ export default function ActivityTimelineDemo() {
                   Real-time document lifecycle tracker for Municipal ICT Office procurement.
                 </CardDescription>
               </div>
-              <Badge variant="outline" className="bg-background shadow-xs font-mono text-xs py-1">
+              <Badge variant="outline" className="bg-background shadow-xs font-mono text-xs py-1 shrink-0">
                 Status: In Budget Review
               </Badge>
             </div>

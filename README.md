@@ -31,13 +31,54 @@ A professional shadcn-based component library and registry designed for the loca
    pnpm registry:build
    ```
 
-## Using the Registry
-
-You can add components from this kit directly to your own project using the shadcn CLI:
-
 ```bash
 npx shadcn@latest add https://micto-ui-kit.misangono.net/r/inertia-pagination.json
 ```
+
+## Registry Management
+
+The project includes an automation engine to keep the component registry in sync with your source code.
+
+### 1. Synchronizing Components
+
+To update `registry.json` based on your actual files and imports, run:
+
+```bash
+pnpm registry:fresh
+```
+
+This command will:
+- **Analyze Imports**: Automatically detect `registryDependencies` and npm `dependencies`.
+- **Sync Metadata**: Pull title, description, and categories from JSDoc.
+- **Rebuild**: Trigger a full shadcn build after updating the manifest.
+
+### 2. Using JSDoc for Metadata
+
+You can define component metadata directly in the source file using JSDoc. The sync engine will prioritize these tags:
+
+```tsx
+/**
+ * @title My Component
+ * @description A professional LGU component.
+ * @category react, document
+ */
+export function MyComponent() { ... }
+```
+
+### 3. Scaffolding New Components
+
+To create a new component with all 4 necessary files (registry, link, demo, and docs), run:
+
+```bash
+pnpm add:component
+```
+
+Follow the prompts to provide the name, title, and description. The script will automatically:
+1. Create the **UI Component** with a premium base design.
+2. Create the **Local Link** (re-export).
+3. Create an **Interactive Demo**.
+4. Create the **Documentation Page**.
+5. Run `registry:fresh` to register it.
 
 ## Related Links
 

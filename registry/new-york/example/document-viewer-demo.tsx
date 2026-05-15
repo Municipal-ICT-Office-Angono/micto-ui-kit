@@ -79,7 +79,7 @@ export default function DocumentViewerDemo() {
               </Button>
             }
           />
-          <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
+          <div className="flex flex-1 overflow-y-auto md:overflow-hidden flex-col md:flex-row h-full max-h-full min-h-0">
             <DocumentViewerCanvas />
 
             <DocumentViewerSidebar width="w-full md:w-80" className="space-y-6">
@@ -170,9 +170,9 @@ export default function DocumentViewerDemo() {
               title="Consolidated Procurement Plan 2026"
             >
               <DocumentViewerToolbar />
-              <div className="flex flex-1 overflow-hidden">
+              <div className="flex flex-1 overflow-y-auto md:overflow-hidden flex-col md:flex-row h-full max-h-full min-h-0">
                 <DocumentViewerCanvas />
-                <DocumentViewerSidebar width="w-72">
+                <DocumentViewerSidebar width="w-full md:w-72">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Remarks</h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     Certified true copy uploaded by Municipal Budget Office. Bidding scheduled for Q1 2026.
