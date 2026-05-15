@@ -1,15 +1,8 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { CodeBlock } from "@/components/code-block";
 import { InstallCommandTabs } from "@/components/install-command-tabs";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { PropsTable } from "@/components/props-table";
 import { ComponentPreview } from "@/components/component-preview";
 import { getCode, highlightCode } from "@/lib/get-code";
 import { DocsHeader } from "@/components/docs-header";
@@ -225,94 +218,14 @@ export default async function ConfirmDialogPage() {
           <h3 className="text-lg font-semibold text-foreground/80">
             confirmDialog(options)
           </h3>
-          <div className="rounded-xl border overflow-hidden shadow-sm bg-background">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50 hover:bg-muted/50">
-                  <TableHead className="w-[150px] font-bold text-foreground/80 lowercase tracking-tight">
-                    Prop
-                  </TableHead>
-                  <TableHead className="font-bold text-foreground/80 lowercase tracking-tight">
-                    Type
-                  </TableHead>
-                  <TableHead className="font-bold text-foreground/80 lowercase tracking-tight">
-                    Default
-                  </TableHead>
-                  <TableHead className="text-right font-bold text-foreground/80 lowercase tracking-tight">
-                    Description
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {propsData.map((prop) => (
-                  <TableRow
-                    key={prop.name}
-                    className="border-b transition-colors hover:bg-muted/5"
-                  >
-                    <TableCell className="font-mono text-xs font-semibold text-primary/80">
-                      {prop.name}
-                    </TableCell>
-                    <TableCell className="font-mono text-xs text-blue-600 dark:text-blue-400">
-                      {prop.type}
-                    </TableCell>
-                    <TableCell className="font-mono text-xs text-muted-foreground/70">
-                      {prop.default}
-                    </TableCell>
-                    <TableCell className="text-right text-xs leading-relaxed max-w-[300px] text-muted-foreground">
-                      {prop.description}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          <PropsTable data={propsData} />
         </div>
 
         <div className="space-y-4 pt-4 font-sans text-muted-foreground">
           <h3 className="text-lg font-semibold text-foreground/80">
             ConfirmProvider
           </h3>
-          <div className="rounded-xl border overflow-hidden shadow-sm bg-background">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50 hover:bg-muted/50">
-                  <TableHead className="w-[150px] font-bold text-foreground/80 lowercase tracking-tight">
-                    Prop
-                  </TableHead>
-                  <TableHead className="font-bold text-foreground/80 lowercase tracking-tight">
-                    Type
-                  </TableHead>
-                  <TableHead className="font-bold text-foreground/80 lowercase tracking-tight">
-                    Default
-                  </TableHead>
-                  <TableHead className="text-right font-bold text-foreground/80 lowercase tracking-tight">
-                    Description
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {providerProps.map((prop) => (
-                  <TableRow
-                    key={prop.name}
-                    className="border-b transition-colors hover:bg-muted/5"
-                  >
-                    <TableCell className="font-mono text-xs font-semibold text-primary/80">
-                      {prop.name}
-                    </TableCell>
-                    <TableCell className="font-mono text-xs text-blue-600 dark:text-blue-400">
-                      {prop.type}
-                    </TableCell>
-                    <TableCell className="font-mono text-xs text-muted-foreground/70">
-                      {prop.default}
-                    </TableCell>
-                    <TableCell className="text-right text-xs leading-relaxed max-w-[300px] text-muted-foreground">
-                      {prop.description}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          <PropsTable data={providerProps} />
         </div>
       </section>
     </div>

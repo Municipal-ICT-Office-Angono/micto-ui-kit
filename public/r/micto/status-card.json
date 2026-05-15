@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "micto/status-card",
+  "title": "Status Card",
+  "description": "A professional LGU component.",
+  "files": [
+    {
+      "path": "registry/new-york/micto/status-card.tsx",
+      "content": "\"use client\";\n\n/**\n * @title Status Card\n * @description A professional LGU component.\n * @categories react\n*/\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\n\nexport interface StatusCardProps extends React.HTMLAttributes<HTMLDivElement> {\n  title?: string\n  description?: string\n}\n\nexport const StatusCard = React.forwardRef<\n  HTMLDivElement,\n  StatusCardProps\n>(({ className, title, description, children, ...props }, ref) => (\n  <div\n    ref={ref}\n    className={cn(\n      \"rounded-xl border bg-card p-6 text-card-foreground shadow-sm transition-all hover:shadow-md\",\n      className\n    )}\n    {...props}\n  >\n    <div className=\"space-y-1.5\">\n      {title && (\n        <h3 className=\"text-lg font-semibold leading-none tracking-tight\">\n          {title}\n        </h3>\n      )}\n      {description && (\n        <p className=\"text-sm text-muted-foreground\">\n          {description}\n        </p>\n      )}\n    </div>\n    {children && <div className=\"mt-4\">{children}</div>}\n  </div>\n))\nStatusCard.displayName = \"StatusCard\"\n",
+      "type": "registry:component"
+    }
+  ],
+  "categories": [
+    "react"
+  ],
+  "type": "registry:component"
+}

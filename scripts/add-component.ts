@@ -71,10 +71,10 @@ async function main() {
 
   if (!response.name) return
 
-  const name = response.name.toLowerCase().trim()
+  const name = response.name.toString().replace(/[\r\n]/g, "").trim().toLowerCase()
   const folder = response.folder
-  const title = response.title
-  const description = response.description
+  const title = response.title.toString().replace(/[\r\n]/g, "").trim()
+  const description = response.description.toString().replace(/[\r\n]/g, "").trim()
   const categories = response.categories || ["react", "component"]
   const showInNav = response.showInNav
   const pascalName = toPascalCase(name)
@@ -167,6 +167,7 @@ import { ComponentPreview } from "@/components/component-preview";
 import { getCode, highlightCode } from "@/lib/get-code";
 import { DocsHeader } from "@/components/docs-header";
 import { DocsSectionHeading } from "@/components/docs-section-heading";
+import { PropsTable } from "@/components/props-table";
 import ${pascalName}Demo from "@/registry/new-york/example/${name}-demo";
 
 const installCommands = [
@@ -192,6 +193,27 @@ export default function Example() {
     </${isHook ? "div" : pascalName}>
   )
 }\`;
+
+const presentationProps = [
+  {
+    name: "title",
+    type: "string",
+    default: "-",
+    description: "The main heading of the component.",
+  },
+  {
+    name: "description",
+    type: "string",
+    default: "-",
+    description: "Secondary text providing additional context.",
+  },
+  {
+    name: "className",
+    type: "string",
+    default: "-",
+    description: "Custom CSS classes for styling.",
+  },
+];
 
 export default async function ${pascalName}Page() {
   const previewRawCode = getCode("registry/new-york/example/${name}-demo.tsx");
@@ -247,6 +269,16 @@ export default async function ${pascalName}Page() {
             <CodeBlock code={usageCode} html={usageHtml} language="tsx" />
           </div>
         </section>
+
+        ${!isHook ? `
+        <section className="space-y-6">
+          <DocsSectionHeading
+            title="Properties"
+            description="Available props for the ${title} component."
+          />
+          <PropsTable data={presentationProps} />
+        </section>
+        ` : ""}
       </div>
     </div>
   );

@@ -235,6 +235,21 @@
         "hook",
         "table"
       ]
+    },
+    {
+      "name": "micto/status-card",
+      "type": "registry:component",
+      "title": "Status Card",
+      "description": "A professional LGU component.",
+      "files": [
+        {
+          "path": "registry/new-york/micto/status-card.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react"
+      ]
     }
   ]
 }

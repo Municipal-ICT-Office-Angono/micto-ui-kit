@@ -1,15 +1,8 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { CodeBlock } from "@/components/code-block";
 import { InstallCommandTabs } from "@/components/install-command-tabs";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { PropsTable } from "@/components/props-table";
 import { ComponentPreview } from "@/components/component-preview";
 import { getCode, highlightCode } from "@/lib/get-code";
 import { DocsHeader } from "@/components/docs-header";
@@ -26,8 +19,6 @@ const installCommands = [
     value: "npx shadcn@latest add https://micto-ui-kit.misangono.net/r/micto/document-viewer.json",
   },
 ];
-
-// â”€â”€â”€ Code Snippets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const dmsUsageCode = `import {
   DocumentViewer,
@@ -111,34 +102,6 @@ const dialogProps = [
   { name: "children", type: "ReactNode", default: "â€”", description: "Toolbar, Canvas, and Sidebar nodes rendered inside the modal." },
 ];
 
-function PropsTable({ data }: { data: { name: string; type: string; default: string; description: string }[] }) {
-  return (
-    <div className="rounded-xl border overflow-hidden shadow-sm bg-background">
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-muted/50 hover:bg-muted/50">
-            <TableHead className="w-[200px] font-bold text-foreground/80 lowercase tracking-tight">Prop</TableHead>
-            <TableHead className="font-bold text-foreground/80 lowercase tracking-tight">Type</TableHead>
-            <TableHead className="w-[100px] font-bold text-foreground/80 lowercase tracking-tight">Default</TableHead>
-            <TableHead className="text-right font-bold text-foreground/80 lowercase tracking-tight">Description</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((prop) => (
-            <TableRow key={prop.name} className="border-b transition-colors hover:bg-muted/5 font-sans">
-              <TableCell className="font-mono text-xs font-semibold text-primary/80">{prop.name}</TableCell>
-              <TableCell className="font-mono text-xs text-blue-600 dark:text-blue-400">{prop.type}</TableCell>
-              <TableCell className="font-mono text-xs text-muted-foreground/70">{prop.default}</TableCell>
-              <TableCell className="text-right text-xs leading-relaxed max-w-[280px] text-muted-foreground">{prop.description}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-  );
-}
-
-// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default async function DocumentViewerPage() {
   const previewRawCode = getCode("registry/new-york/example/document-viewer-demo.tsx");
