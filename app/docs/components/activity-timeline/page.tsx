@@ -158,6 +158,8 @@ function PropsTable({ data }: { data: { name: string; type: string; default: str
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function ActivityTimelinePage() {
+  // 1. previewRawCode: The raw string of the component for the copy button
+  // 2. previewHtml: The pre-highlighted version of the code for fast, zero-JS rendering in the browser
   const previewRawCode = getCode("registry/new-york/example/activity-timeline-demo.tsx");
   const previewHtml = await highlightCode(previewRawCode);
   const shorthandUsageHtml = await highlightCode(shorthandUsageCode, "tsx");

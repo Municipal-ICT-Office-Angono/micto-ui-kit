@@ -7,8 +7,11 @@ import { CodeBlock } from "@/components/code-block"
 import { cn } from "@/lib/utils"
 
 interface ComponentPreviewProps {
+  /** The actual interactive component demo to be rendered in the "Preview" tab */
   children: React.ReactNode
+  /** The raw source code string of the component for the "Copy" feature and fallback */
   code: string
+  /** The pre-highlighted HTML string for optimized, zero-runtime syntax highlighting */
   html?: string
   className?: string
 }
