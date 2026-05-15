@@ -14,7 +14,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { navData } from "./docs-sidebar";
+import { getNavData } from "./docs-sidebar";
 import { DocsSearch } from "./docs-search";
 import { ModeToggle } from "./mode-toggle";
 import { Github } from "lucide-react";
@@ -80,13 +80,13 @@ export function DocsNavbar() {
                 </SheetDescription>
               </SheetHeader>
               <div className="mt-8 flex flex-col gap-8 pb-10 px-1">
-                {navData.map((section) => (
+                {getNavData().map((section) => (
                   <div key={section.title} className="flex flex-col gap-3">
                     <h4 className="px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
                       {section.title}
                     </h4>
                     <div className="flex flex-col gap-1">
-                      {section.items.map((item) => {
+                      {section.items?.map((item) => {
                         const isActive = pathname === item.url;
                         return (
                           <Link

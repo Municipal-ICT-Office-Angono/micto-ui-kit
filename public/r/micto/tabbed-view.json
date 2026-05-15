@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "micto/tabbed-view",
+  "title": "Tabbed View",
+  "description": "A container component that organizes content into distinct, selectable panels, allowing users to switch between different views within the same window.",
+  "registryDependencies": [
+    "tabs"
+  ],
+  "files": [
+    {
+      "path": "registry/new-york/micto/tabbed-view.tsx",
+      "content": "\"use client\";\n\nimport {\n    Tabs,\n    TabsContent,\n    TabsList,\n    TabsTrigger,\n} from \"@/components/ui/tabs\"\n\n// ─── Types & Context ──────────────────────────────────────────────────────────\n\ninterface TabItem {\n    tabValue: string;\n    label: string;\n    content: React.ReactNode;\n}\n\n// ─── Data & Tab Switch Function ───────────────────────────────────────────────────────────\n\ninterface TabbedViewProps {\n    tabs: TabItem[];\n    defaultValue?: string;\n    value: string | undefined;\n    onValueChange: (value: string) => void;\n}\n\nexport function TabbedView({ tabs, defaultValue, value, onValueChange }: TabbedViewProps) {\n    return (\n        <Tabs\n            defaultValue={defaultValue}\n            onValueChange={onValueChange}\n            value={value}\n        >\n            <TabsList>\n                {tabs.map((tab) => {\n                    return (\n                        <TabsTrigger key={tab.tabValue} value={tab.tabValue}>{tab.label}</TabsTrigger>\n                    )\n                })}\n            </TabsList>\n            {tabs.map((tab) => (\n                <TabsContent key={tab.tabValue} value={tab.tabValue}>\n                    {tab.content}\n                </TabsContent>\n            ))}\n        </Tabs>\n    )\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "categories": [
+    "react",
+    "component"
+  ],
+  "type": "registry:component"
+}

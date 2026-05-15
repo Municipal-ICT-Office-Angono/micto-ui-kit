@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { navData } from "./docs-sidebar";
+import { getNavData } from "./docs-sidebar";
 
 export function DocsPager() {
   const pathname = usePathname();
 
   // Flatten the navigation data
-  const flatNav = navData.flatMap((section) => section.items);
-  const currentIndex = flatNav.findIndex((item) => item.url === pathname);
+  const flatNav = getNavData().flatMap((section) => section.items);
+  const currentIndex = flatNav.findIndex((item) => item?.url === pathname);
 
   const prev = currentIndex > 0 ? flatNav[currentIndex - 1] : null;
   const next =

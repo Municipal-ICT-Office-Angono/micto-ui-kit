@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
-import { SearchSelect } from "@/components/ui/search-select";
+import { SearchSelect } from "@/components/micto/search-select";
 
 // --- Mock Data ---
 
@@ -132,3 +132,4 @@ export default function SearchSelectDemo() {
     </div>
   );
 }
+

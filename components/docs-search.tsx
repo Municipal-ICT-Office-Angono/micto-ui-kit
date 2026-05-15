@@ -13,7 +13,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { navData } from "@/components/docs-sidebar";
+import { getNavData } from "@/components/docs-sidebar";
 
 export function DocsSearch() {
   const [open, setOpen] = React.useState(false);
@@ -53,10 +53,10 @@ export function DocsSearch() {
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          {navData.map((group, index) => (
+          {getNavData().map((group, index, array) => (
             <React.Fragment key={group.title}>
               <CommandGroup heading={group.title}>
-                {group.items.map((item) => (
+                {group.items?.map((item) => (
                   <CommandItem
                     key={item.url}
                     value={item.title}
@@ -68,7 +68,7 @@ export function DocsSearch() {
                   </CommandItem>
                 ))}
               </CommandGroup>
-              {index < navData.length - 1 && <CommandSeparator />}
+              {index < array.length - 1 && <CommandSeparator />}
             </React.Fragment>
           ))}
         </CommandList>

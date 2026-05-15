@@ -51,7 +51,7 @@ export default function Home() {
                 size="lg"
                 className="px-7 h-12 text-sm font-semibold border-border hover:bg-muted/40"
               >
-                <Link href="/docs/components/data-table">
+                <Link href="/docs/components/micto/data-table">
                   Browse Components
                 </Link>
               </Button>

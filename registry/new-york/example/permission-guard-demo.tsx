@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
-import { PermissionProvider, Can, RoleGuard } from "@/components/ui/permission-guard";
+import { PermissionProvider, Can, RoleGuard } from "@/components/micto/permission-guard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layout, ShieldAlert, Key, UserCheck, Trash2, Edit, Plus } from "lucide-react";
@@ -227,3 +227,4 @@ export default function PermissionGuardDemo() {
     </div>
   );
 }
+

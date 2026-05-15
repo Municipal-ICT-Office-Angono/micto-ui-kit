@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
-import { TableToolbar, ToolbarAction } from "@/components/ui/table-toolbar";
+import { TableToolbar, ToolbarAction } from "@/components/micto/table-toolbar";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -244,3 +244,4 @@ export default function TableToolbarDemo() {
     </div>
   );
 }
+

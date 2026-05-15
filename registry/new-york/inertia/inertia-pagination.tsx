@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * @title Inertia Pagination
+ * @description A high-performance pagination component optimized for Laravel and Inertia.js responses.
+ * @categories react, component, inertia
+ */
 import * as React from "react";
 import {
   Pagination,
