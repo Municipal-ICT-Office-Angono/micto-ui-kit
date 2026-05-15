@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { title } from "process";
 
 import { docsConfig } from "@/config/docs";
 import registry from "@/registry.json";
