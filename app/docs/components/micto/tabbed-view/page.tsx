@@ -61,24 +61,6 @@ export default function Example() {
     )
 }`;
 
-const toolbarActionCode = `// Automates height padding, font constraints, active transitions,
-// and features automatic mobile auto-collapse out-of-the-box!
-
-import { ToolbarAction } from "@/components/ui/table-toolbar"
-import { Plus } from "lucide-react"
-
-export default function Example() {
-  return (
-    <ToolbarAction 
-      icon={Plus} 
-      variant="default"
-      collapseOnMobile={true} // hides text on mobile, displaying full on desktop
-    >
-      Add Citizen
-    </ToolbarAction>
-  )
-}`;
-
 const reusableTabPropsData = [
     {
         name: "tabs",
