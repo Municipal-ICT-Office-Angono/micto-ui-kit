@@ -14,7 +14,7 @@ export function SiteFooter() {
           >
             Nehry Dedoro
           </Link>{" "}
-          for{" "}
+          &{" "}
           <span className="font-semibold text-foreground">MICTO | Angono</span>.
         </p>
         <p className="text-balance text-center md:text-right text-[11px] leading-loose text-muted-foreground">
