@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Stamp, Eye, FileSpreadsheet, Download } from "lucide-react";
 
-// â”€â”€â”€ MOCK DATA: Routing Audit Trail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- MOCK DATA: Routing Audit Trail -------------------------------------------
 
 const ROUTING_HISTORY = [
   {
@@ -51,7 +51,7 @@ export default function DocumentViewerDemo() {
   return (
     <div className="w-full max-w-5xl mx-auto space-y-12 py-6">
 
-      {/* â”€â”€ Example 1: Full DMS Ordinance Interface â”€â”€ */}
+      {/* -- Example 1: Full DMS Ordinance Interface -- */}
       <section className="space-y-4">
         <div>
           <h3 className="text-sm font-bold text-foreground">Municipal Ordinance Viewer (Full DMS Mode)</h3>
@@ -118,12 +118,12 @@ export default function DocumentViewerDemo() {
         </DocumentViewer>
       </section>
 
-      {/* â”€â”€ Example 2: Scanned Image Preview (Leave Form / Receipts) â”€â”€ */}
+      {/* -- Example 2: Scanned Image Preview (Leave Form / Receipts) -- */}
       <section className="space-y-4">
         <div>
           <h3 className="text-sm font-bold text-foreground">Scanned Document Preview (Image Mode)</h3>
           <p className="text-xs text-muted-foreground">
-            Provides native zoom and 90Â° rotation controls for scanned citizen submissions or receipts.
+            Provides native zoom and 90° rotation controls for scanned citizen submissions or receipts.
           </p>
         </div>
 
@@ -139,7 +139,7 @@ export default function DocumentViewerDemo() {
         </DocumentViewer>
       </section>
 
-      {/* â”€â”€ Example 3: Modal Lightbox Trigger â”€â”€ */}
+      {/* -- Example 3: Modal Lightbox Trigger -- */}
       <section className="space-y-4">
         <div>
           <h3 className="text-sm font-bold text-foreground">Modal / Lightbox Overlay</h3>

@@ -29,7 +29,7 @@ const history = [
     id: 1,
     title: "Purchase Request Submitted",
     description: "PR-2026-009 submitted for IT Equipment procurement.",
-    timestamp: "Oct 24, 2026 Â· 09:15 AM",
+    timestamp: "Oct 24, 2026 · 09:15 AM",
     status: "completed" as const,
     actor: { name: "Nehry Dedoro", avatar: "/avatars/nehry.jpg", role: "Lead Architect" },
     metadata: [<Badge key="1">ICT Fund</Badge>],

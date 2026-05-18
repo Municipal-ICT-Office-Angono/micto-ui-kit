@@ -14,38 +14,63 @@ import {
 
 // ─── Types & Context ──────────────────────────────────────────────────────────
 
-interface TabItem {
+export interface TabItem {
     tabValue: string;
-    label: string;
-    content: React.ReactNode;
+    label: React.ReactNode;
+    content: React.ReactNode | (() => React.ReactNode);
+    icon?: React.ElementType;
+    disabled?: boolean;
+    className?: string;
 }
 
 // ─── Data & Tab Switch Function ───────────────────────────────────────────────────────────
 
-interface TabbedViewProps {
+export interface TabbedViewProps {
     tabs: TabItem[];
     defaultValue?: string;
-    value: string | undefined;
-    onValueChange: (value: string) => void;
+    value?: string;
+    onValueChange?: (value: string) => void;
+    /**
+     * If true, keeps hidden tabs in the DOM so they don't lose state (like form inputs).
+     * WARNING: This means all tabs will mount and trigger data fetches immediately.
+     */
+    keepMounted?: boolean;
+    className?: string;
 }
 
-export function TabbedView({ tabs, defaultValue, value, onValueChange }: TabbedViewProps) {
+export function TabbedView({ tabs, defaultValue, value, onValueChange, keepMounted, className }: TabbedViewProps) {
     return (
         <Tabs
-            defaultValue={defaultValue}
+            defaultValue={defaultValue ?? tabs[0]?.tabValue}
             onValueChange={onValueChange}
             value={value}
+            className={className}
         >
-            <TabsList>
+            <TabsList className="flex flex-wrap h-auto">
                 {tabs.map((tab) => {
+                    const Icon = tab.icon;
                     return (
-                        <TabsTrigger key={tab.tabValue} value={tab.tabValue}>{tab.label}</TabsTrigger>
+                        <TabsTrigger 
+                            key={tab.tabValue} 
+                            value={tab.tabValue}
+                            disabled={tab.disabled}
+                            className={tab.className}
+                        >
+                            {Icon && <Icon className="w-4 h-4 mr-2" />}
+                            {tab.label}
+                        </TabsTrigger>
                     )
                 })}
             </TabsList>
             {tabs.map((tab) => (
-                <TabsContent key={tab.tabValue} value={tab.tabValue}>
-                    {tab.content}
+                <TabsContent 
+                    key={tab.tabValue} 
+                    value={tab.tabValue}
+                    forceMount={keepMounted ? true : undefined}
+                    className={keepMounted && value !== tab.tabValue ? "hidden" : ""}
+                >
+                    {/* Lazy evaluate the content if it's a function, otherwise render it directly */}
+                    {typeof tab.content === 'function' ? tab.content() : tab.content}
                 </TabsContent>
             ))}
         </Tabs>

@@ -84,7 +84,7 @@ const rootProps = [
 
 const toolbarProps = [
   { name: "showZoom", type: "boolean", default: "true", description: "When true, renders zoom scale controls for image documents." },
-  { name: "showRotate", type: "boolean", default: "true", description: "When true, renders 90Â° clockwise rotation button for image documents." },
+  { name: "showRotate", type: "boolean", default: "true", description: "When true, renders 90° clockwise rotation button for image documents." },
   { name: "showFullscreen", type: "boolean", default: "true", description: "When true, renders the fullscreen toggle button." },
   { name: "showSidebarToggle", type: "boolean", default: "true", description: "When true, renders the panel collapse/expand button." },
   { name: "actions", type: "ReactNode", default: "undefined", description: "Custom JSX slot for rendering action buttons (e.g. 'Sign Resolution', 'Endorse')." },

@@ -237,21 +237,6 @@
       ]
     },
     {
-      "name": "micto/status-card",
-      "type": "registry:component",
-      "title": "Status Card",
-      "description": "A professional LGU component.",
-      "files": [
-        {
-          "path": "registry/new-york/micto/status-card.tsx",
-          "type": "registry:component"
-        }
-      ],
-      "categories": [
-        "react"
-      ]
-    },
-    {
       "name": "micto/tabbed-view",
       "type": "registry:component",
       "title": "Tabbed View",
@@ -268,6 +253,83 @@
       "categories": [
         "react",
         "component"
+      ]
+    },
+    {
+      "name": "micto/metric-card",
+      "type": "registry:component",
+      "title": "Metric Card",
+      "description": "A KPI card that displays a primary value, a trend indicator, and an optional sparkline chart.",
+      "registryDependencies": [
+        "card",
+        "chart"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/metric-card.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "micto"
+      ]
+    },
+    {
+      "name": "micto/daily-time-record",
+      "type": "registry:component",
+      "title": "Daily Time Record",
+      "description": "A highly-detailed visual log grid for employee attendance, featuring calculated stats, weekend/holiday highlighting, and interactive log adjustments.",
+      "registryDependencies": [
+        "card",
+        "badge",
+        "tooltip",
+        "sheet",
+        "label",
+        "input",
+        "textarea",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/daily-time-record.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "micto"
+      ]
+    },
+    {
+      "name": "micto/salary-grade-explorer",
+      "type": "registry:component",
+      "title": "Salary Grade Explorer",
+      "description": "A highly-detailed government salary grade matrix browser, payroll contribution simulator, and visual pay slip previewer.",
+      "registryDependencies": [
+        "card",
+        "badge",
+        "button",
+        "input",
+        "label",
+        "checkbox",
+        "table"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/salary-grade-explorer.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "micto"
       ]
     }
   ]

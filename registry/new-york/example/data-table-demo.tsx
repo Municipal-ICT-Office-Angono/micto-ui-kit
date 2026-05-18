@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye, Pencil, Trash2, Plus, Download, UserX } from "lucide-react";
 
-// â”€â”€â”€ Mock Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Mock Data ----------------------------------------------------------------
 
 type Employee = {
   id: string;
@@ -46,7 +46,7 @@ const TRASHED_EMPLOYEES: Employee[] = [
   { id: "t3", employeeNo: "EMP-052", name: "Felix Ramos",    department: "Engineering", position: "Foreman",           status: "inactive" },
 ];
 
-// â”€â”€â”€ Status Badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Status Badge -------------------------------------------------------------
 
 const STATUS_STYLES: Record<Employee["status"], string> = {
   active:   "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400",
@@ -62,7 +62,7 @@ function StatusBadge({ status }: { status: Employee["status"] }) {
   );
 }
 
-// â”€â”€â”€ Column Definitions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Column Definitions -------------------------------------------------------
 
 const col = createColumnHelper<Employee>();
 
@@ -100,7 +100,7 @@ const columns = [
   }),
 ];
 
-// â”€â”€â”€ Demo: Flat (No Pagination, No Toolbar) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Demo: Flat (No Pagination, No Toolbar) -----------------------------------
 
 const FLAT_COLUMNS = [
   indexColumn<Employee>(),
@@ -115,7 +115,7 @@ const FLAT_COLUMNS = [
   }),
 ];
 
-// â”€â”€â”€ Main Demo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Main Demo ----------------------------------------------------------------
 
 export default function DataTableDemo() {
   const [selectedEmployees, setSelectedEmployees] = React.useState<Employee[]>([]);
@@ -132,12 +132,12 @@ export default function DataTableDemo() {
   return (
     <div className="w-full max-w-5xl mx-auto py-4 space-y-10">
 
-      {/* â”€â”€ SECTION 1: Full featured â”€â”€ */}
+      {/* -- SECTION 1: Full featured -- */}
       <section className="space-y-3">
         <div className="space-y-1">
           <h3 className="text-sm font-bold">Full-Featured Table</h3>
           <p className="text-xs text-muted-foreground">
-          Row selection Â· Sorting Â· Search Â· Column visibility Â· Page size Â· Bulk actions Â· Trashed toggle
+          Row selection · Sorting · Search · Column visibility · Page size · Bulk actions · Trashed toggle
           </p>
         </div>
 
@@ -188,7 +188,7 @@ export default function DataTableDemo() {
         )}
       </section>
 
-      {/* â”€â”€ SECTION 2: Flat / No Pagination â”€â”€ */}
+      {/* -- SECTION 2: Flat / No Pagination -- */}
       <section className="space-y-3">
         <div className="space-y-1">
           <h3 className="text-sm font-bold">Flat Table (No Pagination)</h3>
@@ -207,7 +207,7 @@ export default function DataTableDemo() {
         />
       </section>
 
-      {/* â”€â”€ SECTION 3: Search-only toolbar (no bulk actions) â”€â”€ */}
+      {/* -- SECTION 3: Search-only toolbar (no bulk actions) -- */}
       <section className="space-y-3">
         <div className="space-y-1">
           <h3 className="text-sm font-bold">Simple Filtered Table</h3>

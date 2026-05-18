@@ -270,7 +270,7 @@ export default function EmployeesIndex({ records, filters }: {
 const columnFactoriesCode = `import {
   selectionColumn,   // checkbox with select-all
   indexColumn,       // row number (#)
-  rowActionsColumn,  // â‹® actions dropdown
+  rowActionsColumn,  // ⋮ actions dropdown
   createColumnHelper,
 } from "@/components/micto/data-table"
 

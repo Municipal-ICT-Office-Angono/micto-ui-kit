@@ -23,7 +23,7 @@ const DOCUMENT_HISTORY: ActivityTimelineItemData[] = [
     id: 1,
     title: "Purchase Request Submitted",
     description: "PR-2026-009 submitted for IT Equipment procurement (20x Laptops).",
-    timestamp: "Oct 24, 2026 Â· 09:15 AM",
+    timestamp: "Oct 24, 2026 · 09:15 AM",
     status: "completed",
     actor: {
       name: "Nehry Dedoro",
@@ -42,7 +42,7 @@ const DOCUMENT_HISTORY: ActivityTimelineItemData[] = [
     id: 2,
     title: "Endorsed by Department Head",
     description: "Reviewed and endorsed by Municipal ICT Officer. Verified itemized budget allocation.",
-    timestamp: "Oct 24, 2026 Â· 11:30 AM",
+    timestamp: "Oct 24, 2026 · 11:30 AM",
     status: "completed",
     actor: {
       name: "Clara Bautista",
@@ -55,7 +55,7 @@ const DOCUMENT_HISTORY: ActivityTimelineItemData[] = [
     id: 3,
     title: "Pending Budget Clearance",
     description: "Forwarded to Municipal Budget Office for CAO (Certificate of Availability of Funds).",
-    timestamp: "Oct 25, 2026 Â· 02:00 PM",
+    timestamp: "Oct 25, 2026 · 02:00 PM",
     status: "in-progress",
     actor: {
       name: "Reyna Garcia",
@@ -78,7 +78,7 @@ const DOCUMENT_HISTORY: ActivityTimelineItemData[] = [
   },
 ];
 
-// â”€â”€â”€ MOCK DATA: Leave Stepper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- MOCK DATA: Leave Stepper -------------------------------------------------
 
 const LEAVE_STEPS = [
   { id: 1, title: "Filing", desc: "Submit Form 6" },
@@ -87,7 +87,7 @@ const LEAVE_STEPS = [
   { id: 4, title: "Approved", desc: "Final notice" },
 ];
 
-// â”€â”€â”€ Main Demo Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Main Demo Component ------------------------------------------------------
 
 export default function ActivityTimelineDemo() {
   const [currentStep, setCurrentStep] = React.useState(2);
@@ -101,7 +101,7 @@ export default function ActivityTimelineDemo() {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-12 py-6">
 
-      {/* â”€â”€ Example 1: Document Routing History (Data-Driven Shorthand) â”€â”€ */}
+      {/* -- Example 1: Document Routing History (Data-Driven Shorthand) -- */}
       <section className="space-y-4">
         <div>
           <h3 className="text-sm font-bold text-foreground">Document Routing Audit Trail</h3>
@@ -133,7 +133,7 @@ export default function ActivityTimelineDemo() {
         </Card>
       </section>
 
-      {/* â”€â”€ Example 2: Horizontal Stepper â”€â”€ */}
+      {/* -- Example 2: Horizontal Stepper -- */}
       <section className="space-y-4">
         <div className="flex justify-between items-end">
           <div>
@@ -178,7 +178,7 @@ export default function ActivityTimelineDemo() {
         </Card>
       </section>
 
-      {/* â”€â”€ Example 3: Composable Primitives (Custom Icons & Dense Layout) â”€â”€ */}
+      {/* -- Example 3: Composable Primitives (Custom Icons & Dense Layout) -- */}
       <section className="space-y-4">
         <div>
           <h3 className="text-sm font-bold text-foreground">Composable API & Custom Dots</h3>
