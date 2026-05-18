@@ -2,14 +2,7 @@ import * as React from "react";
 import { CodeBlock } from "@/components/code-block";
 import { InstallCommandTabs } from "@/components/install-command-tabs";
 import { Badge } from "@/components/ui/badge";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { PropsTable } from "@/components/props-table";
 import { ComponentPreview } from "@/components/component-preview";
 import { getCode, highlightCode } from "@/lib/get-code";
 import { DocsHeader } from "@/components/docs-header";
@@ -29,57 +22,35 @@ const installCommands = [
     },
 ];
 
-const basicUsageCode = `import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
+const basicUsageCode = `import { useState } from "react"
+import { TabbedView } from "@/components/micto/tabbed-view"
+
 export default function Example() {
     const [currentTab, setCurrentTab] = useState('active');
+
     return (
         <div className="w-full max-w-4xl mx-auto space-y-12 py-6">
-            <ReusableTabs
-                tabs={
-                    [
-                        {
-                            tabValue: 'active', label: 'Attendees Dashboard', content: <ChartPieInteractive />
-                        },
-                        {
-                            tabValue: 'trash', label: 'Calendar', content: <CalendarDemo />
-                        },
-                        {
-                            tabValue: 'custom', label: 'Your Other Component', content: <AdditionalComponent />
-                        }
-                    ]
-                }
+            <TabbedView
+                tabs={[
+                    {
+                        tabValue: 'active', label: 'Dashboard', content: <div>Dashboard</div>
+                    },
+                    {
+                        tabValue: 'calendar', label: 'Calendar', content: <div>Calendar</div>
+                    },
+                    {
+                        tabValue: 'custom', label: 'Settings', content: <div>Settings</div>
+                    }
+                ]}
                 onValueChange={setCurrentTab}
                 value={currentTab}
                 defaultValue='active'
             />
-        </div >
+        </div>
     )
 }`;
 
-const toolbarActionCode = `// Automates height padding, font constraints, active transitions,
-// and features automatic mobile auto-collapse out-of-the-box!
-
-import { ToolbarAction } from "@/components/ui/table-toolbar"
-import { Plus } from "lucide-react"
-
-export default function Example() {
-  return (
-    <ToolbarAction 
-      icon={Plus} 
-      variant="default"
-      collapseOnMobile={true} // hides text on mobile, displaying full on desktop
-    >
-      Add Citizen
-    </ToolbarAction>
-  )
-}`;
-
-const reusableTabPropsData = [
+const tabbedViewPropsData = [
     {
         name: "tabs",
         type: "object array",
@@ -124,7 +95,7 @@ const reusableTabPropsData = [
     }
 ];
 
-export default async function ReusableTabsPage() {
+export default async function TabbedViewPage() {
     const previewRawCode = getCode(
         "registry/new-york/example/tabbed-view-demo.tsx",
     );
@@ -152,8 +123,8 @@ export default async function ReusableTabsPage() {
     return (
         <div className="mx-auto max-w-4xl space-y-12 pb-20 mt-8">
             <DocsHeader
-                title="Reusable Tabs"
-                description="A simple tabs container for multiple screens or sub-pages that switches."
+                title="Tabbed View"
+                description="A container component that organizes content into distinct, selectable panels, allowing users to switch between different views within the same window."
                 badges={headerBadges}
             />
 
@@ -184,8 +155,8 @@ export default async function ReusableTabsPage() {
                 {/* Usage A Section */}
                 <section className="space-y-6">
                     <DocsSectionHeading
-                        title="Complete Reusable Tabs Layout"
-                        description="Declare tab objects containing value, label, corresponding component, and tab click function. The container switches tabs via function and displays the passed component."
+                        title="Complete Tabbed View Layout"
+                        description="Declare tab objects containing value, label, and corresponding component. The container switches tabs and displays the passed component."
                     />
                     <div className="overflow-hidden rounded-xl border">
                         <CodeBlock code={basicUsageCode} html={basicUsageHtml} language="tsx" />
@@ -195,50 +166,10 @@ export default async function ReusableTabsPage() {
                 {/* Props Reference A */}
                 <section className="space-y-6">
                     <DocsSectionHeading
-                        title="Reusable Tabs API Reference"
-                        description="Configure the toolbar layout using the following options."
+                        title="Tabbed View API Reference"
+                        description="Configure the tabbed view using the following options."
                     />
-                    <div className="rounded-xl border overflow-hidden shadow-sm bg-background">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="bg-muted/50 hover:bg-muted/50">
-                                    <TableHead className="w-[150px] font-bold text-foreground/80 lowercase tracking-tight">
-                                        Prop
-                                    </TableHead>
-                                    <TableHead className="font-bold text-foreground/80 lowercase tracking-tight">
-                                        Type
-                                    </TableHead>
-                                    <TableHead className="font-bold text-foreground/80 lowercase tracking-tight">
-                                        Default
-                                    </TableHead>
-                                    <TableHead className="text-right font-bold text-foreground/80 lowercase tracking-tight">
-                                        Description
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {reusableTabPropsData.map((prop) => (
-                                    <TableRow
-                                        key={prop.name}
-                                        className="border-b transition-colors hover:bg-muted/5 font-sans"
-                                    >
-                                        <TableCell className="font-mono text-xs font-semibold text-primary/80">
-                                            {prop.name}
-                                        </TableCell>
-                                        <TableCell className="font-mono text-xs text-blue-600 dark:text-blue-400">
-                                            {prop.type}
-                                        </TableCell>
-                                        <TableCell className="font-mono text-xs text-muted-foreground/70">
-                                            {prop.default}
-                                        </TableCell>
-                                        <TableCell className="text-right text-xs leading-relaxed max-w-[300px] text-muted-foreground">
-                                            {prop.description}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
+                    <PropsTable data={tabbedViewPropsData} />
                 </section>
             </div>
         </div>
