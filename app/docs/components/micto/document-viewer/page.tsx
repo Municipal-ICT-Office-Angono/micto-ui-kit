@@ -71,10 +71,10 @@ export default function PlanModal() {
   )
 }`;
 
-// â”€â”€â”€ Props Tables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Props Tables 
 
 const rootProps = [
-  { name: "url", type: "string", default: "â€”", description: "The direct URL to the document (PDF, PNG, JPG, WEBP)." },
+  { name: "url", type: "string", default: "", description: "The direct URL to the document (PDF, PNG, JPG, WEBP)." },
   { name: "title", type: "ReactNode", default: "undefined", description: "Document title displayed in the toolbar header and modal accessibility tags." },
   { name: "initialScale", type: "number", default: "1", description: "Starting zoom factor (e.g. 0.8 for 80%, 1.5 for 150%)." },
   { name: "sidebarPosition", type: "'left' | 'right'", default: "'right'", description: "Dictates which side the collapsible metadata pane appears on." },
@@ -96,10 +96,10 @@ const sidebarProps = [
 ];
 
 const dialogProps = [
-  { name: "trigger", type: "ReactNode", default: "â€”", description: "The button or trigger element that launches the modal dialog." },
-  { name: "url", type: "string", default: "â€”", description: "Forwarded document source URL." },
+  { name: "trigger", type: "ReactNode", default: "", description: "The button or trigger element that launches the modal dialog." },
+  { name: "url", type: "string", default: "", description: "Forwarded document source URL." },
   { name: "title", type: "ReactNode", default: "undefined", description: "Forwarded document title." },
-  { name: "children", type: "ReactNode", default: "â€”", description: "Toolbar, Canvas, and Sidebar nodes rendered inside the modal." },
+  { name: "children", type: "ReactNode", default: "", description: "Toolbar, Canvas, and Sidebar nodes rendered inside the modal." },
 ];
 
 

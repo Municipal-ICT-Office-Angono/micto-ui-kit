@@ -231,7 +231,7 @@ export function useDataTable<TData>({
     data,
     columns,
     state: { sorting, columnFilters, globalFilter, rowSelection, columnVisibility, pagination },
-    // Only pass pageCount in manual mode â€” in client mode TanStack calculates it from data
+    // Only pass pageCount in manual mode, in client mode TanStack calculates it from data
     ...(manualPagination ? { pageCount: pageCount ?? -1 } : {}),
     manualPagination,
     manualSorting,
@@ -616,7 +616,6 @@ export function DataTable<TData>({
         <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-destructive/20 bg-destructive/5 text-xs">
           <Archive className="h-3.5 w-3.5 text-destructive shrink-0" />
           <span className="text-destructive font-medium">Showing trashed records</span>
-          <span className="text-muted-foreground">â€”</span>
           <button
             onClick={handleTrashedToggle}
             className="text-primary hover:underline font-medium"

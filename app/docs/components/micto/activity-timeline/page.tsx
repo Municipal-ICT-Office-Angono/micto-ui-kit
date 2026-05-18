@@ -91,7 +91,7 @@ export default function SystemAuditLog() {
   )
 }`;
 
-// â”€â”€â”€ Props Tables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Props Tables 
 
 const rootProps = [
   { name: "orientation", type: "'vertical' | 'horizontal'", default: "'vertical'", description: "Defines the layout orientation. Vertical stacks items down; horizontal places them side-by-side." },
@@ -104,13 +104,13 @@ const itemProps = [
 ];
 
 const listProps = [
-  { name: "items", type: "ActivityTimelineItemData[]", default: "â€”", description: "Array of structured item configuration objects for the data-driven shorthand." },
+  { name: "items", type: "ActivityTimelineItemData[]", default: "", description: "Array of structured item configuration objects for the data-driven shorthand." },
   { name: "orientation", type: "'vertical' | 'horizontal'", default: "'vertical'", description: "Forwarded to the root container to dictate layout flow." },
 ];
 
 const itemDataProps = [
-  { name: "id", type: "string | number", default: "â€”", description: "Unique identifier for React list keys." },
-  { name: "title", type: "ReactNode", default: "â€”", description: "Primary title of the timeline step or event." },
+  { name: "id", type: "string | number", default: "", description: "Unique identifier for React list keys." },
+  { name: "title", type: "ReactNode", default: "", description: "Primary title of the timeline step or event." },
   { name: "description", type: "ReactNode", default: "undefined", description: "Secondary details text or paragraph." },
   { name: "timestamp", type: "string", default: "undefined", description: "Formatted date/time string displayed next to or below the title." },
   { name: "status", type: "'completed' | 'in-progress' | 'pending' | 'error' | 'muted'", default: "'pending'", description: "Visual status state for this step." },

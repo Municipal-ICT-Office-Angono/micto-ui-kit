@@ -53,14 +53,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_PH",
     url: "https://micto-ui-kit.misangono.net",
-    title: "MICTO UI Kit â€” Build Digital Giants in the Art Capital",
+    title: "MICTO UI Kit Build Digital Giants in the Art Capital",
     description:
       "A professional, technology-driven React component library and design system specifically engineered for accessible, scalable municipal government applications.",
     siteName: "MICTO UI Kit",
   },
   twitter: {
     card: "summary_large_image",
-    title: "MICTO UI Kit â€” Build Digital Giants in the Art Capital",
+    title: "MICTO UI Kit Build Digital Giants in the Art Capital",
     description:
       "A professional, technology-driven React component library and design system specifically engineered for accessible, scalable municipal government applications.",
     creator: "@MICTOAngono",

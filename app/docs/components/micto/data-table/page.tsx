@@ -80,7 +80,7 @@ export default function EmployeesPage() {
   )
 }`;
 
-const flatUsageCode = `// Minimal flat table â€” no pagination, no toolbar
+const flatUsageCode = `// Minimal flat table no pagination, no toolbar
 // Perfect for deduction lists, DTR summaries, small lookup tables.
 
 <DataTable
@@ -91,7 +91,7 @@ const flatUsageCode = `// Minimal flat table â€” no pagination, no toolbar
   density="compact"
 />`;
 
-const serverUsageCode = `// Server-side pagination â€” you own the page state
+const serverUsageCode = `// Server-side pagination you own the page state
 <DataTable
   data={data}
   columns={columns}
@@ -288,7 +288,7 @@ const columns = [
   }),
 
   rowActionsColumn<Employee>({
-    // actions receives the full row object â€” use it to conditionally hide/disable
+    // actions receives the full row object use it to conditionally hide/disable
     actions: (row) => [
       { label: "View",       icon: Eye,    onClick: (r) => router.push(\`/employees/\${r.id}\`) },
       { label: "Edit",       icon: Pencil, onClick: openEditModal },
@@ -326,11 +326,11 @@ function TrashedExample() {
   )
 }`;
 
-// â”€â”€â”€ Props Tables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Props Tables
 
 const coreProps = [
-  { name: "data", type: "TData[]", default: "â€”", description: "Array of row objects. Generic â€” works with any shape." },
-  { name: "columns", type: "ColumnDef<TData, any>[]", default: "â€”", description: "TanStack Table column definitions. Use createColumnHelper or the built-in factories." },
+  { name: "data", type: "TData[]", default: "", description: "Array of row objects. Generic works with any shape." },
+  { name: "columns", type: "ColumnDef<TData, any>[]", default: "", description: "TanStack Table column definitions. Use createColumnHelper or the built-in factories." },
   { name: "tableId", type: "string", default: "undefined", description: "Unique key for this table instance. When set, column visibility state is persisted to localStorage." },
   { name: "isLoading", type: "boolean", default: "false", description: "Renders skeleton rows matching the column layout instead of data rows." },
   { name: "loadingRowCount", type: "number", default: "5", description: "Number of skeleton placeholder rows shown during loading." },
@@ -342,7 +342,7 @@ const toolbarProps = [
   { name: "toolbarProps.filters", type: "ReactNode", default: "undefined", description: "Extra filter controls placed left of the search input inside the built-in toolbar." },
   { name: "toolbarProps.actions", type: "ReactNode", default: "undefined", description: "Right-side action buttons (e.g. Add button) shown when no rows are selected." },
   { name: "toolbarProps.bulkActions", type: "ReactNode | (rows: TData[]) => ReactNode", default: "undefined", description: "Actions shown in the bulk tray when rows are selected. Receives selected rows when passed as a function." },
-  { name: "toolbarProps.toolbarVariant", type: "'inline' | 'floating'", default: "'inline'", description: "Controls how the toolbar renders bulk actions â€” morphing inline or as a floating dock." },
+  { name: "toolbarProps.toolbarVariant", type: "'inline' | 'floating'", default: "'inline'", description: "Controls how the toolbar renders bulk actions morphing inline or as a floating dock." },
 ];
 
 const searchProps = [
@@ -419,7 +419,7 @@ export default async function DataTablePage() {
     <div className="mx-auto max-w-4xl space-y-12 pb-20 mt-8">
       <DocsHeader
         title="Data Table"
-        description="A fully-featured, generic data table built on TanStack Table v8. Supports server/client pagination, sorting, global search, column visibility with localStorage persistence, row selection, bulk actions, trashed/archived record filter toggle, and skeleton loading â€” all opt-in."
+        description="A fully-featured, generic data table built on TanStack Table v8. Supports server/client pagination, sorting, global search, column visibility with localStorage persistence, row selection, bulk actions, trashed/archived record filter toggle, and skeleton loading all opt-in."
         badges={headerBadges}
       />
       <div className="space-y-16">
@@ -471,7 +471,7 @@ export default async function DataTablePage() {
         <section className="space-y-6">
           <DocsSectionHeading
             title="Flat Table (No Pagination)"
-            description="For small datasets like deduction lists, DTR daily logs, or readonly summaries â€” just the table, nothing else."
+            description="For small datasets like deduction lists, DTR daily logs, or readonly summaries just the table, nothing else."
           />
           <div className="overflow-hidden rounded-xl border">
             <CodeBlock code={flatUsageCode} html={flatUsageHtml} language="tsx" />
@@ -547,7 +547,7 @@ export default async function DataTablePage() {
 
         {/* Props: Search */}
         <section className="space-y-6">
-          <DocsSectionHeading title="Search Props" description="Single internal search input â€” client-side automatic, server-side debounced callback." />
+          <DocsSectionHeading title="Search Props" description="Single internal search input client-side automatic, server-side debounced callback." />
           <PropsTable data={searchProps} />
         </section>
 
