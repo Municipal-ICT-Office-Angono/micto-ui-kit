@@ -85,11 +85,11 @@ export interface DataTableToolbarProps<TData> {
   toolbarVariant?: "inline" | "floating";
 }
 
-export interface DataTableProps<TData> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface DataTableProps<TData, TValue = any> {
   // Core
   data: TData[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  columns: ColumnDef<TData, any>[];
+  columns: ColumnDef<TData, TValue>[];
 
   // Identity (localStorage key)
   tableId?: string;
@@ -153,10 +153,10 @@ export interface DataTableProps<TData> {
 }
 
 
-export interface UseDataTableOptions<TData> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface UseDataTableOptions<TData, TValue = any> {
   data: TData[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  columns: ColumnDef<TData, any>[];
+  columns: ColumnDef<TData, TValue>[];
   tableId?: string;
   pageSize?: number;
   pageCount?: number;
@@ -390,7 +390,8 @@ function DefaultEmptyState() {
 
 // DataTable Component
 
-export function DataTable<TData>({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function DataTable<TData, TValue = any>({
   data,
   columns,
   tableId,
@@ -429,7 +430,7 @@ export function DataTable<TData>({
   className,
   tableClassName,
   tableRef,
-}: DataTableProps<TData>) {
+}: DataTableProps<TData, TValue>) {
   const isServerPagination = paginationMode === "server";
 
   // Trashed toggle state (uncontrolled fallback if no controlled prop)
@@ -443,7 +444,7 @@ export function DataTable<TData>({
 
   const serverPageCount = isServerPagination && totalPages ? totalPages : undefined;
 
-  const { table, globalFilter, setGlobalFilter, selectedRows, pagination } = useDataTable({
+  const { table, globalFilter, setGlobalFilter, selectedRows, pagination } = useDataTable<TData>({
     data,
     columns,
     tableId,
