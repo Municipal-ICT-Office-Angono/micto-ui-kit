@@ -6,7 +6,7 @@
  * @categories react, component
  */
 import * as React from "react";
-import { X, LucideIcon } from "lucide-react";
+import { X, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

@@ -8,12 +8,12 @@
 import * as React from "react";
 import { z } from "zod";
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  PaginationState,
-  Row,
-  RowSelectionState,
-  SortingState,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type PaginationState,
+  type Row,
+  type RowSelectionState,
+  type SortingState,
   Table,
   VisibilityState,
   flexRender,
@@ -65,11 +65,8 @@ import {
 import { TableToolbar } from "@/components/micto/table-toolbar";
 import { ServerPagination } from "@/components/micto/server-pagination";
 
-// â”€â”€â”€ Re-exports for consumer convenience â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export type { ColumnDef, Row, SortingState, VisibilityState, PaginationState };
 export { createColumnHelper } from "@tanstack/react-table";
-
-// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface RowAction<TData> {
   label: string;
@@ -155,7 +152,6 @@ export interface DataTableProps<TData> {
   tableRef?: React.RefObject<Table<TData> | null>;
 }
 
-// â”€â”€â”€ useDataTable Hook â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface UseDataTableOptions<TData> {
   data: TData[];
@@ -262,7 +258,7 @@ export function useDataTable<TData>({
   return { table, sorting, globalFilter, setGlobalFilter, pagination, rowSelection, selectedRows, columnVisibility };
 }
 
-// â”€â”€â”€ Column Factories â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Column Factories
 
 export function selectionColumn<TData>(): ColumnDef<TData, unknown> {
   return {
@@ -360,7 +356,7 @@ export function rowActionsColumn<TData>(options: {
   };
 }
 
-// â”€â”€â”€ Internal Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Internal Sub-components
 
 const DENSITY_CELL: Record<string, string> = {
   compact: "py-1.5 px-3 text-xs",
@@ -392,7 +388,7 @@ function DefaultEmptyState() {
   );
 }
 
-// â”€â”€â”€ DataTable Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// DataTable Component
 
 export function DataTable<TData>({
   data,
