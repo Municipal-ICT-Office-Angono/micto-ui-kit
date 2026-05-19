@@ -4,6 +4,7 @@ import * as React from "react";
 import {
   DailyTimeRecord,
   DtrLogEntry,
+  SCHEDULE_STANDARD,
 } from "@/components/micto/daily-time-record";
 import { Badge } from "@/components/ui/badge";
 import { Info } from "lucide-react";
@@ -12,101 +13,81 @@ import { Info } from "lucide-react";
 const initialLogs: DtrLogEntry[] = [
   {
     date: "2026-10-01",
-    amIn: "07:52 AM",
-    amOut: "12:02 PM",
-    pmIn: "12:58 PM",
-    pmOut: "05:04 PM",
+    punches: { amIn: "07:52 AM", amOut: "12:02 PM", pmIn: "12:58 PM", pmOut: "05:04 PM" },
     status: "regular",
   },
   {
     date: "2026-10-02",
-    amIn: "07:48 AM",
-    amOut: "12:01 PM",
-    pmIn: "12:55 PM",
-    pmOut: "05:02 PM",
+    punches: { amIn: "07:48 AM", amOut: "12:01 PM", pmIn: "12:55 PM", pmOut: "05:02 PM" },
     status: "regular",
   },
   {
     date: "2026-10-03", // Saturday
+    punches: {},
     status: "weekend",
   },
   {
     date: "2026-10-04", // Sunday
+    punches: {},
     status: "weekend",
   },
   {
     date: "2026-10-05",
-    amIn: "08:15 AM", // Late
-    amOut: "12:03 PM",
-    pmIn: "12:59 PM",
-    pmOut: "05:01 PM",
+    punches: { amIn: "08:15 AM", amOut: "12:03 PM", pmIn: "12:59 PM", pmOut: "05:01 PM" },
     tardinessMinutes: 15,
     status: "late",
   },
   {
     date: "2026-10-06",
-    amIn: "07:54 AM",
-    amOut: "12:02 PM",
-    pmIn: "01:00 PM",
-    pmOut: "05:03 PM",
+    punches: { amIn: "07:54 AM", amOut: "12:02 PM", pmIn: "01:00 PM", pmOut: "05:03 PM" },
     status: "regular",
   },
   {
     date: "2026-10-07",
-    amIn: "07:50 AM",
-    amOut: "12:05 PM",
-    pmIn: "12:58 PM",
-    pmOut: "05:00 PM",
+    punches: { amIn: "07:50 AM", amOut: "12:05 PM", pmIn: "12:58 PM", pmOut: "05:00 PM" },
     status: "regular",
   },
   {
     date: "2026-10-08", // Holiday
+    punches: {},
     status: "holiday",
     holidayName: "National Heroes Day",
   },
   {
     date: "2026-10-09", // Sick Leave
+    punches: {},
     status: "leave",
     leaveType: "Sick Leave",
   },
   {
     date: "2026-10-10", // Weekend
+    punches: {},
     status: "weekend",
   },
   {
     date: "2026-10-11", // Weekend
+    punches: {},
     status: "weekend",
   },
   {
     date: "2026-10-12", // Missing AM log (forgot to clock in)
-    amOut: "12:01 PM",
-    pmIn: "12:56 PM",
-    pmOut: "05:03 PM",
+    punches: { amOut: "12:01 PM", pmIn: "12:56 PM", pmOut: "05:03 PM" },
     status: "regular",
   },
   {
     date: "2026-10-13",
-    amIn: "07:53 AM",
-    amOut: "12:02 PM",
-    pmIn: "12:57 PM",
-    pmOut: "05:05 PM",
+    punches: { amIn: "07:53 AM", amOut: "12:02 PM", pmIn: "12:57 PM", pmOut: "05:05 PM" },
     status: "regular",
   },
   {
     date: "2026-10-14",
-    amIn: "07:55 AM",
-    amOut: "12:01 PM",
-    pmIn: "12:58 PM",
-    pmOut: "04:30 PM", // Early Out
+    punches: { amIn: "07:55 AM", amOut: "12:01 PM", pmIn: "12:58 PM", pmOut: "04:30 PM" },
     undertimeMinutes: 30,
     status: "undertime",
   },
   {
     date: "2026-10-15",
-    amIn: "07:51 AM",
-    amOut: "12:03 PM",
-    pmIn: "12:59 PM",
-    pmOut: "05:04 PM",
+    punches: { amIn: "07:51 AM", amOut: "12:03 PM", pmIn: "12:59 PM", pmOut: "05:04 PM" },
     status: "regular",
   },
 ];
@@ -117,14 +98,14 @@ export default function DailyTimeRecordDemo() {
   // Submit DTR correction request internally
   const handleSaveAdjustment = (
     date: string,
-    field: "amIn" | "amOut" | "pmIn" | "pmOut",
+    slotKey: string,
     correctedTime: string,
     _reason: string,
     _notes: string,
   ) => {
     return new Promise<void>((resolve) => {
       console.log(
-        `Saving DTR adjustment for ${date} [${field}] to: ${correctedTime}. Reason: ${_reason}, Notes: ${_notes}`,
+        `Saving DTR adjustment for ${date} [${slotKey}] to: ${correctedTime}. Reason: ${_reason}, Notes: ${_notes}`,
       );
       // Simulate API delay
       setTimeout(() => {
@@ -132,18 +113,24 @@ export default function DailyTimeRecordDemo() {
         setLogs((prevLogs) =>
           prevLogs.map((log) => {
             if (log.date === date) {
+              const firstInKey = SCHEDULE_STANDARD.slots.find((s) => s.type === "in")?.key;
+              const lastOutKey = [...SCHEDULE_STANDARD.slots].reverse().find((s) => s.type === "out")?.key;
+
               return {
                 ...log,
-                [field]: correctedTime,
+                punches: {
+                  ...log.punches,
+                  [slotKey]: correctedTime,
+                },
                 // If it had custom late/undertime minutes, we reset it
                 tardinessMinutes:
-                  field === "amIn" ? undefined : log.tardinessMinutes,
+                  slotKey === firstInKey ? undefined : log.tardinessMinutes,
                 undertimeMinutes:
-                  field === "pmOut" ? undefined : log.undertimeMinutes,
+                  slotKey === lastOutKey ? undefined : log.undertimeMinutes,
                 status:
-                  log.status === "late" && field === "amIn"
+                  log.status === "late" && slotKey === firstInKey
                     ? "regular"
-                    : log.status === "undertime" && field === "pmOut"
+                    : log.status === "undertime" && slotKey === lastOutKey
                       ? "regular"
                       : log.status,
               };
@@ -193,6 +180,7 @@ export default function DailyTimeRecordDemo() {
         department="Municipal Information and Communications Technology Office (MICTO)"
         position="Lead Systems Developer"
         month="October 2026"
+        schedule={SCHEDULE_STANDARD}
         logs={logs}
         onSaveAdjustment={handleSaveAdjustment}
       />

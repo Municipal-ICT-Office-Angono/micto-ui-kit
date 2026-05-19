@@ -39,12 +39,24 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
+export interface ScheduleSlot {
+  key: string;
+  label: string;
+  expectedTime: string; // 24h format, e.g. "08:00"
+  type: "in" | "out";
+}
+
+export interface ScheduleConfig {
+  name: string;
+  slots: ScheduleSlot[];
+  expectedDailyHours: number;
+  breakMinutes?: number;
+  tardinessGraceMinutes?: number;
+}
+
 export interface DtrLogEntry {
   date: string; // Format: "YYYY-MM-DD"
-  amIn?: string; // Format: "08:00 AM"
-  amOut?: string;
-  pmIn?: string;
-  pmOut?: string;
+  punches: Record<string, string | undefined>; // keys match ScheduleSlot.key, values in 12h format
   overtimeIn?: string;
   overtimeOut?: string;
   status:
@@ -67,14 +79,15 @@ export interface DailyTimeRecordProps extends React.HTMLAttributes<HTMLDivElemen
   department: string;
   position: string;
   month: string; // e.g. "October 2026"
+  schedule: ScheduleConfig;
   logs: DtrLogEntry[];
   onFileAdjustment?: (
     date: string,
-    field: "amIn" | "amOut" | "pmIn" | "pmOut",
+    slotKey: string,
   ) => void;
   onSaveAdjustment?: (
     date: string,
-    field: "amIn" | "amOut" | "pmIn" | "pmOut",
+    slotKey: string,
     correctedTime: string,
     reason: string,
     notes: string,
@@ -107,12 +120,45 @@ const convert24to12 = (time24?: string): string => {
   return `${String(hours).padStart(2, "0")}:${minutesStr} ${ampm}`;
 };
 
-const getDefaultTime = (field: "amIn" | "amOut" | "pmIn" | "pmOut"): string => {
-  if (field === "amIn") return "08:00";
-  if (field === "amOut") return "12:00";
-  if (field === "pmIn") return "13:00";
-  if (field === "pmOut") return "17:00";
-  return "";
+const toMinutes = (time24: string): number => {
+  if (!time24) return 0;
+  const parts = time24.split(":");
+  return parseInt(parts[0] ?? "0", 10) * 60 + parseInt(parts[1] ?? "0", 10);
+};
+
+const getDefaultTime = (schedule: ScheduleConfig, slotKey: string): string => {
+  const slot = schedule.slots.find((s) => s.key === slotKey);
+  return slot?.expectedTime ?? "08:00";
+};
+
+const computeDayHours = (
+  log: DtrLogEntry,
+  schedule: ScheduleConfig,
+): number => {
+  const { slots } = schedule;
+  let totalMinutes = 0;
+
+  for (let i = 0; i < slots.length; i++) {
+    const slot = slots[i]!;
+    if (slot.type === "in") {
+      const outSlot = slots.slice(i + 1).find((s) => s.type === "out");
+      if (!outSlot) break;
+
+      const inTime = log.punches[slot.key];
+      const outTime = log.punches[outSlot.key];
+
+      if (inTime && outTime) {
+        const inMin = toMinutes(convert12to24(inTime));
+        const outMin = toMinutes(convert12to24(outTime));
+        let diff = outMin - inMin;
+        if (diff < 0) diff += 24 * 60; // cross-midnight support
+        totalMinutes += diff;
+      }
+    }
+  }
+
+  totalMinutes -= (log.tardinessMinutes ?? 0) + (log.undertimeMinutes ?? 0);
+  return Math.max(0, totalMinutes / 60);
 };
 
 export const DailyTimeRecord = React.forwardRef<
@@ -126,6 +172,7 @@ export const DailyTimeRecord = React.forwardRef<
       department,
       position,
       month,
+      schedule,
       logs,
       onFileAdjustment,
       onSaveAdjustment,
@@ -137,9 +184,7 @@ export const DailyTimeRecord = React.forwardRef<
     // States for internal correction/adjustment sheet
     const [isSheetOpen, setIsSheetOpen] = React.useState(false);
     const [targetDate, setTargetDate] = React.useState("");
-    const [targetField, setTargetField] = React.useState<
-      "amIn" | "amOut" | "pmIn" | "pmOut" | null
-    >(null);
+    const [targetField, setTargetField] = React.useState<string | null>(null);
     const [correctedTime, setCorrectedTime] = React.useState("");
     const [reason, setReason] = React.useState("Biometric reader sync error");
     const [notes, setNotes] = React.useState("");
@@ -148,15 +193,15 @@ export const DailyTimeRecord = React.forwardRef<
 
     const handleSlotClick = (
       date: string,
-      field: "amIn" | "amOut" | "pmIn" | "pmOut",
+      slotKey: string,
       currentTime?: string,
     ) => {
       if (onFileAdjustment) {
-        onFileAdjustment(date, field);
+        onFileAdjustment(date, slotKey);
       } else if (onSaveAdjustment) {
         setTargetDate(date);
-        setTargetField(field);
-        const time24 = currentTime ? convert12to24(currentTime) : getDefaultTime(field);
+        setTargetField(slotKey);
+        const time24 = currentTime ? convert12to24(currentTime) : getDefaultTime(schedule, slotKey);
         setCorrectedTime(time24);
         setReason("Biometric reader sync error");
         setNotes("");
@@ -211,22 +256,23 @@ export const DailyTimeRecord = React.forwardRef<
           totalAbsents++;
         }
 
-        // Compute total hours (simple mock parser for standard hours)
-        let dayHours = 0;
-        if (log.amIn && log.amOut) dayHours += 4;
-        if (log.pmIn && log.pmOut) dayHours += 4;
-        if (log.overtimeIn && log.overtimeOut) dayHours += 3; // Standard OT block
+        // Compute total hours from actual punch times
+        let dayHours = computeDayHours(log, schedule);
+        if (log.overtimeIn && log.overtimeOut) {
+          const otIn = toMinutes(convert12to24(log.overtimeIn));
+          const otOut = toMinutes(convert12to24(log.overtimeOut));
+          let otDiff = otOut - otIn;
+          if (otDiff < 0) otDiff += 24 * 60;
+          dayHours += otDiff / 60;
+        }
 
-        // Deduct late/undertime minutes if applicable
         if (log.tardinessMinutes) {
           totalLates += log.tardinessMinutes;
           totalLatesCount++;
-          dayHours -= log.tardinessMinutes / 60;
         }
         if (log.undertimeMinutes) {
           totalUnderTime += log.undertimeMinutes;
           totalUnderTimeCount++;
-          dayHours -= log.undertimeMinutes / 60;
         }
 
         totalHoursRendered += Math.max(0, dayHours);
@@ -242,7 +288,7 @@ export const DailyTimeRecord = React.forwardRef<
         totalLeaves,
         totalAbsents,
       };
-    }, [logs]);
+    }, [logs, schedule]);
 
     // Format helper for dates (e.g. "01 Mon")
     const formatDateLabel = (dateStr: string) => {
@@ -260,7 +306,7 @@ export const DailyTimeRecord = React.forwardRef<
     const renderTimeCell = (
       date: string,
       time?: string,
-      field: "amIn" | "amOut" | "pmIn" | "pmOut" = "amIn",
+      slotKey: string = "in",
       isWeekendOrHoliday: boolean = false,
     ) => {
       const hasAdjustment = !!onFileAdjustment || !!onSaveAdjustment;
@@ -276,9 +322,9 @@ export const DailyTimeRecord = React.forwardRef<
             </span>
             {hasAdjustment && (
               <button
-                onClick={() => handleSlotClick(date, field, time)}
+                onClick={() => handleSlotClick(date, slotKey, time)}
                 className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 rounded-md text-primary text-[10px] font-bold gap-1 shadow-xs border border-primary/20"
-                title={`Request adjustment for ${field}`}
+                title={`Request adjustment for ${slotKey}`}
               >
                 <FileEdit className="h-3 w-3" />
                 <span>Adjust</span>
@@ -295,9 +341,9 @@ export const DailyTimeRecord = React.forwardRef<
           </span>
           {hasAdjustment && (
             <button
-              onClick={() => handleSlotClick(date, field, time)}
+              onClick={() => handleSlotClick(date, slotKey, time)}
               className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-muted/80 rounded-md text-muted-foreground text-[10px] font-medium gap-1 border"
-              title={`Edit log for ${field}`}
+              title={`Edit log for ${slotKey}`}
             >
               <FileEdit className="h-3 w-3 text-primary" />
               <span className="text-primary font-bold">Edit</span>
@@ -442,10 +488,9 @@ export const DailyTimeRecord = React.forwardRef<
                 <thead>
                   <tr className="bg-muted/50 border-b text-muted-foreground uppercase font-bold tracking-wider text-[10px] select-none">
                     <th className="py-3 px-4 text-left w-[100px]">Date</th>
-                    <th className="py-3 px-2 border-l">AM In</th>
-                    <th className="py-3 px-2 border-l">AM Out</th>
-                    <th className="py-3 px-2 border-l">PM In</th>
-                    <th className="py-3 px-2 border-l">PM Out</th>
+                    {schedule.slots.map((slot) => (
+                      <th key={slot.key} className="py-3 px-2 border-l">{slot.label}</th>
+                    ))}
                     <th className="py-3 px-2 border-l">Overtime</th>
                     <th className="py-3 px-2 border-l w-[80px]">Total</th>
                     <th className="py-3 px-4 border-l text-right w-[150px]">
@@ -491,109 +536,98 @@ export const DailyTimeRecord = React.forwardRef<
                           </span>
                         </td>
 
-                        {/* 2. AM In Col */}
-                        <td
-                          className={cn(
-                            "py-1 px-2 border-l font-mono",
-                            log.tardinessMinutes
-                              ? "text-amber-500 font-bold"
-                              : "",
-                          )}
-                        >
-                          {log.tardinessMinutes ? (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div className="cursor-help">
-                                  {renderTimeCell(
-                                    log.date,
-                                    log.amIn,
-                                    "amIn",
-                                    isWeekendOrHoliday,
-                                  )}
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent
-                                className="text-xs p-2 max-w-[200px]"
-                                side="top"
+                        {/* Dynamic schedule slot columns */}
+                        {schedule.slots.map((slot) => {
+                          const time = log.punches[slot.key];
+                          const firstInSlot = schedule.slots.find((s) => s.type === "in");
+                          const lastOutSlot = [...schedule.slots].reverse().find((s) => s.type === "out");
+                          const isFirstIn = slot.key === firstInSlot?.key;
+                          const isLastOut = slot.key === lastOutSlot?.key;
+
+                          const showTardiness = isFirstIn && !!log.tardinessMinutes;
+                          const showUndertime = isLastOut && !!log.undertimeMinutes;
+
+                          if (showTardiness) {
+                            return (
+                              <td
+                                key={slot.key}
+                                className={cn(
+                                  "py-1 px-2 border-l font-mono",
+                                  "text-amber-500 font-bold",
+                                )}
                               >
-                                <span className="font-semibold text-amber-500">
-                                  Tardy / Late Clock-In
-                                </span>
-                                : {log.tardinessMinutes} minutes late.
-                              </TooltipContent>
-                            </Tooltip>
-                          ) : (
-                            renderTimeCell(
-                              log.date,
-                              log.amIn,
-                              "amIn",
-                              isWeekendOrHoliday,
-                            )
-                          )}
-                        </td>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <div className="cursor-help">
+                                      {renderTimeCell(
+                                        log.date,
+                                        time,
+                                        slot.key,
+                                        isWeekendOrHoliday,
+                                      )}
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent
+                                    className="text-xs p-2 max-w-[200px]"
+                                    side="top"
+                                  >
+                                    <span className="font-semibold text-amber-500">
+                                      Tardy / Late Clock-In
+                                    </span>
+                                    : {log.tardinessMinutes} minutes late.
+                                  </TooltipContent>
+                                </Tooltip>
+                              </td>
+                            );
+                          }
 
-                        {/* 3. AM Out Col */}
-                        <td className="py-1 px-2 border-l font-mono">
-                          {renderTimeCell(
-                            log.date,
-                            log.amOut,
-                            "amOut",
-                            isWeekendOrHoliday,
-                          )}
-                        </td>
-
-                        {/* 4. PM In Col */}
-                        <td className="py-1 px-2 border-l font-mono">
-                          {renderTimeCell(
-                            log.date,
-                            log.pmIn,
-                            "pmIn",
-                            isWeekendOrHoliday,
-                          )}
-                        </td>
-
-                        {/* 5. PM Out Col */}
-                        <td
-                          className={cn(
-                            "py-1 px-2 border-l font-mono",
-                            log.undertimeMinutes
-                              ? "text-amber-500 font-bold"
-                              : "",
-                          )}
-                        >
-                          {log.undertimeMinutes ? (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div className="cursor-help">
-                                  {renderTimeCell(
-                                    log.date,
-                                    log.pmOut,
-                                    "pmOut",
-                                    isWeekendOrHoliday,
-                                  )}
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent
-                                className="text-xs p-2 max-w-[200px]"
-                                side="top"
+                          if (showUndertime) {
+                            return (
+                              <td
+                                key={slot.key}
+                                className={cn(
+                                  "py-1 px-2 border-l font-mono",
+                                  "text-amber-500 font-bold",
+                                )}
                               >
-                                <span className="font-semibold text-amber-500">
-                                  Undertime / Early Out
-                                </span>
-                                : {log.undertimeMinutes} minutes undertime.
-                              </TooltipContent>
-                            </Tooltip>
-                          ) : (
-                            renderTimeCell(
-                              log.date,
-                              log.pmOut,
-                              "pmOut",
-                              isWeekendOrHoliday,
-                            )
-                          )}
-                        </td>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <div className="cursor-help">
+                                      {renderTimeCell(
+                                        log.date,
+                                        time,
+                                        slot.key,
+                                        isWeekendOrHoliday,
+                                      )}
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent
+                                    className="text-xs p-2 max-w-[200px]"
+                                    side="top"
+                                  >
+                                    <span className="font-semibold text-amber-500">
+                                      Undertime / Early Out
+                                    </span>
+                                    : {log.undertimeMinutes} minutes undertime.
+                                  </TooltipContent>
+                                </Tooltip>
+                              </td>
+                            );
+                          }
 
-                        {/* 6. Overtime Col */}
+                          return (
+                            <td key={slot.key} className="py-1 px-2 border-l font-mono">
+                              {renderTimeCell(
+                                log.date,
+                                time,
+                                slot.key,
+                                isWeekendOrHoliday,
+                              )}
+                            </td>
+                          );
+                        })}
+
+                        {/* Overtime Col */}
                         <td className="py-1 px-2 border-l font-mono">
                           {log.overtimeIn && log.overtimeOut ? (
                             <span className="text-blue-500 font-medium">
@@ -604,17 +638,11 @@ export const DailyTimeRecord = React.forwardRef<
                           )}
                         </td>
 
-                        {/* 7. Total Daily Hours */}
+                        {/* Total Daily Hours */}
                         <td className="py-2.5 px-2 border-l font-mono font-semibold">
                           {!isWeekendOrHoliday && !isLeave && !isAbsent ? (
                             <span>
-                              {(
-                                (log.amIn && log.amOut ? 4 : 0) +
-                                (log.pmIn && log.pmOut ? 4 : 0) -
-                                ((log.tardinessMinutes || 0) +
-                                  (log.undertimeMinutes || 0)) /
-                                  60
-                              ).toFixed(1)}
+                              {computeDayHours(log, schedule).toFixed(1)}
                             </span>
                           ) : (
                             <span className="text-muted-foreground/30">-</span>
@@ -751,10 +779,7 @@ export const DailyTimeRecord = React.forwardRef<
                     <div className="space-y-1.5">
                       <Label className="text-xs font-semibold">Log Slot</Label>
                       <div className="bg-muted px-3 py-2 rounded-lg text-xs font-mono font-bold text-primary uppercase select-none w-fit">
-                        {targetField === "amIn" && "AM Time-In"}
-                        {targetField === "amOut" && "AM Time-Out"}
-                        {targetField === "pmIn" && "PM Time-In"}
-                        {targetField === "pmOut" && "PM Time-Out"}
+                        {schedule.slots.find((s) => s.key === targetField)?.label ?? targetField}
                       </div>
                     </div>
 
@@ -872,3 +897,40 @@ export const DailyTimeRecord = React.forwardRef<
 );
 
 DailyTimeRecord.displayName = "DailyTimeRecord";
+
+// ─── Preset Schedules ───────────────────────────────────────────────────────
+
+export const SCHEDULE_STANDARD: ScheduleConfig = {
+  name: "Standard 8-5",
+  slots: [
+    { key: "amIn",  label: "AM In",  expectedTime: "08:00", type: "in" },
+    { key: "amOut", label: "AM Out", expectedTime: "12:00", type: "out" },
+    { key: "pmIn",  label: "PM In",  expectedTime: "13:00", type: "in" },
+    { key: "pmOut", label: "PM Out", expectedTime: "17:00", type: "out" },
+  ],
+  expectedDailyHours: 8,
+  breakMinutes: 60,
+  tardinessGraceMinutes: 15,
+};
+
+export const SCHEDULE_STRAIGHT: ScheduleConfig = {
+  name: "Straight Shift",
+  slots: [
+    { key: "in",  label: "Time In",  expectedTime: "08:00", type: "in" },
+    { key: "out", label: "Time Out", expectedTime: "17:00", type: "out" },
+  ],
+  expectedDailyHours: 8,
+  breakMinutes: 60,
+  tardinessGraceMinutes: 15,
+};
+
+export const SCHEDULE_NIGHT: ScheduleConfig = {
+  name: "Night Shift (10PM-6AM)",
+  slots: [
+    { key: "nightIn",  label: "Night In",   expectedTime: "22:00", type: "in" },
+    { key: "nightOut", label: "Morning Out", expectedTime: "06:00", type: "out" },
+  ],
+  expectedDailyHours: 8,
+  breakMinutes: 0,
+  tardinessGraceMinutes: 15,
+};
