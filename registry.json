@@ -331,6 +331,33 @@
         "component",
         "micto"
       ]
+    },
+    {
+      "name": "micto/approval-workflow",
+      "type": "registry:component",
+      "title": "Approval Workflow",
+      "description": "A composable approval workflow engine with form-driven builder, runtime timeline, and action controls for internal LGU systems.",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "card",
+        "input",
+        "label",
+        "select",
+        "separator",
+        "textarea"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/approval-workflow.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "workflow"
+      ]
     }
   ]
 }
