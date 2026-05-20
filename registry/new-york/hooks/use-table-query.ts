@@ -2,7 +2,7 @@
 
 /**
  * @title Query
- * @description A high-performance TanStack Query wrapper for DataTable that manages server-side pagination, sorting, and searching state automatically.
+ * @description A high-performance TanStack Query wrapper for DataTable that manages server-side pagination, sorting, and searching state automatically, synchronized with URL parameters.
  * @categories react, hook, table
  * @hidden true
  */
@@ -10,7 +10,6 @@ import * as React from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import type { QueryKey, UseQueryResult } from "@tanstack/react-query";
 import type { ColumnDef, SortingState } from "@tanstack/react-table";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -81,6 +80,13 @@ export interface UseTableQueryReturn<TData> {
   currentParams: TableQueryParams;
 }
 
+// Helper to safely get parameter from URL
+function getUrlParam(key: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  const params = new URLSearchParams(window.location.search);
+  return params.get(key) || fallback;
+}
+
 // ─── Hook ────────────────────────────────────────────────────────────────────
 
 export function useTableQuery<TData>({
@@ -95,42 +101,19 @@ export function useTableQuery<TData>({
   enableTrashed = false,
   enabled = true,
 }: UseTableQueryOptions<TData>): UseTableQueryReturn<TData> {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
+  // Initialize states from URL parameters or fallbacks
+  const [page, setPage] = React.useState<number>(() => {
+    const p = getUrlParam("page", "1");
+    return Math.max(1, parseInt(p, 10));
+  });
 
-  // Helper to update query parameters in the URL
-  const updateParams = React.useCallback(
-    (newParams: Record<string, string | number | boolean | null>) => {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [pageSize, setPageSize] = React.useState<number>(() => {
+    const ps = getUrlParam("pageSize", String(initialPageSize));
+    return parseInt(ps, 10);
+  });
 
-      for (const [key, value] of Object.entries(newParams)) {
-        if (value === null || value === undefined || value === "") {
-          current.delete(key);
-        } else {
-          current.set(key, String(value));
-        }
-      }
-
-      const queryString = current.toString();
-      router.replace(`${pathname}?${queryString}`, { scroll: false });
-    },
-    [searchParams, router, pathname]
-  );
-
-  // Get parameter values directly from URL or fallback to defaults
-  const page = React.useMemo(() => {
-    const p = searchParams.get("page");
-    return p ? Math.max(1, parseInt(p, 10)) : 1;
-  }, [searchParams]);
-
-  const pageSize = React.useMemo(() => {
-    const ps = searchParams.get("pageSize");
-    return ps ? parseInt(ps, 10) : initialPageSize;
-  }, [searchParams, initialPageSize]);
-
-  const sorting = React.useMemo<SortingState>(() => {
-    const s = searchParams.get("sorting");
+  const [sorting, setSorting] = React.useState<SortingState>(() => {
+    const s = getUrlParam("sorting", "");
     if (!s) return initialSorting;
     try {
       return s.split(",").map((item) => {
@@ -142,39 +125,100 @@ export function useTableQuery<TData>({
     } catch {
       return initialSorting;
     }
-  }, [searchParams, initialSorting]);
+  });
 
-  const trashed = React.useMemo(() => {
-    return searchParams.get("trashed") === "true";
-  }, [searchParams]);
+  const [trashed, setTrashed] = React.useState<boolean>(() => {
+    return getUrlParam("trashed", "false") === "true";
+  });
 
-  // For the search input, keep a local state to allow fast typing (without router latency).
-  const [searchValue, setSearchValue] = React.useState(() => searchParams.get("search") || "");
+  const [search, setSearch] = React.useState<string>(() => {
+    return getUrlParam("search", "");
+  });
 
-  // Sync local search input with URL search param changes (e.g. if page loads or changes externally)
-  const urlSearch = searchParams.get("search") || "";
+  // Debounced search for TanStack Query
+  const [debouncedSearch, setDebouncedSearch] = React.useState(search);
+
   React.useEffect(() => {
-    setSearchValue(urlSearch);
-  }, [urlSearch]);
-
-  // Debounce the search input updates and push them to the URL
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      const currentSearch = searchParams.get("search") || "";
-      if (searchValue !== currentSearch) {
-        updateParams({
-          search: searchValue || null,
-          page: 1, // Reset to page 1 when search changes
-        });
-      }
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1); // Reset page to 1 when search changes
     }, searchDebounceMs);
+    return () => clearTimeout(handler);
+  }, [search, searchDebounceMs]);
 
-    return () => clearTimeout(timer);
-  }, [searchValue, searchDebounceMs, searchParams, updateParams]);
+  // Sync state values to URL search parameters
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const current = new URLSearchParams(window.location.search);
 
-  const debouncedSearch = searchParams.get("search") || "";
+    // Sync page
+    if (page > 1) current.set("page", String(page));
+    else current.delete("page");
 
-  const params: TableQueryParams = {
+    // Sync pageSize
+    if (pageSize !== initialPageSize) current.set("pageSize", String(pageSize));
+    else current.delete("pageSize");
+
+    // Sync search
+    if (debouncedSearch) current.set("search", debouncedSearch);
+    else current.delete("search");
+
+    // Sync sorting
+    if (sorting.length > 0) {
+      const sortingStr = sorting.map((s) => `${s.id}.${s.desc ? "desc" : "asc"}`).join(",");
+      current.set("sorting", sortingStr);
+    } else {
+      current.delete("sorting");
+    }
+
+    // Sync trashed
+    if (trashed) current.set("trashed", "true");
+    else current.delete("trashed");
+
+    const queryString = current.toString();
+    const nextUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
+
+    // Only update if search has actually changed to avoid loop
+    if (window.location.search !== `?${queryString}` && (window.location.search || queryString)) {
+      window.history.replaceState({ ...window.history.state }, "", nextUrl);
+    }
+  }, [page, pageSize, debouncedSearch, sorting, trashed, initialPageSize]);
+
+  // Listen to browser Back/Forward navigation changes (popstate) to keep local states synchronized
+  React.useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+
+      const p = params.get("page");
+      setPage(p ? Math.max(1, parseInt(p, 10)) : 1);
+
+      const ps = params.get("pageSize");
+      setPageSize(ps ? parseInt(ps, 10) : initialPageSize);
+
+      const s = params.get("sorting");
+      if (s) {
+        try {
+          setSorting(s.split(",").map((item) => {
+            const parts = item.split(".");
+            const id = parts[0] || "";
+            return { id, desc: parts[1] === "desc" };
+          }));
+        } catch {
+          setSorting(initialSorting);
+        }
+      } else {
+        setSorting(initialSorting);
+      }
+
+      setSearch(params.get("search") || "");
+      setTrashed(params.get("trashed") === "true");
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [initialPageSize, initialSorting]);
+
+  const activeParams: TableQueryParams = {
     page,
     pageSize,
     search: debouncedSearch,
@@ -184,59 +228,41 @@ export function useTableQuery<TData>({
 
   const queryResult = useQuery({
     queryKey: [...queryKey, page, pageSize, debouncedSearch, sorting, trashed],
-    queryFn: () => queryFn(params),
+    queryFn: () => queryFn(activeParams),
     enabled,
     placeholderData: keepPreviousData, // keeps stale data visible while fetching next page
   });
 
-  const handlePageChange = React.useCallback(
-    (newPage: number) => {
-      updateParams({ page: newPage });
-    },
-    [updateParams]
-  );
+  const handlePageChange = React.useCallback((newPage: number) => {
+    setPage(newPage);
+  }, []);
 
-  const handlePageSizeChange = React.useCallback(
-    (newSize: number) => {
-      updateParams({
-        pageSize: newSize,
-        page: 1, // Reset to first page on size change
-      });
-    },
-    [updateParams]
-  );
+  const handlePageSizeChange = React.useCallback((newSize: number) => {
+    setPageSize(newSize);
+    setPage(1);
+  }, []);
 
   const handleSearchChange = React.useCallback((value: string) => {
-    setSearchValue(value);
+    setSearch(value);
   }, []);
 
   const handleSortingChange = React.useCallback(
     (updaterOrValue: SortingState | ((old: SortingState) => SortingState)) => {
-      const nextSorting = typeof updaterOrValue === "function" ? updaterOrValue(sorting) : updaterOrValue;
-      const sortingStr = nextSorting.length
-        ? nextSorting.map((s) => `${s.id}.${s.desc ? "desc" : "asc"}`).join(",")
-        : null;
-
-      updateParams({
-        sorting: sortingStr,
-        page: 1, // Reset to page 1 when sorting changes
+      setSorting((old) => {
+        const next = typeof updaterOrValue === "function" ? updaterOrValue(old) : updaterOrValue;
+        return next;
       });
+      setPage(1);
     },
-    [sorting, updateParams]
+    []
   );
 
-  const handleTrashedChange = React.useCallback(
-    (value: boolean) => {
-      updateParams({
-        trashed: value ? "true" : null,
-        page: 1, // Reset to page 1 when trashed changes
-      });
-    },
-    [updateParams]
-  );
+  const handleTrashedChange = React.useCallback((value: boolean) => {
+    setTrashed(value);
+    setPage(1);
+  }, []);
 
   return {
-    // DataTable-ready props
     data: queryResult.data?.data ?? [],
     columns,
     isLoading: queryResult.isLoading,
@@ -253,13 +279,11 @@ export function useTableQuery<TData>({
     manualSorting: true,
     onSortingChange: handleSortingChange,
     tableId,
-    // Trashed
     enableTrashed,
     trashed,
     onTrashedChange: handleTrashedChange,
-    // Advanced access
     queryResult,
     refetch: () => { void queryResult.refetch(); },
-    currentParams: params,
+    currentParams: activeParams,
   };
 }

@@ -21,7 +21,7 @@ const installCommands = [
 
 const usageCode = `import { useTableQuery } from "@/hooks/use-table-query"
 import { DataTable } from "@/components/micto/data-table"
-import type { TableQueryParams, TableQueryResult } from "@/registry/new-york/hooks/use-table-query"
+import type { TableQueryParams } from "@/hooks/use-table-query"
 
 export default function EmployeesPage() {
   const table = useTableQuery({
@@ -29,6 +29,7 @@ export default function EmployeesPage() {
     queryFn: fetchEmployees,
     columns,
     tableId: "employees-table",
+    enableTrashed: true,
   })
 
   return <DataTable {...table} />
@@ -50,6 +51,9 @@ export default async function UseTableQueryPage() {
       <Badge variant="outline" className="rounded-md px-2 py-0.5 text-[11px] uppercase tracking-wider border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium">
         URL Sync
       </Badge>
+      <Badge variant="outline" className="rounded-md px-2 py-0.5 text-[11px] uppercase tracking-wider border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium">
+        Framework Agnostic
+      </Badge>
     </>
   );
 
@@ -57,7 +61,7 @@ export default async function UseTableQueryPage() {
     <div className="mx-auto max-w-4xl space-y-12 pb-20 mt-8">
       <DocsHeader
         title="useTableQuery"
-        description="A high-performance TanStack Query wrapper for DataTable that manages server-side pagination, sorting, and searching state automatically, fully synchronized with URL parameters."
+        description="A high-performance TanStack Query wrapper for DataTable that manages server-side pagination, sorting, and searching state automatically, fully synchronized with URL parameters across both Next.js and Vite/SPA applications."
         badges={headerBadges}
       />
 
@@ -65,7 +69,7 @@ export default async function UseTableQueryPage() {
         <section className="space-y-6">
           <DocsSectionHeading
             title="Overview"
-            description="The useTableQuery hook simplifies server-side data fetching by synchronizing TanStack Table's state with TanStack Query and Next.js query parameters. It automatically handles URL state persistence, debounced searching, page changes, and sort direction."
+            description="The useTableQuery hook simplifies server-side data fetching by wiring TanStack Table with TanStack Query. It uses HTML5 History APIs under the hood for URL parameter synchronization, making it completely independent of next/navigation. It works seamlessly in both Next.js App Router and Vite/CRA Single Page Applications."
           />
         </section>
 
