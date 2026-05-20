@@ -20,16 +20,6 @@ const installCommands = [
   },
 ];
 
-const installQueryCommands = [
-  {
-    label: "pnpm",
-    value: "pnpm dlx shadcn@latest add https://micto-ui-kit.misangono.net/r/hooks/use-table-query.json",
-  },
-  {
-    label: "npm",
-    value: "npx shadcn@latest add https://micto-ui-kit.misangono.net/r/hooks/use-table-query.json",
-  },
-];
 
 const basicUsageCode = `import {
   DataTable,
@@ -107,85 +97,6 @@ const serverUsageCode = `// Server-side pagination you own the page state
   onSortingChange={setSorting}
   onSearchChange={setSearch}   // debounced 300ms, fires your API
 />`;
-
-const queryHookCode = `import * as React from "react"
-import {
-  DataTable,
-  createColumnHelper,
-  selectionColumn,
-  indexColumn,
-  rowActionsColumn,
-} from "@/components/micto/data-table"
-import { useTableQuery } from "@/hooks/use-table-query"
-import type { TableQueryParams } from "@/registry/new-york/hooks/use-table-query"
-import { Button } from "@/components/ui/button"
-import { Plus, Eye, Pencil, Trash2 } from "lucide-react"
-
-// 1. Define your data shape
-type Employee = {
-  id: string;
-  name: string;
-  department: string;
-  status: "active" | "inactive";
-}
-
-// 2. Define columns once
-const col = createColumnHelper<Employee>()
-const columns = [
-  selectionColumn<Employee>(),
-  indexColumn<Employee>(),
-  col.accessor("name", { header: "Full Name" }),
-  col.accessor("department", { header: "Department" }),
-  rowActionsColumn<Employee>({
-    actions: (row) => [
-      { label: "View Profile", icon: Eye,    onClick: (r) => console.log("View", r) },
-      { label: "Edit",         icon: Pencil, onClick: (r) => console.log("Edit", r) },
-      { label: "Delete",       icon: Trash2, variant: "destructive", onClick: (r) => console.log("Delete", r) },
-    ],
-  }),
-]
-
-// 3. Mock API fetcher simulating server response
-async function fetchEmployees(params: TableQueryParams) {
-  const sortParam = params.sorting.length
-    ? \`&sort=\${params.sorting[0].id}&desc=\${params.sorting[0].desc}\`
-    : ""
-  const res = await fetch(
-    \`/api/employees?page=\${params.page}&limit=\${params.pageSize}&search=\${params.search}&trashed=\${params.trashed ? 1 : 0}\${sortParam}\`
-  )
-  return res.json() // Expected: { data: Employee[], totalPages: number, totalCount: number, currentPage: number }
-}
-
-// 4. Put it all together in your Page component
-export default function EmployeesPage() {
-  const table = useTableQuery({
-    queryKey: ["employees"],
-    queryFn: fetchEmployees,
-    columns, // Pass columns into the hook so they are returned for prop spreading
-    tableId: "employees-server-table",
-    initialPageSize: 10,
-    pageSizeOptions: [10, 25, 50],
-    searchDebounceMs: 300,
-    enableTrashed: true, // Enables the "Show Trashed" toggle
-  })
-
-  return (
-    <DataTable
-      {...table} // Spreads data, columns, isLoading, pagination, search, sorting, and trashed props!
-      enableRowSelection
-      enableColumnVisibility
-      onRowClick={(row) => console.log("Row clicked:", row)}
-      toolbarProps={{
-        actions: (
-          <Button size="sm" className="h-8 text-xs">
-            <Plus className="size-3.5 mr-1.5" />
-            Add Employee
-          </Button>
-        ),
-      }}
-    />
-  )
-}`;
 
 const inertiaUsageCode = `import React from "react"
 import { router } from "@inertiajs/react"
@@ -396,7 +307,6 @@ export default async function DataTablePage() {
   const flatUsageHtml = await highlightCode(flatUsageCode, "tsx");
   const serverUsageHtml = await highlightCode(serverUsageCode, "tsx");
   const inertiaUsageHtml = await highlightCode(inertiaUsageCode, "tsx");
-  const queryHookHtml = await highlightCode(queryHookCode, "tsx");
   const trashedUsageHtml = await highlightCode(trashedUsageCode, "tsx");
   const columnFactoriesHtml = await highlightCode(columnFactoriesCode, "tsx");
 
@@ -445,13 +355,6 @@ export default async function DataTablePage() {
             <div className="rounded-xl border bg-muted/40 p-1">
               <InstallCommandTabs commands={installCommands} defaultValue="pnpm" />
             </div>
-            <p className="text-sm font-medium text-foreground mt-6">
-              Optional: <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">useTableQuery</code> hook{" "}
-              <span className="text-muted-foreground font-normal text-xs">(requires @tanstack/react-query)</span>
-            </p>
-            <div className="rounded-xl border bg-muted/40 p-1">
-              <InstallCommandTabs commands={installQueryCommands} defaultValue="pnpm" />
-            </div>
           </div>
         </section>
 
@@ -499,16 +402,6 @@ export default async function DataTablePage() {
           </div>
         </section>
 
-        {/* useTableQuery hook */}
-        <section className="space-y-6">
-          <DocsSectionHeading
-            title="useTableQuery Hook"
-            description="Wires TanStack Query to your DataTable with a single hook call. Manages page, pageSize, debounced search, and sorting state automatically. Returns a spread-ready object."
-          />
-          <div className="overflow-hidden rounded-xl border">
-            <CodeBlock code={queryHookCode} html={queryHookHtml} language="tsx" />
-          </div>
-        </section>
 
         {/* Trashed Usage */}
         <section className="space-y-6">

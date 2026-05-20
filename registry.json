@@ -214,28 +214,7 @@
         "inertia"
       ]
     },
-    {
-      "name": "hooks/use-table-query",
-      "type": "registry:component",
-      "title": "Query",
-      "description": "A high-performance TanStack Query wrapper for DataTable that manages server-side pagination, sorting, and searching state automatically.",
-      "dependencies": [
-        "@tanstack/react-query",
-        "@tanstack/react-table"
-      ],
-      "hidden": true,
-      "files": [
-        {
-          "path": "registry/new-york/hooks/use-table-query.ts",
-          "type": "registry:component"
-        }
-      ],
-      "categories": [
-        "react",
-        "hook",
-        "table"
-      ]
-    },
+
     {
       "name": "micto/tabbed-view",
       "type": "registry:component",
