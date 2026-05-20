@@ -117,6 +117,7 @@ import {
   rowActionsColumn,
 } from "@/components/micto/data-table"
 import { useTableQuery } from "@/hooks/use-table-query"
+import type { TableQueryParams } from "@/registry/new-york/hooks/use-table-query"
 import { Button } from "@/components/ui/button"
 import { Plus, Eye, Pencil, Trash2 } from "lucide-react"
 
@@ -145,14 +146,12 @@ const columns = [
 ]
 
 // 3. Mock API fetcher simulating server response
-async function fetchEmployees(params: {
-  page: number;
-  pageSize: number;
-  search: string;
-  trashed: boolean;
-}) {
+async function fetchEmployees(params: TableQueryParams) {
+  const sortParam = params.sorting.length
+    ? \`&sort=\${params.sorting[0].id}&desc=\${params.sorting[0].desc}\`
+    : ""
   const res = await fetch(
-    \`/api/employees?page=\${params.page}&limit=\${params.pageSize}&search=\${params.search}&trashed=\${params.trashed ? 1 : 0}\`
+    \`/api/employees?page=\${params.page}&limit=\${params.pageSize}&search=\${params.search}&trashed=\${params.trashed ? 1 : 0}\${sortParam}\`
   )
   return res.json() // Expected: { data: Employee[], totalPages: number, totalCount: number, currentPage: number }
 }

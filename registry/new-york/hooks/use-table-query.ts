@@ -7,8 +7,10 @@
  * @hidden true
  */
 import * as React from "react";
-import { useQuery, UseQueryResult, keepPreviousData } from "@tanstack/react-query";
-import { ColumnDef, SortingState } from "@tanstack/react-table";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import type { QueryKey, UseQueryResult } from "@tanstack/react-query";
+import type { ColumnDef, SortingState } from "@tanstack/react-table";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -29,7 +31,7 @@ export interface TableQueryResult<TData> {
 
 export interface UseTableQueryOptions<TData> {
   /** Base query key — page/pageSize/search/sorting/trashed are appended automatically. */
-  queryKey: unknown[];
+  queryKey: QueryKey;
   /** Fetcher function. Receives current table params, must return a paginated result. */
   queryFn: (params: TableQueryParams) => Promise<TableQueryResult<TData>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,7 +68,7 @@ export interface UseTableQueryReturn<TData> {
   onPageSizeChange: (size: number) => void;
   onSearchChange: (value: string) => void;
   manualSorting: true;
-  onSortingChange: (sorting: SortingState) => void;
+  onSortingChange: (sorting: SortingState | ((old: SortingState) => SortingState)) => void;
   tableId?: string;
   // Trashed
   enableTrashed: boolean;
@@ -93,31 +95,84 @@ export function useTableQuery<TData>({
   enableTrashed = false,
   enabled = true,
 }: UseTableQueryOptions<TData>): UseTableQueryReturn<TData> {
-  const [page, setPage] = React.useState(1);
-  const [pageSize, setPageSize] = React.useState(initialPageSize);
-  const [search, setSearch] = React.useState("");
-  const [debouncedSearch, setDebouncedSearch] = React.useState("");
-  const [sorting, setSorting] = React.useState<SortingState>(initialSorting);
-  const [trashed, setTrashed] = React.useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  // Debounce search
+  // Helper to update query parameters in the URL
+  const updateParams = React.useCallback(
+    (newParams: Record<string, string | number | boolean | null>) => {
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+
+      for (const [key, value] of Object.entries(newParams)) {
+        if (value === null || value === undefined || value === "") {
+          current.delete(key);
+        } else {
+          current.set(key, String(value));
+        }
+      }
+
+      const queryString = current.toString();
+      router.replace(`${pathname}?${queryString}`, { scroll: false });
+    },
+    [searchParams, router, pathname]
+  );
+
+  // Get parameter values directly from URL or fallback to defaults
+  const page = React.useMemo(() => {
+    const p = searchParams.get("page");
+    return p ? Math.max(1, parseInt(p, 10)) : 1;
+  }, [searchParams]);
+
+  const pageSize = React.useMemo(() => {
+    const ps = searchParams.get("pageSize");
+    return ps ? parseInt(ps, 10) : initialPageSize;
+  }, [searchParams, initialPageSize]);
+
+  const sorting = React.useMemo<SortingState>(() => {
+    const s = searchParams.get("sorting");
+    if (!s) return initialSorting;
+    try {
+      return s.split(",").map((item) => {
+        const parts = item.split(".");
+        const id = parts[0] || "";
+        const order = parts[1];
+        return { id, desc: order === "desc" };
+      });
+    } catch {
+      return initialSorting;
+    }
+  }, [searchParams, initialSorting]);
+
+  const trashed = React.useMemo(() => {
+    return searchParams.get("trashed") === "true";
+  }, [searchParams]);
+
+  // For the search input, keep a local state to allow fast typing (without router latency).
+  const [searchValue, setSearchValue] = React.useState(() => searchParams.get("search") || "");
+
+  // Sync local search input with URL search param changes (e.g. if page loads or changes externally)
+  const urlSearch = searchParams.get("search") || "";
+  React.useEffect(() => {
+    setSearchValue(urlSearch);
+  }, [urlSearch]);
+
+  // Debounce the search input updates and push them to the URL
   React.useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearch(search);
-      setPage(1); // Reset to page 1 when search changes
+      const currentSearch = searchParams.get("search") || "";
+      if (searchValue !== currentSearch) {
+        updateParams({
+          search: searchValue || null,
+          page: 1, // Reset to page 1 when search changes
+        });
+      }
     }, searchDebounceMs);
+
     return () => clearTimeout(timer);
-  }, [search, searchDebounceMs]);
+  }, [searchValue, searchDebounceMs, searchParams, updateParams]);
 
-  // Reset to page 1 when sorting changes
-  React.useEffect(() => {
-    setPage(1);
-  }, [sorting]);
-
-  // Reset to page 1 when trashed changes
-  React.useEffect(() => {
-    setPage(1);
-  }, [trashed]);
+  const debouncedSearch = searchParams.get("search") || "";
 
   const params: TableQueryParams = {
     page,
@@ -134,19 +189,51 @@ export function useTableQuery<TData>({
     placeholderData: keepPreviousData, // keeps stale data visible while fetching next page
   });
 
-  const handlePageSizeChange = (size: number) => {
-    setPageSize(size);
-    setPage(1); // Reset to first page on size change
-  };
+  const handlePageChange = React.useCallback(
+    (newPage: number) => {
+      updateParams({ page: newPage });
+    },
+    [updateParams]
+  );
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    // actual debounced reset happens in the useEffect above
-  };
+  const handlePageSizeChange = React.useCallback(
+    (newSize: number) => {
+      updateParams({
+        pageSize: newSize,
+        page: 1, // Reset to first page on size change
+      });
+    },
+    [updateParams]
+  );
 
-  const handleTrashedChange = (value: boolean) => {
-    setTrashed(value);
-  };
+  const handleSearchChange = React.useCallback((value: string) => {
+    setSearchValue(value);
+  }, []);
+
+  const handleSortingChange = React.useCallback(
+    (updaterOrValue: SortingState | ((old: SortingState) => SortingState)) => {
+      const nextSorting = typeof updaterOrValue === "function" ? updaterOrValue(sorting) : updaterOrValue;
+      const sortingStr = nextSorting.length
+        ? nextSorting.map((s) => `${s.id}.${s.desc ? "desc" : "asc"}`).join(",")
+        : null;
+
+      updateParams({
+        sorting: sortingStr,
+        page: 1, // Reset to page 1 when sorting changes
+      });
+    },
+    [sorting, updateParams]
+  );
+
+  const handleTrashedChange = React.useCallback(
+    (value: boolean) => {
+      updateParams({
+        trashed: value ? "true" : null,
+        page: 1, // Reset to page 1 when trashed changes
+      });
+    },
+    [updateParams]
+  );
 
   return {
     // DataTable-ready props
@@ -160,11 +247,11 @@ export function useTableQuery<TData>({
     totalCount: queryResult.data?.totalCount ?? 0,
     pageSize,
     pageSizeOptions,
-    onPageChange: setPage,
+    onPageChange: handlePageChange,
     onPageSizeChange: handlePageSizeChange,
     onSearchChange: handleSearchChange,
     manualSorting: true,
-    onSortingChange: setSorting,
+    onSortingChange: handleSortingChange,
     tableId,
     // Trashed
     enableTrashed,
