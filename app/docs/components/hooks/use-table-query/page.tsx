@@ -76,7 +76,9 @@ export default async function UseTableQueryPage() {
             description="Try changing the page size, paginating, sorting a column, or entering a search term. Notice how the URL query parameters automatically update and preserve state upon refreshing the page."
           />
           <ComponentPreview code={demoRawCode} html={demoHtml}>
-            <UseTableQueryDemo />
+            <React.Suspense fallback={<div className="h-64 flex items-center justify-center text-sm text-muted-foreground">Loading demo...</div>}>
+              <UseTableQueryDemo />
+            </React.Suspense>
           </ComponentPreview>
         </section>
 

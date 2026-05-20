@@ -216,7 +216,14 @@ function TableContainer() {
 export default function UseTableQueryDemo() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TableContainer />
+      <React.Suspense fallback={
+        <div className="h-64 flex flex-col items-center justify-center text-sm text-muted-foreground gap-2">
+          <RefreshCw className="size-5 animate-spin text-primary" />
+          <span>Loading interactive demo...</span>
+        </div>
+      }>
+        <TableContainer />
+      </React.Suspense>
     </QueryClientProvider>
   );
 }
