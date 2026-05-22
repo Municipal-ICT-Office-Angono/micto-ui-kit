@@ -27,6 +27,8 @@ interface RegistryItem {
 }
 
 interface Registry {
+  name?: string
+  homepage?: string
   items: RegistryItem[]
 }
 
@@ -74,7 +76,7 @@ function parseJSDoc(content: string) {
   return { title, description, categories, hidden }
 }
 
-function extractDependencies(content: string, packageJson: any) {
+function extractDependencies(content: string, packageJson: any, baseUrl: string) {
   const importRegex = /import\s+(?:[\s\S]*?\s+from\s+)?['"]([^'"]+)['"]/g
   const registryDeps = new Set<string>()
   const deps = new Set<string>()
@@ -89,13 +91,13 @@ function extractDependencies(content: string, packageJson: any) {
       registryDeps.add(name)
     } else if (importPath.startsWith("@/components/micto/")) {
       const name = importPath.replace("@/components/micto/", "").replace(/\.(tsx|ts)$/, "")
-      registryDeps.add(`micto/${name}`)
+      registryDeps.add(`${baseUrl}/micto/${name}.json`)
     } else if (importPath.startsWith("@/components/inertia/")) {
       const name = importPath.replace("@/components/inertia/", "").replace(/\.(tsx|ts)$/, "")
-      registryDeps.add(`inertia/${name}`)
+      registryDeps.add(`${baseUrl}/inertia/${name}.json`)
     } else if (importPath.startsWith("@/hooks/")) {
       const name = importPath.replace("@/hooks/", "").replace(/\.(tsx|ts)$/, "")
-      registryDeps.add(`hooks/${name}`)
+      registryDeps.add(`${baseUrl}/hooks/${name}.json`)
     } else if (!importPath.startsWith(".") && !importPath.startsWith("@/")) {
       // Check if it's in package.json dependencies
       const pkgName = importPath.startsWith("@")
@@ -123,6 +125,9 @@ async function main() {
 
   const registry: Registry = JSON.parse(fs.readFileSync(REGISTRY_PATH, "utf8"))
   const packageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, "utf8"))
+
+  const homepage = registry.homepage || "https://micto-ui-kit.misangono.net"
+  const baseUrl = `${homepage.replace(/\/$/, "")}/r`
 
   const uiFiles = getFilesRecursively(UI_DIR)
   const mictoFiles = getFilesRecursively(MICTO_DIR)
@@ -189,7 +194,7 @@ async function main() {
     const content = fs.readFileSync(component.fullPath, "utf8")
     const fileName = path.basename(component.fullPath, path.extname(component.fullPath))
     const meta = parseJSDoc(content)
-    const { registryDependencies, dependencies } = extractDependencies(content, packageJson)
+    const { registryDependencies, dependencies } = extractDependencies(content, packageJson, baseUrl)
 
     const existingItemIndex = registry.items.findIndex(item => item.name === component.name)
     const existingItem = existingItemIndex !== -1 ? registry.items[existingItemIndex] : null

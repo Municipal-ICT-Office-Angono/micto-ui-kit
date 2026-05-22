@@ -52,8 +52,8 @@
       "title": "Data Table",
       "description": "A fully-featured, generic data table built on TanStack Table v8. Supports server/client pagination, sorting, search, and visibility.",
       "registryDependencies": [
-        "micto/server-pagination",
-        "micto/table-toolbar",
+        "https://micto-ui-kit.misangono.net/r/micto/server-pagination.json",
+        "https://micto-ui-kit.misangono.net/r/micto/table-toolbar.json",
         "button",
         "checkbox",
         "dropdown-menu",
@@ -337,7 +337,7 @@
         "card",
         "input",
         "label",
-        "micto/search-select",
+        "https://micto-ui-kit.misangono.net/r/micto/search-select.json",
         "select",
         "separator",
         "textarea"
