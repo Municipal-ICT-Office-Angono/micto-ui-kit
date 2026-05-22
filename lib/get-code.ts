@@ -19,7 +19,7 @@ async function getHighlighter() {
  */
 export function getCode(filePath: string): string {
   try {
-    const absolutePath = path.join(process.cwd(), filePath)
+    const absolutePath = path.join(/*turbopackIgnore: true*/ process.cwd(), filePath)
     return fs.readFileSync(absolutePath, "utf8")
   } catch (error) {
     console.error(`Error reading code from ${filePath}:`, error)
