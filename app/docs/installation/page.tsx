@@ -1,4 +1,3 @@
-import * as React from "react"
 import Link from "next/link"
 import { CodeBlock } from "@/components/code-block"
 import { InstallCommandTabs } from "@/components/install-command-tabs"

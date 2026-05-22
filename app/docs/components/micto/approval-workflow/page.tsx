@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { CodeBlock } from "@/components/code-block";
 import { ComponentPreview } from "@/components/component-preview";

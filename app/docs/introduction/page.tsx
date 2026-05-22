@@ -1,4 +1,3 @@
-import * as React from "react"
 import Link from "next/link"
 import { DocsHeader } from "@/components/docs-header"
 import { DocsSectionHeading } from "@/components/docs-section-heading"

@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { InertiaPagination } from "@/components/inertia-pagination";
 // import { Link } from "@inertiajs/react";
 

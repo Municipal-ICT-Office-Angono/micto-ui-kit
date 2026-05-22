@@ -21,7 +21,7 @@ interface RegistryItem {
   description?: string
   registryDependencies?: string[]
   dependencies?: string[]
-  files: { path: string; type: string }[]
+  files: { path: string; type: string; target?: string }[]
   categories?: string[]
   hidden?: boolean
 }
@@ -50,24 +50,24 @@ function getFilesRecursively(dir: string): string[] {
 function parseJSDoc(content: string) {
   // Find all JSDoc blocks
   const jsDocBlocks = content.match(/\/\*\*([\s\S]*?)\*\//g) || []
-  
+
   // Find the block that specifically contains a @title tag
   const mainBlock = jsDocBlocks.find(block => block.includes("@title")) || ""
-  
+
   // Clean up the block: remove leading stars and trim lines
   const cleanBlock = mainBlock
     .replace(/^\/\*\*|\*\/$/g, "") // Remove /** and */
     .split("\n")
     .map(line => line.replace(/^\s*\*\s?/, "").trim()) // Remove leading * and trim
     .join("\n")
-  
+
   const title = cleanBlock.match(/@title\s+(.*)/)?.[1]?.trim()
   const description = cleanBlock.match(/@description\s+(.*)/)?.[1]?.trim()
   const categoriesRaw = cleanBlock.match(/@categor(?:y|ies)\s+(.*)/)?.[1]?.trim()
-  const categories = categoriesRaw 
-    ? categoriesRaw.split(",").map(c => c.trim()).filter(c => c && c !== "*/") 
+  const categories = categoriesRaw
+    ? categoriesRaw.split(",").map(c => c.trim()).filter(c => c && c !== "*/")
     : undefined
-  
+
   // Look for @hidden anywhere in the file's JSDoc blocks
   const hidden = jsDocBlocks.some(block => block.includes("@hidden"))
 
@@ -85,17 +85,26 @@ function extractDependencies(content: string, packageJson: any) {
     if (!importPath) continue
 
     if (importPath.startsWith("@/components/ui/")) {
-      const name = importPath.replace("@/components/ui/", "")
+      const name = importPath.replace("@/components/ui/", "").replace(/\.(tsx|ts)$/, "")
       registryDeps.add(name)
+    } else if (importPath.startsWith("@/components/micto/")) {
+      const name = importPath.replace("@/components/micto/", "").replace(/\.(tsx|ts)$/, "")
+      registryDeps.add(`micto/${name}`)
+    } else if (importPath.startsWith("@/components/inertia/")) {
+      const name = importPath.replace("@/components/inertia/", "").replace(/\.(tsx|ts)$/, "")
+      registryDeps.add(`inertia/${name}`)
+    } else if (importPath.startsWith("@/hooks/")) {
+      const name = importPath.replace("@/hooks/", "").replace(/\.(tsx|ts)$/, "")
+      registryDeps.add(`hooks/${name}`)
     } else if (!importPath.startsWith(".") && !importPath.startsWith("@/")) {
       // Check if it's in package.json dependencies
-      const pkgName = importPath.startsWith("@") 
-        ? importPath.split("/").slice(0, 2).join("/") 
+      const pkgName = importPath.startsWith("@")
+        ? importPath.split("/").slice(0, 2).join("/")
         : importPath.split("/")[0]
-      
+
       if (pkgName && (packageJson.dependencies?.[pkgName] || packageJson.devDependencies?.[pkgName])) {
         if (!["react", "react-dom", "next", "lucide-react"].includes(pkgName)) {
-           deps.add(pkgName)
+          deps.add(pkgName)
         }
       }
     }
@@ -124,13 +133,13 @@ async function main() {
   const components = allFiles.map(file => {
     const relativePath = path.relative(process.cwd(), file).replace(/\\/g, "/")
     const fileName = path.basename(file, path.extname(file))
-    
+
     // Determine the category prefix based on the folder
     let name = fileName
     if (file.includes(MICTO_DIR)) name = `micto/${fileName}`
     if (file.includes(HOOKS_DIR)) name = `hooks/${fileName}`
     if (file.includes(INERTIA_DIR)) name = `inertia/${fileName}`
-    
+
     return { name, path: relativePath, fullPath: file }
   })
 
@@ -184,12 +193,28 @@ async function main() {
 
     const existingItemIndex = registry.items.findIndex(item => item.name === component.name)
     const existingItem = existingItemIndex !== -1 ? registry.items[existingItemIndex] : null
-    
+
     const cleanTitle = (str: string) => str.split(/[-/]/).pop()?.split("-").map((s: string) => s.charAt(0).toUpperCase() + s.slice(1)).join(" ") || str;
-    
+
+    let itemType = "registry:component"
+    let target: string | undefined = undefined
+    const fileBasename = path.basename(component.fullPath)
+
+    if (component.fullPath.includes(MICTO_DIR)) {
+      target = `@components/micto/${fileBasename}`
+    } else if (component.fullPath.includes(INERTIA_DIR)) {
+      target = `@components/inertia/${fileBasename}`
+    } else if (component.fullPath.includes(HOOKS_DIR)) {
+      itemType = "registry:hook"
+      target = `@hooks/${fileBasename}`
+    } else if (component.fullPath.includes(UI_DIR)) {
+      itemType = "registry:ui"
+      target = `@ui/${fileBasename}`
+    }
+
     const newItem: RegistryItem = {
       name: component.name,
-      type: "registry:component",
+      type: itemType,
       title: meta.title || cleanTitle(existingItem?.title || fileName),
       description: meta.description || (existingItem ? existingItem.description : ""),
       registryDependencies: registryDependencies.length > 0 ? registryDependencies : undefined,
@@ -198,7 +223,8 @@ async function main() {
       files: [
         {
           path: component.path,
-          type: "registry:component"
+          type: itemType,
+          ...(target ? { target } : {})
         }
       ],
       categories: meta.categories || (existingItem ? existingItem.categories : ["react", "component"])
