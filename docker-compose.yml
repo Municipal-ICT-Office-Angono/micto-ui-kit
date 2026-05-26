@@ -5,17 +5,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+
     restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-      # - NEXT_TELEMETRY_DISABLED=1
+
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mictouikit.rule=Host(`ui.apps.misangono.net`)"
       - "traefik.http.routers.mictouikit.entrypoints=websecure"
       - "traefik.http.routers.mictouikit.tls=true"
-      - "traefik.http.routers.mictouikit.tls.certresolver=letsencrypt"
       - "traefik.http.services.mictouikit.loadbalancer.server.port=3000"
+
     networks:
       - dokploy-network
 
