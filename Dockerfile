@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -6,8 +6,8 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat python3 make g++
 WORKDIR /app
 
-# Install pnpm version 9 to match lockfile format
-RUN npm install -g pnpm@9
+# Install pnpm version 11
+RUN npm install -g pnpm@11
 
 # Install dependencies based on the preferred package manager
 COPY package.json pnpm-lock.yaml* ./
@@ -16,7 +16,7 @@ RUN pnpm i --frozen-lockfile
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-RUN npm install -g pnpm@9
+RUN npm install -g pnpm@11
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 

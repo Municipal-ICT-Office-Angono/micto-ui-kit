@@ -8,11 +8,6 @@ services:
 
     restart: unless-stopped
 
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.mictouikit.rule=Host(`ui.apps.misangono.net`)"
-      - "traefik.http.services.mictouikit.loadbalancer.server.port=3000"
-
     networks:
       - dokploy-network
 
