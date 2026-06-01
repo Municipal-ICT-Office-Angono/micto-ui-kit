@@ -1,4 +1,3 @@
-import * as React from "react";
 import { CodeBlock } from "@/components/code-block";
 import { InstallCommandTabs } from "@/components/install-command-tabs";
 import { Badge } from "@/components/ui/badge";
@@ -44,19 +43,22 @@ const propsData = [
     name: "value",
     type: "string | Date",
     default: "undefined",
-    description: "The selected date value. Can be a Date object or an ISO/parsed string representation.",
+    description:
+      "The selected date value. Can be a Date object or an ISO/parsed string representation.",
   },
   {
     name: "onChange",
     type: "(dateString: string) => void",
     default: "undefined",
-    description: "Callback triggered when a date is selected. Returns the formatted date string in local timezone (YYYY-MM-DD HH:mm).",
+    description:
+      "Callback triggered when a date is selected. Returns the formatted date string in local timezone (YYYY-MM-DD HH:mm).",
   },
   {
     name: "placeholder",
     type: "string",
     default: "'Pick a date'",
-    description: "Placeholder text displayed in the input field when no date is selected.",
+    description:
+      "Placeholder text displayed in the input field when no date is selected.",
   },
   {
     name: "className",
@@ -128,7 +130,11 @@ export default async function DatePickerPage() {
             description="How to integrate the Date Picker into your form components."
           />
           <div className="overflow-hidden rounded-xl border">
-            <CodeBlock code={basicUsageCode} html={basicUsageHtml} language="tsx" />
+            <CodeBlock
+              code={basicUsageCode}
+              html={basicUsageHtml}
+              language="tsx"
+            />
           </div>
         </section>
 
