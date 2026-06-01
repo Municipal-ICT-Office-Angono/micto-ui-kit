@@ -373,7 +373,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/date-picker-with-range.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/date-picker-with-range.tsx"
         }
       ],
       "categories": [
@@ -398,7 +399,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/date-picker.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/date-picker.tsx"
         }
       ],
       "categories": [
