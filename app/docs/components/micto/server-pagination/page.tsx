@@ -110,6 +110,12 @@ const propsData = [
     default: "'center'",
     description: "Horizontal alignment profile inside the container.",
   },
+  {
+    name: "className",
+    type: "string",
+    default: "undefined",
+    description: "Custom CSS classes to apply to the outer pagination container.",
+  },
 ];
 
 export default async function ServerPaginationPage() {

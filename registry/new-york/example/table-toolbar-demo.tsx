@@ -1,9 +1,16 @@
-﻿"use client";
+"use client";
 
 import * as React from "react";
 import { TableToolbar, ToolbarAction } from "@/components/micto/table-toolbar";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Plus,
   Trash2,
@@ -26,16 +33,25 @@ const mockCitizens = [
 export default function TableToolbarDemo() {
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [statusFilter, setStatusFilter] = React.useState<string>("all");
+  const [municipalityFilter, setMunicipalityFilter] = React.useState<string>("all");
   const [viewVariant, setViewVariant] = React.useState<"inline" | "floating">("inline");
 
-  // Filtering list based on search bar
+  // Filtering list based on search, status, and municipality
   const filteredCitizens = React.useMemo(() => {
-    return mockCitizens.filter(
-      (citizen) =>
+    return mockCitizens.filter((citizen) => {
+      const matchesSearch =
         citizen.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        citizen.role.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery]);
+        citizen.role.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === "all" || citizen.status === statusFilter;
+      const matchesMunicipality =
+        municipalityFilter === "all" || citizen.municipality === municipalityFilter;
+      return matchesSearch && matchesStatus && matchesMunicipality;
+    });
+  }, [searchQuery, statusFilter, municipalityFilter]);
+
+  const activeFiltersCount =
+    (statusFilter !== "all" ? 1 : 0) + (municipalityFilter !== "all" ? 1 : 0);
 
   const handleRowToggle = (id: string) => {
     setSelectedIds((prev) =>
@@ -116,7 +132,56 @@ export default function TableToolbarDemo() {
           selectedCount={selectedIds.length}
           onClearSelection={() => setSelectedIds([])}
           variant={viewVariant}
-          
+          search={
+            <div className="flex items-center gap-2 w-full max-w-xs relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Search registry..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-8 pl-8 text-xs rounded-lg focus-visible:ring-1"
+              />
+            </div>
+          }
+          filters={
+            <div className="flex flex-col gap-3">
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Status
+                </label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="h-8 text-xs">
+                    <SelectValue placeholder="All Statuses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Municipality
+                </label>
+                <Select
+                  value={municipalityFilter}
+                  onValueChange={setMunicipalityFilter}
+                >
+                  <SelectTrigger className="h-8 text-xs">
+                    <SelectValue placeholder="All Municipalities" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Municipalities</SelectItem>
+                    <SelectItem value="Angono">Angono</SelectItem>
+                    <SelectItem value="Taytay">Taytay</SelectItem>
+                    <SelectItem value="Binangonan">Binangonan</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          }
+          activeFiltersCount={activeFiltersCount}
           
           /* Standard Right Actions (Active when selectedCount === 0) */
           actions={
@@ -141,17 +206,7 @@ export default function TableToolbarDemo() {
               </ToolbarAction>
             </>
           }
-        >
-          <div className="flex items-center gap-2 w-full max-w-xs relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <Input
-                placeholder="Search registry..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 pl-8 text-xs rounded-lg focus-visible:ring-1"
-              />
-            </div>
-          </TableToolbar>
+        />
 
         {/* WORKSPACE DATA ROW TABLE */}
         <div className="rounded-xl border overflow-hidden mt-4 bg-background">

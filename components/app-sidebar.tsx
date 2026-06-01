@@ -40,6 +40,8 @@ const data = {
       items: [
         { title: "File Uploader", url: "/docs/components/file-uploader" },
         { title: "Search Select", url: "/docs/components/search-select" },
+        { title: "Date Picker", url: "/docs/components/date-picker" },
+        { title: "Date Picker with Range", url: "/docs/components/date-picker-with-range" },
       ],
     },
     {

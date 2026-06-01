@@ -25,19 +25,47 @@ const installCommands = [
 const basicUsageCode = `import { useState } from "react"
 import { TableToolbar, ToolbarAction } from "@/components/micto/table-toolbar"
 import { Input } from "@/components/ui/input"
-import { Plus, Download, Trash2, Archive } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Plus, Trash2, Archive, Settings2 } from "lucide-react"
 
 export default function Page() {
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState("all")
+
+  const activeFiltersCount = statusFilter !== "all" ? 1 : 0
 
   return (
     <TableToolbar
       selectedCount={selectedIds.length}
       onClearSelection={() => setSelectedIds([])}
       variant="inline" // or "floating"
-      children={
-        <Input placeholder="Search records..." className="h-8 max-w-xs" />
+      search={
+        <Input 
+          placeholder="Search records..." 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="h-8 max-w-xs" 
+        />
       }
+      filters={
+        <div className="flex flex-col gap-2">
+          <span className="text-[10px] font-medium text-muted-foreground uppercase">
+            Filter by Status
+          </span>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue placeholder="All Statuses" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="inactive">Inactive</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      }
+      activeFiltersCount={activeFiltersCount}
       actions={
         <ToolbarAction icon={Plus} variant="default">Add Record</ToolbarAction>
       }
@@ -92,7 +120,25 @@ const toolbarPropsData = [
     name: "children",
     type: "ReactNode",
     default: "undefined",
-    description: "Filters row items (search bars, status filters) visible on selectedCount = 0.",
+    description: "Filters row items (fallback/legacy) visible on selectedCount = 0.",
+  },
+  {
+    name: "search",
+    type: "ReactNode",
+    default: "undefined",
+    description: "Standard search input node, displayed on the left side of the toolbar.",
+  },
+  {
+    name: "filters",
+    type: "ReactNode",
+    default: "undefined",
+    description: "Content of filters, displayed inside a collapsible Popover with a Filters button.",
+  },
+  {
+    name: "activeFiltersCount",
+    type: "number",
+    default: "0",
+    description: "Number of active filters, displayed as a badge next to the Filters trigger button.",
   },
   {
     name: "actions",

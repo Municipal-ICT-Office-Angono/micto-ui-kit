@@ -114,6 +114,12 @@ const propsData = [
     default: "'No results found.'",
     description: "Message rendered when search queries find no matching options.",
   },
+  {
+    name: "disabled",
+    type: "boolean",
+    default: "false",
+    description: "Disable the entire combobox selection and interactions.",
+  },
 ];
 
 export default async function SearchSelectPage() {

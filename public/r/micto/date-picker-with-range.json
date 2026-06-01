@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "micto/date-picker-with-range",
+  "title": "Date Picker With Range",
+  "description": "A calendar range selection input field allowing users to choose start and end dates.",
+  "dependencies": [
+    "date-fns",
+    "react-day-picker"
+  ],
+  "registryDependencies": [
+    "button",
+    "calendar",
+    "popover"
+  ],
+  "files": [
+    {
+      "path": "registry/new-york/micto/date-picker-with-range.tsx",
+      "content": "/**\n * @title Date Picker With Range\n * @description A calendar range selection input field allowing users to choose start and end dates.\n * @categories react, component, date-picker\n */\nimport * as React from \"react\"\nimport { format } from \"date-fns\"\nimport { Calendar as CalendarIcon } from \"lucide-react\"\nimport { DateRange } from \"react-day-picker\"\n\nimport { cn } from \"@/lib/utils\"\nimport { Button } from \"@/components/ui/button\"\nimport { Calendar } from \"@/components/ui/calendar\"\nimport {\n  Popover,\n  PopoverContent,\n  PopoverTrigger,\n} from \"@/components/ui/popover\"\n\nexport function DatePickerWithRange({\n  className,\n  value,\n  onChange,\n}: {\n  className?: string\n  value?: DateRange\n  onChange?: (date: DateRange | undefined) => void\n}) {\n  const [date, setDate] = React.useState<DateRange | undefined>(value)\n\n  React.useEffect(() => {\n    setDate(value)\n  }, [value])\n\n  return (\n    <div className={cn(\"grid gap-2\", className)}>\n      <Popover>\n        <PopoverTrigger asChild>\n            <Button\n            id=\"date\"\n            variant={\"outline\"}\n            className={cn(\n              \"w-[260px] justify-start text-left font-normal h-8 text-xs\",\n              !date && \"text-muted-foreground\"\n            )}\n          >\n            <CalendarIcon className=\"mr-2 h-4 w-4\" />\n            {date?.from ? (\n              date.to ? (\n                <>\n                  {format(date.from, \"LLL dd, y\")} -{\" \"}\n                  {format(date.to, \"LLL dd, y\")}\n                </>\n              ) : (\n                format(date.from, \"LLL dd, y\")\n              )\n            ) : (\n              <span>Pick a date range</span>\n            )}\n          </Button>\n        </PopoverTrigger>\n        <PopoverContent className=\"w-auto p-0\" align=\"end\">\n          <Calendar\n            mode=\"range\"\n            defaultMonth={date?.from}\n            selected={date}\n            onSelect={(range) => {\n              setDate(range)\n              onChange?.(range)\n            }}\n            numberOfMonths={2}\n            captionLayout=\"dropdown\"\n          />\n        </PopoverContent>\n      </Popover>\n    </div>\n  )\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "categories": [
+    "react",
+    "component",
+    "date-picker"
+  ],
+  "type": "registry:component"
+}

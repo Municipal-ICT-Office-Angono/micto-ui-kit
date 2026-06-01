@@ -52,15 +52,15 @@
       "registryDependencies": [
         "button",
         "checkbox",
-        "input",
-        "skeleton",
         "dropdown-menu",
+        "input",
         "select",
+        "skeleton",
         "table"
       ],
       "dependencies": [
-        "zod",
-        "@tanstack/react-table"
+        "@tanstack/react-table",
+        "zod"
       ],
       "files": [
         {
@@ -160,7 +160,7 @@
       "title": "Server Pagination",
       "description": "A universal pagination component tailored for standard React and Next.js.",
       "registryDependencies": [
-        "pagination"
+        "button"
       ],
       "files": [
         {
@@ -179,9 +179,10 @@
       "title": "Table Toolbar",
       "description": "A beautiful reactive grid toolbar that smoothly morphs filters into bulk action trays.",
       "registryDependencies": [
-        "button",
         "badge",
-        "card"
+        "button",
+        "card",
+        "popover"
       ],
       "files": [
         {
@@ -214,7 +215,6 @@
         "inertia"
       ]
     },
-
     {
       "name": "micto/tabbed-view",
       "type": "registry:component",
@@ -336,6 +336,57 @@
         "react",
         "component",
         "workflow"
+      ]
+    },
+    {
+      "name": "micto/date-picker-with-range",
+      "type": "registry:component",
+      "title": "Date Picker With Range",
+      "description": "A calendar range selection input field allowing users to choose start and end dates.",
+      "registryDependencies": [
+        "button",
+        "calendar",
+        "popover"
+      ],
+      "dependencies": [
+        "date-fns",
+        "react-day-picker"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/date-picker-with-range.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "date-picker"
+      ]
+    },
+    {
+      "name": "micto/date-picker",
+      "type": "registry:component",
+      "title": "Date Picker",
+      "description": "A popover-based calendar date selection input field supporting formatted dates.",
+      "registryDependencies": [
+        "button",
+        "calendar",
+        "popover"
+      ],
+      "dependencies": [
+        "date-fns"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/micto/date-picker.tsx",
+          "type": "registry:component"
+        }
+      ],
+      "categories": [
+        "react",
+        "component",
+        "date-picker"
       ]
     }
   ]

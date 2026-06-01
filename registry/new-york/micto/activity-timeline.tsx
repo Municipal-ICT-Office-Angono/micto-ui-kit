@@ -5,8 +5,8 @@
  * @description A composable and data-driven timeline component for document routing history and audit trails.
  * @categories react, component
  */
+import { Check, AlertCircle, Clock, Paperclip, Circle } from "lucide-react";
 import * as React from "react";
-import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Tooltip,
@@ -14,7 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Check, AlertCircle, Clock, Paperclip, Circle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // ─── Types & Context ──────────────────────────────────────────────────────────
 
@@ -62,7 +62,7 @@ export const ActivityTimeline = React.forwardRef<
           "relative flex",
           orientation === "vertical"
             ? "flex-col"
-            : "flex-col sm:flex-row w-full sm:overflow-x-auto sm:pb-4",
+            : "w-full flex-col sm:flex-row sm:overflow-x-auto sm:pb-4",
           className,
         )}
         {...props}
@@ -96,10 +96,10 @@ export const ActivityTimelineItem = React.forwardRef<
         <div
           ref={ref}
           className={cn(
-            "relative group/timeline-item",
+            "group/timeline-item relative",
             orientation === "vertical"
               ? "flex flex-row gap-4"
-              : "flex flex-row sm:flex-col sm:flex-1 items-stretch sm:items-center gap-4 sm:gap-0 sm:min-w-[200px]",
+              : "flex flex-row items-stretch gap-4 sm:min-w-[200px] sm:flex-1 sm:flex-col sm:items-center sm:gap-0",
             className,
           )}
           {...props}
@@ -125,8 +125,8 @@ export const ActivityTimelineTrack = React.forwardRef<
       ref={ref}
       className={cn(
         orientation === "vertical"
-          ? "flex flex-col items-center relative shrink-0 w-8"
-          : "flex flex-col sm:flex-row items-center sm:justify-center relative shrink-0 sm:shrink sm:w-full mb-0 sm:mb-3 w-8 sm:h-8",
+          ? "relative flex w-8 shrink-0 flex-col items-center"
+          : "relative mb-0 flex w-8 shrink-0 flex-col items-center sm:mb-3 sm:h-8 sm:w-full sm:shrink sm:flex-row sm:justify-center",
         className,
       )}
       {...props}
@@ -146,19 +146,21 @@ export const ActivityTimelineConnector = React.forwardRef<
   const { orientation } = React.useContext(ActivityTimelineContext);
   const { status, isLast } = React.useContext(TimelineItemContext);
 
-  if (isLast) return null;
+  if (isLast) {
+    return null;
+  }
 
   return (
     <div
       ref={ref}
       className={cn(
-        "absolute pointer-events-none transition-colors duration-300",
+        "pointer-events-none absolute transition-colors duration-300",
         orientation === "vertical"
-          ? "top-8 bottom-0 w-[2px] left-1/2 -translate-x-1/2 my-1.5"
-          : "top-8 sm:top-1/2 bottom-0 sm:bottom-auto w-[2px] sm:w-auto sm:h-[2px] left-1/2 sm:left-[calc(50%+16px)] right-auto sm:right-[calc(-50%+16px)] -translate-x-1/2 sm:translate-x-0 sm:-translate-y-1/2 my-1.5 sm:my-0 sm:mx-1.5",
+          ? "top-8 bottom-0 left-1/2 my-1.5 w-[2px] -translate-x-1/2"
+          : "top-8 right-auto bottom-0 left-1/2 my-1.5 w-[2px] -translate-x-1/2 sm:top-1/2 sm:right-[calc(-50%+16px)] sm:bottom-auto sm:left-[calc(50%+16px)] sm:mx-1.5 sm:my-0 sm:h-[2px] sm:w-auto sm:translate-x-0 sm:-translate-y-1/2",
         status === "completed" ? "bg-primary" : "bg-border",
         status === "in-progress"
-          ? "bg-primary/50 bg-[length:200%_200%] animate-pulse"
+          ? "animate-pulse bg-primary/50 bg-[length:200%_200%]"
           : "",
         status === "pending" || status === "muted"
           ? "border-l-2 border-dashed border-border/60 bg-transparent"
@@ -202,11 +204,11 @@ export const ActivityTimelineDot = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "relative z-10 flex size-8 items-center justify-center rounded-full border-2 transition-all duration-300 bg-background shadow-sm",
+        "relative z-10 flex size-8 items-center justify-center rounded-full border-2 bg-background shadow-sm transition-all duration-300",
         status === "completed" &&
           "border-primary bg-primary text-primary-foreground",
         status === "in-progress" &&
-          "border-primary ring-4 ring-primary/20 bg-background text-primary animate-pulse glow",
+          "glow animate-pulse border-primary bg-background text-primary ring-4 ring-primary/20",
         status === "error" &&
           "border-destructive bg-destructive text-destructive-foreground",
         status === "pending" &&
@@ -252,7 +254,7 @@ export const ActivityTimelineContent = React.forwardRef<
         orientation === "vertical"
           ? cn("flex-1 space-y-2", !isLast && "pb-8")
           : cn(
-              "flex flex-col items-start sm:items-center text-left sm:text-center w-full px-0 sm:px-2 space-y-2",
+              "flex w-full flex-col items-start space-y-2 px-0 text-left sm:items-center sm:px-2 sm:text-center",
               !isLast && "pb-8 sm:pb-0",
             ),
         className,
@@ -317,9 +319,9 @@ export const ActivityTimelineList = React.forwardRef<
             {/* Header: Title + Timestamp */}
             <div
               className={cn(
-                "flex flex-col sm:flex-row sm:justify-between items-start gap-2 sm:gap-4 w-full",
+                "flex w-full flex-col items-start gap-2 sm:flex-row sm:justify-between sm:gap-4",
                 orientation === "horizontal" &&
-                  "sm:flex-col sm:items-center sm:justify-center w-full",
+                  "w-full sm:flex-col sm:items-center sm:justify-center",
               )}
             >
               <div
@@ -329,11 +331,11 @@ export const ActivityTimelineList = React.forwardRef<
                     "sm:items-center sm:text-center",
                 )}
               >
-                <p className="text-sm font-semibold text-foreground leading-snug">
+                <p className="text-sm leading-snug font-semibold text-foreground">
                   {item.title}
                 </p>
                 {item.timestamp && (
-                  <span className="text-[11px] font-mono text-muted-foreground block">
+                  <span className="block font-mono text-[11px] text-muted-foreground">
                     {item.timestamp}
                   </span>
                 )}
@@ -344,7 +346,7 @@ export const ActivityTimelineList = React.forwardRef<
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <div className="flex shrink-0 items-center gap-2 cursor-pointer rounded-full bg-muted/40 p-1 pr-2.5 border border-border/40 hover:bg-muted/70 transition-colors">
+                      <div className="flex shrink-0 cursor-pointer items-center gap-2 rounded-full border border-border/40 bg-muted/40 p-1 pr-2.5 transition-colors hover:bg-muted/70">
                         <Avatar size="sm">
                           <AvatarImage
                             src={item.actor.avatar}
@@ -355,7 +357,7 @@ export const ActivityTimelineList = React.forwardRef<
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col text-left">
-                          <span className="text-xs font-medium text-foreground leading-none">
+                          <span className="text-xs leading-none font-medium text-foreground">
                             {item.actor.name}
                           </span>
                           {item.actor.role && (
@@ -379,21 +381,21 @@ export const ActivityTimelineList = React.forwardRef<
 
             {/* Description */}
             {item.description && (
-              <p className="text-xs text-muted-foreground/90 leading-relaxed max-w-prose">
+              <p className="max-w-prose text-xs leading-relaxed text-muted-foreground/90">
                 {item.description}
               </p>
             )}
 
             {/* Actor in Horizontal Mode */}
             {item.actor && orientation === "horizontal" && (
-              <div className="flex items-center gap-1.5 mt-2 bg-muted/30 px-2 py-1 rounded-full border border-border/30">
+              <div className="mt-2 flex items-center gap-1.5 rounded-full border border-border/30 bg-muted/30 px-2 py-1">
                 <Avatar size="sm" className="size-4.5">
                   <AvatarImage src={item.actor.avatar} />
                   <AvatarFallback className="text-[9px]">
                     {item.actor.name?.[0] ?? "U"}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-[11px] font-medium text-muted-foreground truncate max-w-[120px]">
+                <span className="max-w-[120px] truncate text-[11px] font-medium text-muted-foreground">
                   {item.actor.name}
                 </span>
               </div>
@@ -433,7 +435,7 @@ export const ActivityTimelineList = React.forwardRef<
                           }
                         : undefined
                     }
-                    className="inline-flex items-center gap-1 text-xs text-primary bg-primary/5 hover:bg-primary/10 border border-primary/20 px-2 py-1 rounded-md transition-colors"
+                    className="inline-flex items-center gap-1 rounded-md border border-primary/20 bg-primary/5 px-2 py-1 text-xs text-primary transition-colors hover:bg-primary/10"
                   >
                     <Paperclip className="size-3" />
                     <span className="font-mono text-[11px] font-medium underline underline-offset-2">

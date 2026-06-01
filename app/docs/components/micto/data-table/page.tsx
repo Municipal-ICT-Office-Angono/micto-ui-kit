@@ -248,8 +248,10 @@ const coreProps = [
 ];
 
 const toolbarProps = [
+  { name: "enableToolbar", type: "boolean", default: "true", description: "Set to false to completely hide the toolbar component." },
   { name: "toolbar", type: "ReactNode | false", default: "undefined", description: "Full custom toolbar override. Pass false to hide the toolbar entirely." },
   { name: "toolbarProps.filters", type: "ReactNode", default: "undefined", description: "Extra filter controls placed left of the search input inside the built-in toolbar." },
+  { name: "toolbarProps.activeFiltersCount", type: "number", default: "undefined", description: "Count of currently active filters, used to show a reset button or indicator." },
   { name: "toolbarProps.actions", type: "ReactNode", default: "undefined", description: "Right-side action buttons (e.g. Add button) shown when no rows are selected." },
   { name: "toolbarProps.bulkActions", type: "ReactNode | (rows: TData[]) => ReactNode", default: "undefined", description: "Actions shown in the bulk tray when rows are selected. Receives selected rows when passed as a function." },
   { name: "toolbarProps.toolbarVariant", type: "'inline' | 'floating'", default: "'inline'", description: "Controls how the toolbar renders bulk actions morphing inline or as a floating dock." },
@@ -258,6 +260,7 @@ const toolbarProps = [
 const searchProps = [
   { name: "enableSearch", type: "boolean", default: "true", description: "Shows the built-in global search input inside the toolbar." },
   { name: "searchPlaceholder", type: "string", default: "'Search...'", description: "Placeholder text for the search input." },
+  { name: "initialSearch", type: "string", default: "''", description: "Initial value for the search input/filter." },
   { name: "onSearchChange", type: "(value: string) => void", default: "undefined", description: "Debounced (300ms) callback for server-side search. Client-side filtering is automatic when omitted." },
 ];
 
@@ -275,8 +278,10 @@ const paginationProps = [
 const interactionProps = [
   { name: "enableSorting", type: "boolean", default: "true", description: "Enables sortable column headers with sort direction icons." },
   { name: "manualSorting", type: "boolean", default: "false", description: "Set true for server-side sorting. Disables client-side sort logic." },
+  { name: "initialSorting", type: "SortingState", default: "[]", description: "Initial sorting configuration." },
   { name: "onSortingChange", type: "(sorting: SortingState) => void", default: "undefined", description: "Called when sort state changes. Use with manualSorting to trigger server requests." },
   { name: "enableColumnVisibility", type: "boolean", default: "false", description: "Adds a 'Columns' toggle button to the toolbar for showing/hiding columns." },
+  { name: "initialColumnVisibility", type: "VisibilityState", default: "{}", description: "Initial column visibility configuration." },
   { name: "enableRowSelection", type: "boolean | (row) => boolean", default: "false", description: "Enables checkbox column. Pass a function to conditionally enable per row." },
   { name: "onRowSelectionChange", type: "(rows: TData[]) => void", default: "undefined", description: "Called whenever the row selection set changes. Receives full row objects." },
   { name: "onRowClick", type: "(row: TData, event) => void", default: "undefined", description: "Called when a row is clicked. Adds cursor-pointer and hover highlight. Ignored on checkbox/action cells." },
@@ -296,7 +301,7 @@ const presentationProps = [
   { name: "stickyHeader", type: "boolean", default: "false", description: "Makes the table header sticky on scroll. Best for long tables inside a bounded container." },
   { name: "className", type: "string", default: "undefined", description: "Additional CSS classes for the outer wrapper div." },
   { name: "tableClassName", type: "string", default: "undefined", description: "Additional CSS classes for the table container border/card." },
-  { name: "tableRef", type: "React.RefObject<Table<TData>>", default: "undefined", description: "Ref forwarded to the raw TanStack Table instance for power user access." },
+  { name: "tableRef", type: "React.RefObject<Table<TData> | null>", default: "undefined", description: "Ref forwarded to the raw TanStack Table instance for power user access." },
 ];
 
 

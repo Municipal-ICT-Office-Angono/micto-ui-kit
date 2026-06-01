@@ -1,15 +1,9 @@
-/**
- * @title Confirm Dialog
- * @description A global, stacked confirmation system with a promise-based API and async support.
- * @categories react, component, global
- */
-
 "use client";
-import * as React from "react";
 import { AlertOctagon, AlertTriangle, Info, Loader2, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 // --- Types ---
 
@@ -49,7 +43,6 @@ const updateLoading = (id: string, isLoading: boolean) => {
   notify();
 };
 
-
 export const confirmDialog = (options: ConfirmOptions): Promise<boolean> => {
   return new Promise((resolve) => {
     const id = `confirm-${confirmCount++}`;
@@ -80,20 +73,29 @@ export function ConfirmProvider({
       setActiveRequests(newRequests);
     };
     subscribers.add(unsubscribe);
+
     return () => {
       subscribers.delete(unsubscribe);
     };
   }, []);
 
-  if (activeRequests.length === 0) return null;
+  if (activeRequests.length === 0) {
+    return null;
+  }
 
   return (
-    <div className={cn("fixed inset-0 z-[100] flex items-center justify-center p-4", className)}>
+    <div
+      className={cn(
+        "fixed inset-0 z-[100] flex items-center justify-center p-4",
+        className,
+      )}
+    >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-2xs transition-opacity"
+        className="backdrop-blur-2xs absolute inset-0 bg-background/80 transition-opacity"
         onClick={() => {
           const top = activeRequests[activeRequests.length - 1];
+
           if (top && top.dismissable !== false && !top.isLoading) {
             requests = requests.filter((r) => r.id !== top.id);
             top.resolve(false);
@@ -103,13 +105,13 @@ export function ConfirmProvider({
       />
 
       {/* Stack Container */}
-      <div className="relative flex items-center justify-center w-full">
+      <div className="relative flex w-full items-center justify-center">
         {activeRequests.map((request, index) => (
           <ConfirmDialog
             key={request.id}
             request={{
-              size: defaultSize,
               ...request,
+              size: request.size || defaultSize,
             }}
             index={index}
             total={activeRequests.length}
@@ -138,22 +140,28 @@ function ConfirmDialog({
   const opacity = 1 - (total - 1 - index) * 0.3; // fade out
 
   const handleConfirm = async () => {
-    if (isLoading) return;
+    if (isLoading) {
+      return;
+    }
 
     if (request.onConfirm) {
       setIsLoading(true);
       updateLoading(request.id, true);
+
       try {
         const result = await request.onConfirm();
+
         if (result === false) {
           setIsLoading(false);
           updateLoading(request.id, false);
+
           return; // Stay open if returned false
         }
       } catch (error) {
         setIsLoading(false);
         updateLoading(request.id, false);
         console.error(error);
+
         return;
       }
     }
@@ -165,7 +173,10 @@ function ConfirmDialog({
   };
 
   const handleCancel = () => {
-    if (isLoading) return;
+    if (isLoading) {
+      return;
+    }
+
     requests = requests.filter((r) => r.id !== request.id);
     request.onCancel?.();
     request.resolve(false);
@@ -199,12 +210,18 @@ function ConfirmDialog({
   return (
     <Card
       className={cn(
-        "absolute shadow-2xl transition-all duration-300 ease-in-out border-none",
+        "absolute border-none shadow-2xl transition-all duration-300 ease-in-out",
         request.size === "sm" && "p-4",
         (request.size === "md" || !request.size) && "p-6",
         request.size === "lg" && "p-8",
         !isTop && "pointer-events-none",
-        request.className || "max-w-md w-full",
+        request.className ||
+          cn(
+            "w-full",
+            request.size === "sm" && "max-w-sm",
+            (request.size === "md" || !request.size) && "max-w-md",
+            request.size === "lg" && "max-w-lg",
+          ),
       )}
       style={{
         transform: `translateY(${offset}px) scale(${scale})`,
@@ -228,7 +245,7 @@ function ConfirmDialog({
             {request.title && (
               <h3
                 className={cn(
-                  "font-bold tracking-tight leading-none",
+                  "leading-none font-bold tracking-tight",
                   request.size === "sm" ? "text-base" : "text-lg",
                 )}
               >
@@ -237,7 +254,7 @@ function ConfirmDialog({
             )}
             <div
               className={cn(
-                "text-muted-foreground leading-relaxed",
+                "leading-relaxed text-muted-foreground",
                 request.size === "sm" ? "text-xs" : "text-sm",
               )}
             >
@@ -247,7 +264,7 @@ function ConfirmDialog({
           <Button
             variant="ghost"
             size="icon"
-            className="size-7 -mr-2 -mt-2 opacity-50 hover:opacity-100"
+            className="-mt-2 -mr-2 size-7 opacity-50 hover:opacity-100"
             onClick={handleCancel}
             disabled={isLoading}
           >
@@ -258,19 +275,38 @@ function ConfirmDialog({
         <div className="mt-2 flex justify-end gap-2">
           <Button
             variant="outline"
-            size="sm"
+            size={
+              request.size === "sm"
+                ? "sm"
+                : request.size === "lg"
+                  ? "lg"
+                  : "default"
+            }
             onClick={handleCancel}
             disabled={isLoading}
-            className="h-9 px-4 rounded-lg font-medium"
+            className="rounded-lg font-medium"
           >
             {request.cancelText || "Cancel"}
           </Button>
           <Button
             variant={request.icon === "danger" ? "destructive" : "default"}
-            size={request.size === "sm" ? "sm" : "default"}
-            onClick={() => { void handleConfirm(); }}
+            size={
+              request.size === "sm"
+                ? "sm"
+                : request.size === "lg"
+                  ? "lg"
+                  : "default"
+            }
+            onClick={() => {
+              void handleConfirm();
+            }}
             disabled={isLoading}
-            className="rounded-lg font-semibold min-w-[80px]"
+            className={cn(
+              "min-w-[80px] rounded-lg border font-semibold",
+              request.icon === "danger"
+                ? "border-destructive/30"
+                : "border-primary/30",
+            )}
           >
             {isLoading ? (
               <Loader2 className="size-4 animate-spin" />

@@ -1,1 +1,1 @@
-﻿export * from "@/registry/new-york/micto/search-select";
+export * from "@/registry/new-york/micto/search-select";
