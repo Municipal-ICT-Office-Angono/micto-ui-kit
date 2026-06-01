@@ -1,4 +1,3 @@
-import * as React from "react";
 import { CodeBlock } from "@/components/code-block";
 import { InstallCommandTabs } from "@/components/install-command-tabs";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +44,8 @@ const propsData = [
     name: "value",
     type: "DateRange",
     default: "undefined",
-    description: "The selected date range containing optional 'from' and 'to' Date objects.",
+    description:
+      "The selected date range containing optional 'from' and 'to' Date objects.",
   },
   {
     name: "onChange",
@@ -57,7 +57,8 @@ const propsData = [
     name: "className",
     type: "string",
     default: "undefined",
-    description: "Custom classes applied to the container wrapping the date range trigger button.",
+    description:
+      "Custom classes applied to the container wrapping the date range trigger button.",
   },
 ];
 
@@ -123,7 +124,11 @@ export default async function DatePickerWithRangePage() {
             description="Import and bind control states using react-day-picker ranges."
           />
           <div className="overflow-hidden rounded-xl border">
-            <CodeBlock code={basicUsageCode} html={basicUsageHtml} language="tsx" />
+            <CodeBlock
+              code={basicUsageCode}
+              html={basicUsageHtml}
+              language="tsx"
+            />
           </div>
         </section>
 
