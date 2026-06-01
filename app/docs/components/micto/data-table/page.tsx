@@ -1,4 +1,3 @@
-import * as React from "react";
 import { CodeBlock } from "@/components/code-block";
 import { InstallCommandTabs } from "@/components/install-command-tabs";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +27,7 @@ const basicUsageCode = `import {
   rowActionsColumn,
 } from "@/components/micto/data-table"
 import { ToolbarAction } from "@/components/micto/table-toolbar"
+import { Button } from "@/components/ui/button"
 import { Eye, Pencil, Trash2, Plus } from "lucide-react"
 
 type Employee = { id: string; name: string; department: string }
@@ -47,6 +47,11 @@ const columns = [
   }),
 ]
 
+const employees: Employee[] = [
+  { id: "1", name: "Juan Dela Cruz", department: "ICT" },
+  { id: "2", name: "Maria Clara", department: "HR" },
+]
+
 export default function EmployeesPage() {
   return (
     <DataTable
@@ -59,7 +64,11 @@ export default function EmployeesPage() {
       pageSize={10}
       pageSizeOptions={[10, 25, 50]}
       toolbarProps={{
-        actions: <Button><Plus /> Add Employee</Button>,
+        actions: (
+          <Button>
+            <Plus className="mr-2 h-4 w-4" /> Add Employee
+          </Button>
+        ),
         bulkActions: (rows) => (
           <ToolbarAction icon={Trash2} variant="destructive">
             Delete {rows.length}
@@ -70,33 +79,73 @@ export default function EmployeesPage() {
   )
 }`;
 
-const flatUsageCode = `// Minimal flat table no pagination, no toolbar
-// Perfect for deduction lists, DTR summaries, small lookup tables.
+const flatUsageCode = `import { DataTable } from "@/components/micto/data-table"
 
-<DataTable
-  data={deductions}
-  columns={deductionColumns}
-  pagination={false}
-  toolbar={false}
-  density="compact"
-/>`;
+type Deduction = { name: string; amount: number }
 
-const serverUsageCode = `// Server-side pagination you own the page state
-<DataTable
-  data={data}
-  columns={columns}
-  isLoading={isLoading}
-  pagination="server"
-  currentPage={page}
-  totalPages={totalPages}
-  totalCount={totalCount}
-  onPageChange={setPage}
-  pageSizeOptions={[10, 25, 50]}
-  onPageSizeChange={setPageSize}
-  manualSorting
-  onSortingChange={setSorting}
-  onSearchChange={setSearch}   // debounced 300ms, fires your API
-/>`;
+const deductions: Deduction[] = [
+  { name: "SSS", amount: 500 },
+  { name: "PhilHealth", amount: 250 },
+]
+
+const deductionColumns = [
+  { accessorKey: "name", header: "Deduction Name" },
+  { accessorKey: "amount", header: "Amount" },
+]
+
+export default function FlatTable() {
+  return (
+    <DataTable
+      data={deductions}
+      columns={deductionColumns}
+      pagination={false}
+      toolbar={false}
+      density="compact"
+    />
+  )
+}`;
+
+const serverUsageCode = `import * as React from "react"
+import { DataTable, ColumnDef, SortingState } from "@/components/micto/data-table"
+
+type User = { id: string; name: string; email: string }
+
+const columns: ColumnDef<User>[] = [
+  { accessorKey: "name", header: "Name" },
+  { accessorKey: "email", header: "Email" },
+]
+
+export default function ServerPaginatedTable() {
+  const [data, setData] = React.useState<User[]>([])
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [page, setPage] = React.useState(1)
+  const [pageSize, setPageSize] = React.useState(10)
+  const [totalPages, setTotalPages] = React.useState(1)
+  const [totalCount, setTotalCount] = React.useState(0)
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [search, setSearch] = React.useState("")
+
+  // Trigger data fetching in your component using page, pageSize, sorting, search...
+
+  return (
+    <DataTable
+      data={data}
+      columns={columns}
+      isLoading={isLoading}
+      pagination="server"
+      currentPage={page}
+      totalPages={totalPages}
+      totalCount={totalCount}
+      onPageChange={setPage}
+      pageSize={pageSize}
+      pageSizeOptions={[10, 25, 50]}
+      onPageSizeChange={setPageSize}
+      manualSorting
+      onSortingChange={setSorting}
+      onSearchChange={setSearch} // debounced 300ms, fires your API
+    />
+  )
+}`;
 
 const inertiaUsageCode = `import React from "react"
 import { router } from "@inertiajs/react"
@@ -175,7 +224,7 @@ export default function EmployeesIndex({ records, filters }: {
       }}
     />
   )
-}`
+}`;
 
 const columnFactoriesCode = `import {
   selectionColumn,   // checkbox with select-all
@@ -183,6 +232,21 @@ const columnFactoriesCode = `import {
   rowActionsColumn,  // ⋮ actions dropdown
   createColumnHelper,
 } from "@/components/micto/data-table"
+import { Eye, Pencil, UserX, Trash2 } from "lucide-react"
+
+type Employee = {
+  id: string
+  name: string
+  status: "active" | "inactive"
+}
+
+// Conceptual router & helper overrides
+const router = {
+  push: (path: string) => console.log("Navigate to", path),
+}
+const openEditModal = (employee: Employee) => console.log("Edit", employee)
+const deactivate = (employee: Employee) => console.log("Deactivate", employee)
+const deleteEmployee = (employee: Employee) => console.log("Delete", employee)
 
 const col = createColumnHelper<Employee>()
 
@@ -198,29 +262,38 @@ const columns = [
   }),
 
   rowActionsColumn<Employee>({
-    // actions receives the full row object use it to conditionally hide/disable
+    // actions receives the full row data object; use it to conditionally hide/disable
     actions: (row) => [
       { label: "View",       icon: Eye,    onClick: (r) => router.push(\`/employees/\${r.id}\`) },
-      { label: "Edit",       icon: Pencil, onClick: openEditModal },
-      { label: "Deactivate", icon: UserX,  onClick: deactivate, separator: true },
+      { label: "Edit",       icon: Pencil, onClick: (r) => openEditModal(r) },
+      { label: "Deactivate", icon: UserX,  onClick: (r) => deactivate(r), separator: true },
       {
         label: "Delete",
         icon: Trash2,
         variant: "destructive",
         disabled: row.status === "inactive",
-        onClick: deleteEmployee,
+        onClick: (r) => deleteEmployee(r),
       },
     ],
   }),
 ]`;
 
-const trashedUsageCode = `// Trashed / Archived Records Toggle Usage
-// Seamlessly switch between active and soft-deleted records.
+const trashedUsageCode = `import * as React from "react"
+import { DataTable, ColumnDef } from "@/components/micto/data-table"
 
-function TrashedExample() {
+type Employee = { id: string; name: string }
+
+const columns: ColumnDef<Employee>[] = [
+  { accessorKey: "name", header: "Name" },
+]
+
+const activeEmployees: Employee[] = [{ id: "1", name: "Juan Dela Cruz" }]
+const trashedEmployees: Employee[] = [{ id: "2", name: "Maria Clara (Archived)" }]
+
+export default function TrashedExample() {
   const [isTrashed, setIsTrashed] = React.useState(false)
 
-  // In client mode, swap data. In server mode, pass trashed to your API.
+  // In client mode, swap data. In server mode, pass trashed parameter to API query
   const currentData = isTrashed ? trashedEmployees : activeEmployees
 
   return (
@@ -349,6 +422,109 @@ export default async function DataTablePage() {
           </ComponentPreview>
         </section>
 
+        {/* Features & Props Matrix */}
+        <section className="space-y-6">
+          <DocsSectionHeading
+            title="Features & Props Matrix"
+            description="Quick reference mapping of DataTable capabilities to their enabling properties and helpers."
+          />
+          <div className="rounded-xl border overflow-hidden shadow-sm bg-background">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b bg-muted/50">
+                  <th className="px-4 py-3 text-xs font-bold text-foreground/80 lowercase tracking-tight">Feature</th>
+                  <th className="px-4 py-3 text-xs font-bold text-foreground/80 lowercase tracking-tight">Enabling Props / Helpers</th>
+                  <th className="px-4 py-3 text-xs font-bold text-foreground/80 lowercase tracking-tight">Default</th>
+                  <th className="px-4 py-3 text-xs font-bold text-foreground/80 lowercase tracking-tight">Description</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y text-xs">
+                <tr className="hover:bg-muted/5">
+                  <td className="px-4 py-3 font-semibold text-foreground">Client-Side Pagination</td>
+                  <td className="px-4 py-3 font-mono text-primary/80">
+                    {"pagination=\"client\""}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground/70">{"\"client\""}</td>
+                  <td className="px-4 py-3 text-muted-foreground">Automatic in-memory pagination handled by TanStack Table.</td>
+                </tr>
+                <tr className="hover:bg-muted/5">
+                  <td className="px-4 py-3 font-semibold text-foreground">Server-Side Pagination</td>
+                  <td className="px-4 py-3 font-mono text-primary/80">
+                    {"pagination=\"server\""}<br />
+                    {"currentPage, totalPages, totalCount"}<br />
+                    {"onPageChange, onPageSizeChange"}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground/70">-</td>
+                  <td className="px-4 py-3 text-muted-foreground">Delegates pagination calculations to a database/API. Required for large datasets.</td>
+                </tr>
+                <tr className="hover:bg-muted/5">
+                  <td className="px-4 py-3 font-semibold text-foreground">Client-Side Sorting</td>
+                  <td className="px-4 py-3 font-mono text-primary/80">
+                    {"enableSorting={true}"}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground/70">{"true"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">Interactive sorting by clicking column headers. Handled automatically in-memory.</td>
+                </tr>
+                <tr className="hover:bg-muted/5">
+                  <td className="px-4 py-3 font-semibold text-foreground">Server-Side Sorting</td>
+                  <td className="px-4 py-3 font-mono text-primary/80">
+                    {"manualSorting={true}"}<br />
+                    {"onSortingChange"}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground/70">{"false"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">Bypasses client-side sorting and triggers a callback when sorting state changes.</td>
+                </tr>
+                <tr className="hover:bg-muted/5">
+                  <td className="px-4 py-3 font-semibold text-foreground">Global Search</td>
+                  <td className="px-4 py-3 font-mono text-primary/80">
+                    {"enableSearch={true}"}<br />
+                    {"onSearchChange"} (optional)
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground/70">{"true"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">Global filter input. If `onSearchChange` is provided, debounces input by 300ms for API queries.</td>
+                </tr>
+                <tr className="hover:bg-muted/5">
+                  <td className="px-4 py-3 font-semibold text-foreground">Row Selection & Bulk Actions</td>
+                  <td className="px-4 py-3 font-mono text-primary/80">
+                    {"enableRowSelection={true}"}<br />
+                    {"selectionColumn<T>()"}<br />
+                    {"toolbarProps.bulkActions"}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground/70">{"false"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">Allows multi-row checking. Shows a contextual bulk actions tray (inline or floating).</td>
+                </tr>
+                <tr className="hover:bg-muted/5">
+                  <td className="px-4 py-3 font-semibold text-foreground">Column Visibility Persistence</td>
+                  <td className="px-4 py-3 font-mono text-primary/80">
+                    {"enableColumnVisibility={true}"}<br />
+                    {"tableId=\"unique_key\""}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground/70">{"false"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">Renders a columns dropdown toggle. Persists toggled state to `localStorage` keyed by `tableId`.</td>
+                </tr>
+                <tr className="hover:bg-muted/5">
+                  <td className="px-4 py-3 font-semibold text-foreground">Soft-Delete (Trashed) Records</td>
+                  <td className="px-4 py-3 font-mono text-primary/80">
+                    {"enableTrashed={true}"}<br />
+                    {"trashed, onTrashedChange"}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground/70">{"false"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">Toggles viewing archived or deleted items, displaying safety warning banners.</td>
+                </tr>
+                <tr className="hover:bg-muted/5">
+                  <td className="px-4 py-3 font-semibold text-foreground">Skeleton Loading States</td>
+                  <td className="px-4 py-3 font-mono text-primary/80">
+                    {"isLoading={true}"}<br />
+                    {"loadingRowCount={5}"}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground/70">{"false"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">Renders skeleton animation placeholders instead of rows to reflect initial load state.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         {/* Installation */}
         <section className="space-y-6">
           <DocsSectionHeading
@@ -425,6 +601,57 @@ export default async function DataTablePage() {
             title="Column Factories"
             description="Three pre-built column factories ship with the component so you never write checkbox, row number, or actions columns from scratch again."
           />
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="rounded-xl border p-5 space-y-3 bg-muted/20">
+              <div className="flex items-center justify-between">
+                <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary">Selection Column</Badge>
+                <code className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded">__select__</code>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Helper: <code className="text-primary font-mono font-semibold">selectionColumn&lt;T&gt;()</code>
+              </p>
+              <ul className="text-xs space-y-2 text-muted-foreground list-disc pl-4">
+                <li>Fixed width of <strong className="text-foreground">40px</strong></li>
+                <li>Displays a header checkbox to select/deselect all rows on the page</li>
+                <li>Stops row click event propagation automatically to prevent accidental row selection</li>
+                <li>Disabled from sorting or visibility hiding behaviors</li>
+              </ul>
+            </div>
+
+            <div className="rounded-xl border p-5 space-y-3 bg-muted/20">
+              <div className="flex items-center justify-between">
+                <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary">Index Column</Badge>
+                <code className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded">__index__</code>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Helper: <code className="text-primary font-mono font-semibold">indexColumn&lt;T&gt;()</code>
+              </p>
+              <ul className="text-xs space-y-2 text-muted-foreground list-disc pl-4">
+                <li>Fixed width of <strong className="text-foreground">50px</strong></li>
+                <li>Renders a 1-indexed row number (#) that matches the current layout row order</li>
+                <li>Uses <code className="font-mono text-[10px] bg-muted px-1 rounded text-foreground font-semibold">tabular-nums</code> CSS styling to ensure clean vertical alignment</li>
+                <li>Disabled from sorting or visibility hiding behaviors</li>
+              </ul>
+            </div>
+
+            <div className="rounded-xl border p-5 space-y-3 bg-muted/20">
+              <div className="flex items-center justify-between">
+                <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary">Row Actions Column</Badge>
+                <code className="text-[10px] text-muted-foreground font-mono bg-muted/50 px-1.5 py-0.5 rounded">__actions__</code>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Helper: <code className="text-primary font-mono font-semibold">rowActionsColumn&lt;T&gt;()</code>
+              </p>
+              <ul className="text-xs space-y-2 text-muted-foreground list-disc pl-4">
+                <li>Fixed width of <strong className="text-foreground">50px</strong></li>
+                <li>Renders a vertical ellipsis menu containing custom icons, labels, callbacks, and separators</li>
+                <li>Supports conditional disabling, destructive variants, and item visibility filtering</li>
+                <li>Disabled from sorting or visibility hiding behaviors</li>
+              </ul>
+            </div>
+          </div>
+
           <div className="overflow-hidden rounded-xl border">
             <CodeBlock code={columnFactoriesCode} html={columnFactoriesHtml} language="tsx" />
           </div>

@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { DollarSign, Users, Activity, ShieldAlert } from "lucide-react";
 import { MetricCard } from "@/components/micto/metric-card";
 import { ChartConfig } from "@/components/ui/chart";

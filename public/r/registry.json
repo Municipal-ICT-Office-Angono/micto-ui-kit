@@ -15,7 +15,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/activity-timeline.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/activity-timeline.tsx"
         }
       ],
       "categories": [
@@ -35,7 +36,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/confirm-dialog.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/confirm-dialog.tsx"
         }
       ],
       "categories": [
@@ -50,6 +52,8 @@
       "title": "Data Table",
       "description": "A fully-featured, generic data table built on TanStack Table v8. Supports server/client pagination, sorting, search, and visibility.",
       "registryDependencies": [
+        "https://micto-ui-kit.misangono.net/r/micto/server-pagination.json",
+        "https://micto-ui-kit.misangono.net/r/micto/table-toolbar.json",
         "button",
         "checkbox",
         "dropdown-menu",
@@ -65,7 +69,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/data-table.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/data-table.tsx"
         }
       ],
       "categories": [
@@ -88,7 +93,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/document-viewer.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/document-viewer.tsx"
         }
       ],
       "categories": [
@@ -109,7 +115,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/file-uploader.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/file-uploader.tsx"
         }
       ],
       "categories": [
@@ -125,7 +132,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/permission-guard.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/permission-guard.tsx"
         }
       ],
       "categories": [
@@ -146,7 +154,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/search-select.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/search-select.tsx"
         }
       ],
       "categories": [
@@ -165,7 +174,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/server-pagination.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/server-pagination.tsx"
         }
       ],
       "categories": [
@@ -187,7 +197,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/table-toolbar.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/table-toolbar.tsx"
         }
       ],
       "categories": [
@@ -206,7 +217,8 @@
       "files": [
         {
           "path": "registry/new-york/inertia/inertia-pagination.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/inertia/inertia-pagination.tsx"
         }
       ],
       "categories": [
@@ -226,7 +238,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/tabbed-view.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/tabbed-view.tsx"
         }
       ],
       "categories": [
@@ -249,7 +262,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/metric-card.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/metric-card.tsx"
         }
       ],
       "categories": [
@@ -276,7 +290,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/daily-time-record.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/daily-time-record.tsx"
         }
       ],
       "categories": [
@@ -302,7 +317,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/salary-grade-explorer.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/salary-grade-explorer.tsx"
         }
       ],
       "categories": [
@@ -322,6 +338,7 @@
         "card",
         "input",
         "label",
+        "https://micto-ui-kit.misangono.net/r/micto/search-select.json",
         "select",
         "separator",
         "textarea"
@@ -329,7 +346,8 @@
       "files": [
         {
           "path": "registry/new-york/micto/approval-workflow.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "@components/micto/approval-workflow.tsx"
         }
       ],
       "categories": [

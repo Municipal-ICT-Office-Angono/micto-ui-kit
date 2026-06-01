@@ -1,6 +1,5 @@
 ﻿"use client"
 
-import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { confirmDialog } from "@/components/micto/confirm-dialog"
 
