@@ -408,6 +408,30 @@
         "component",
         "date-picker"
       ]
+    },
+    {
+      "name": "hooks/inertia-permission-provider",
+      "type": "registry:hook",
+      "title": "Inertia Permission Provider",
+      "description": "A high-performance Inertia.js-integrated permission provider that automatically reads from usePage shared auth props.",
+      "registryDependencies": [
+        "https://micto-ui-kit.misangono.net/r/micto/permission-guard.json"
+      ],
+      "dependencies": [
+        "@inertiajs/react"
+      ],
+      "files": [
+        {
+          "path": "registry/new-york/hooks/inertia-permission-provider.tsx",
+          "type": "registry:hook",
+          "target": "@hooks/inertia-permission-provider.tsx"
+        }
+      ],
+      "categories": [
+        "react",
+        "hook",
+        "global"
+      ]
     }
   ]
 }

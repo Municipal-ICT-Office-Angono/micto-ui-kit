@@ -21,6 +21,19 @@ const installCommands = [
   },
 ];
 
+const inertiaInstallCommands = [
+  {
+    label: "pnpm",
+    value:
+      "pnpm dlx shadcn@latest add https://micto-ui-kit.misangono.net/r/hooks/inertia-permission-provider.json",
+  },
+  {
+    label: "npm",
+    value:
+      "npx shadcn@latest add https://micto-ui-kit.misangono.net/r/hooks/inertia-permission-provider.json",
+  },
+];
+
 const basicUsageCode = `import { PermissionProvider, Can, RoleGuard } from "@/components/micto/permission-guard"
 
 export default function App() {
@@ -51,15 +64,15 @@ export default function App() {
 }`;
 
 const inertiaUsageCode = `// For Laravel / InertiaJS SPAs - zero boilerplate!
-// Wrap your layout once, it auto-extracts values from usePage().props.auth.user!
+// Wrap your layout once, it auto-extracts values from usePage().props.auth.user shared state!
 
-import { PermissionProvider } from "@/components/micto/permission-guard"
+import { InertiaPermissionProvider } from "@/hooks/inertia-permission-provider"
 
 export default function Layout({ children }) {
   return (
-    <PermissionProvider>
+    <InertiaPermissionProvider>
       <main>{children}</main>
-    </PermissionProvider>
+    </InertiaPermissionProvider>
   )
 }`;
 
@@ -189,10 +202,28 @@ export default async function PermissionGuardPage() {
         <section className="space-y-6">
           <DocsSectionHeading
             title="Zero-Boilerplate Inertia.js Auto-Inference"
-            description="If active inside a Laravel + Inertia application, wrapping layouts with a blank provider automatically hooks into usePage().props.auth.user shared state!"
+            description="If active inside a Laravel + Inertia application, wrapping layouts with the InertiaPermissionProvider auto-hooks into usePage().props.auth shared state to extract permissions and roles."
           />
-          <div className="overflow-hidden rounded-xl border">
-            <CodeBlock code={inertiaUsageCode} html={inertiaUsageHtml} language="tsx" />
+          
+          <div className="space-y-4">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Inertia Provider Installation
+            </h4>
+            <div className="rounded-xl border bg-muted/40 p-1">
+              <InstallCommandTabs
+                commands={inertiaInstallCommands}
+                defaultValue="pnpm"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Usage
+            </h4>
+            <div className="overflow-hidden rounded-xl border">
+              <CodeBlock code={inertiaUsageCode} html={inertiaUsageHtml} language="tsx" />
+            </div>
           </div>
         </section>
 

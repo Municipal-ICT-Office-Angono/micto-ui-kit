@@ -1,0 +1,26 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hooks/inertia-permission-provider",
+  "title": "Inertia Permission Provider",
+  "description": "A high-performance Inertia.js-integrated permission provider that automatically reads from usePage shared auth props.",
+  "dependencies": [
+    "@inertiajs/react"
+  ],
+  "registryDependencies": [
+    "https://micto-ui-kit.misangono.net/r/micto/permission-guard.json"
+  ],
+  "files": [
+    {
+      "path": "registry/new-york/hooks/inertia-permission-provider.tsx",
+      "content": "/**\n * @title Inertia Permission Provider\n * @description A high-performance Inertia.js-integrated permission provider that automatically reads from usePage shared auth props.\n * @categories react, hook, global\n */\nimport { usePage } from '@inertiajs/react';\nimport * as React from 'react';\nimport { PermissionProvider } from '@/components/micto/permission-guard';\n\n\nexport function InertiaPermissionProvider({\n    children,\n}: {\n    children: React.ReactNode;\n}) {\n    const { auth } = usePage().props as any;\n\n    const permissions = React.useMemo(() => {\n        return auth?.permissions || auth?.user?.permissions || [];\n    }, [auth]);\n\n    const roles = React.useMemo(() => {\n        const userRole = auth?.user?.role;\n\n        if (userRole) {\n            if (typeof userRole === 'string') {\n                return [userRole];\n            }\n\n            if (typeof userRole === 'object' && userRole.name) {\n                return [userRole.name];\n            }\n        }\n\n        if (Array.isArray(auth?.user?.roles)) {\n            return auth.user.roles.map((r: any) =>\n                typeof r === 'string' ? r : r?.name || '',\n            );\n        }\n\n        if (Array.isArray(auth?.roles)) {\n            return auth.roles.map((r: any) =>\n                typeof r === 'string' ? r : r?.name || '',\n            );\n        }\n\n        return [];\n    }, [auth]);\n\n    return (\n        <PermissionProvider\n            user={auth?.user}\n            permissions={permissions}\n            roles={roles}\n        >\n            {children}\n        </PermissionProvider>\n    );\n}\n",
+      "type": "registry:hook",
+      "target": "@hooks/inertia-permission-provider.tsx"
+    }
+  ],
+  "categories": [
+    "react",
+    "hook",
+    "global"
+  ],
+  "type": "registry:hook"
+}
