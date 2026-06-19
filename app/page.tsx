@@ -28,7 +28,7 @@ export default function Home() {
                 <span className="text-primary mt-1.5">Art Capital.</span>
               </h1>
               <p className="max-w-[560px] text-base sm:text-lg text-muted-foreground leading-relaxed">
-                Empowering MICTO developers with a modern, technology-driven design system. 
+                Empowering MICTO developers with a modern, technology-driven design system.
                 We fuse Angono’s creative heritage with high-performance React and Laravel Inertia.js components to craft innovative municipal web applications.
               </p>
             </div>
@@ -128,7 +128,7 @@ export default function Home() {
                     <div className="px-4 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors">
                       <div className="flex items-center gap-3 font-medium">
                         <div className="size-3.5 rounded border border-muted-foreground/40" />
-                        <span>Erwin Robles</span>
+                        <span>Juan Dela Cruz</span>
                       </div>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                         Active
@@ -144,10 +144,10 @@ export default function Home() {
                         Archived
                       </span>
                     </div>
-                     <div className="px-4 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors">
+                    <div className="px-4 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors">
                       <div className="flex items-center gap-3 font-medium text-muted-foreground">
                         <div className="size-3.5 rounded border border-muted-foreground/40" />
-                        <span>Keith Cruz</span>
+                        <span>Juan Reyes</span>
                       </div>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-500/10 text-zinc-500 border border-zinc-500/20">
                         Archived

@@ -9,7 +9,6 @@ WORKDIR /app
 # Install pnpm version 10 to match lockfile format
 RUN npm install -g pnpm@10
 
-
 # Install dependencies based on the preferred package manager
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm i --frozen-lockfile
