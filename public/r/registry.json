@@ -357,33 +357,6 @@
       ]
     },
     {
-      "name": "micto/date-picker-with-range",
-      "type": "registry:component",
-      "title": "Date Picker With Range",
-      "description": "A calendar range selection input field allowing users to choose start and end dates.",
-      "registryDependencies": [
-        "button",
-        "calendar",
-        "popover"
-      ],
-      "dependencies": [
-        "date-fns",
-        "react-day-picker"
-      ],
-      "files": [
-        {
-          "path": "registry/new-york/micto/date-picker-with-range.tsx",
-          "type": "registry:component",
-          "target": "@components/micto/date-picker-with-range.tsx"
-        }
-      ],
-      "categories": [
-        "react",
-        "component",
-        "date-picker"
-      ]
-    },
-    {
       "name": "micto/date-picker",
       "type": "registry:component",
       "title": "Date Picker",
@@ -394,7 +367,8 @@
         "popover"
       ],
       "dependencies": [
-        "date-fns"
+        "date-fns",
+        "react-day-picker"
       ],
       "files": [
         {
