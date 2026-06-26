@@ -50,7 +50,7 @@ export function TabbedView({ tabs, defaultValue, value, onValueChange, keepMount
         >
             <TabsList className={
                 cn(
-                    "w-full p-1 justify-start items-center h-full!",
+                    "w-full p-1 justify-start! items-start! h-full!",
                     tabListWrap === "wrap"
                         ? "flex flex-wrap gap-1.5"
                         : "flex flex-row overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-thin"
@@ -63,7 +63,7 @@ export function TabbedView({ tabs, defaultValue, value, onValueChange, keepMount
                             key={tab.tabValue}
                             value={tab.tabValue}
                             disabled={tab.disabled}
-                            className={tab.className}
+                            className={cn(tab.className, 'justify-start')}
                         >
                             {Icon && <Icon className="w-4 h-4 mr-2" />}
                             {tab.label}
