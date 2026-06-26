@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <div className="relative min-h-[calc(100vh-4rem)] flex flex-col overflow-hidden bg-background font-sans">
       {/* Crisp Dotted Pattern Background */}
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(var(--border)_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(var(--border)_1px,transparent_1px)] bg-size-[24px_24px] opacity-40" />
       <div className="absolute top-0 left-0 right-0 h-px bg-border/50" />
 
       <div className="container relative mx-auto px-6 py-16 lg:py-28 flex-1 flex flex-col justify-center">

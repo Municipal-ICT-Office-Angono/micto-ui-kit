@@ -132,7 +132,7 @@ export function CodeBlock({ code, html, language = "tsx", className }: Props) {
       />
       {html ? (
         <div 
-          className="shiki-container px-4 py-4 pr-14 text-sm leading-6 overflow-x-auto [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre]:!m-0 [&_code]:!grid"
+          className="shiki-container px-4 py-4 pr-14 text-sm leading-6 overflow-x-auto [&_pre]:bg-transparent! [&_pre]:p-0! [&_pre]:m-0! [&_code]:grid!"
           dangerouslySetInnerHTML={{ __html: html }} 
         />
       ) : (

@@ -400,7 +400,7 @@ export function DocumentViewerDialog({ trigger, url, title, children }: Document
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent showCloseButton={false} className="max-w-[92vw] sm:max-w-[92vw] !w-[1400px] h-[92vh] p-0 overflow-hidden flex flex-col rounded-xl border-border/60 shadow-xl bg-background">
+      <DialogContent showCloseButton={false} className="max-w-[92vw] sm:max-w-[92vw] w-[1400px]! h-[92vh] p-0 overflow-hidden flex flex-col rounded-xl border-border/60 shadow-xl bg-background">
         <DialogTitle className="sr-only">{title ?? "Document Viewer Modal"}</DialogTitle>
         <DocumentViewer url={url} title={title} isDialog className="border-0 shadow-none h-full rounded-none">
           {children}

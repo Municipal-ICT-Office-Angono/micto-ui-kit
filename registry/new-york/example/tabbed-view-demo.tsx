@@ -319,7 +319,7 @@ export default function TabbedViewDemo() {
             icon: LockIcon,
             disabled: true,
             content: (
-              <Card className="flex flex-col min-h-[450px] items-center justify-center bg-muted/20">
+              <Card className="flex flex-col min-h-112.5 items-center justify-center bg-muted/20">
                 <div className="text-muted-foreground flex flex-col items-center gap-2">
                   <LockIcon className="h-8 w-8 opacity-50 mb-2" />
                   <p className="font-medium text-foreground">
@@ -336,6 +336,7 @@ export default function TabbedViewDemo() {
         onValueChange={setCurrentTab}
         value={currentTab}
         defaultValue="active"
+        tabListWrap="wrap"
       />
     </div>
   );
