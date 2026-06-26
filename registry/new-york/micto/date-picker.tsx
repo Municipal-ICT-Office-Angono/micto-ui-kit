@@ -56,14 +56,6 @@ export function DatePicker(
 
   }, [mode, value])
 
-  const handleSelect = (date: Date | undefined) => {
-    if (date) {
-      // Format in local timezone to avoid offset shift (YYYY-MM-DD HH:mm)
-      const formatted = format(date, "yyyy-MM-dd HH:mm")
-      onChange?.(formatted)
-    }
-  };
-
   const renderButtonText = () => {
     if (mode === "range") {
       if (rangeDateValue?.from) {
