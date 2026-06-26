@@ -286,30 +286,26 @@ export default function TabbedViewDemo() {
   const [selectedVariant, setSelectedVariant] = React.useState<"wrap" | "scroll">("scroll");
   return (
     <div className="w-full max-w-4xl mx-auto space-y-12 py-6">
-      <div className="flex bg-muted p-1 rounded-lg border text-xs gap-1 font-medium select-none w-fit">
-        <button
-          onClick={() => {
+      <TabbedView
+        className="w-fit"
+        onValueChange={(value) => {
+          if (value === "wrap") {
             setSelectedVariant("wrap");
-          }}
-          className={`px-3 py-1.5 rounded-md transition-all ${selectedVariant === "wrap"
-            ? "bg-background text-foreground shadow-xs font-semibold"
-            : "text-muted-foreground hover:text-foreground"
-            }`}
-        >
-          Wrap Tabs List
-        </button>
-        <button
-          onClick={() => {
+          } else {
             setSelectedVariant("scroll");
-          }}
-          className={`px-3 py-1.5 rounded-md transition-all ${selectedVariant === "scroll"
-            ? "bg-background text-foreground shadow-xs font-semibold"
-            : "text-muted-foreground hover:text-foreground"
-            }`}
-        >
-          Scroll Tabs List
-        </button>
-      </div>
+          }
+        }}
+        tabs={[
+          {
+            tabValue: "wrap",
+            label: "Wrap Tabs List",
+          },
+          {
+            tabValue: "scroll",
+            label: "Scroll Tabs List",
+          }
+        ]}
+      />
       <TabbedView
         keepMounted={true}
         tabs={[

@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 export interface TabItem {
     tabValue: string;
     label: React.ReactNode;
-    content: React.ReactNode | (() => React.ReactNode);
+    content?: React.ReactNode | (() => React.ReactNode);
     icon?: React.ElementType;
     disabled?: boolean;
     className?: string;
@@ -48,14 +48,16 @@ export function TabbedView({ tabs, defaultValue, value, onValueChange, keepMount
             value={value}
             className={cn(className)}
         >
-            <TabsList className={
-                cn(
-                    "w-full p-1 justify-start! items-start! h-full!",
-                    tabListWrap === "wrap"
-                        ? "flex flex-wrap gap-1.5"
-                        : "flex flex-row overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-thin"
-                )
-            }>
+            <TabsList
+                className={
+                    cn(
+                        "w-full justify-start! items-start! h-full!",
+                        tabListWrap === "wrap"
+                            ? "flex flex-wrap gap-1.5"
+                            : "flex flex-row overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-thin"
+                    )
+                }
+            >
                 {tabs.map((tab) => {
                     const Icon = tab.icon;
                     return (
