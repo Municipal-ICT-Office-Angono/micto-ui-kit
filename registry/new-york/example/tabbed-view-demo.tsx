@@ -46,55 +46,49 @@ import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { TabbedView } from "../micto/tabbed-view";
 
-const desktopData = [
-  { area: "angono", desktop: 186, fill: "var(--color-angono)" },
-  { area: "cainta", desktop: 305, fill: "var(--color-cainta)" },
-  { area: "taytay", desktop: 237, fill: "var(--color-taytay)" },
-  { area: "binangonan", desktop: 173, fill: "var(--color-binangonan)" },
-  { area: "antipolo", desktop: 209, fill: "var(--color-antipolo)" },
+const attendeeData = [
+  { area: "angono", attendees: 186, fill: "var(--color-angono)" },
+  { area: "cainta", attendees: 305, fill: "var(--color-cainta)" },
+  { area: "taytay", attendees: 237, fill: "var(--color-taytay)" },
+  { area: "binangonan", attendees: 173, fill: "var(--color-binangonan)" },
+  { area: "antipolo", attendees: 209, fill: "var(--color-antipolo)" },
 ];
 
 const chartConfig = {
   attendees: {
     label: "Attendees",
   },
-  desktop: {
-    label: "Desktop",
-  },
-  mobile: {
-    label: "Mobile",
-  },
   angono: {
-    label: "angono",
+    label: "Angono",
     color: "var(--chart-1)",
   },
   cainta: {
-    label: "cainta",
+    label: "Cainta",
     color: "var(--chart-2)",
   },
   taytay: {
-    label: "taytay",
+    label: "Taytay",
     color: "var(--chart-3)",
   },
   binangonan: {
-    label: "binangonan",
+    label: "Binangonan",
     color: "var(--chart-4)",
   },
   antipolo: {
-    label: "antipolo",
+    label: "Antipolo",
     color: "var(--chart-5)",
   },
 } satisfies ChartConfig;
 
 function ChartPieInteractive() {
   const id = "pie-interactive";
-  const [activeArea, setActiveArea] = React.useState(desktopData[0]?.area);
+  const [activeArea, setActiveArea] = React.useState(attendeeData[0]?.area);
 
   const activeIndex = React.useMemo(
-    () => desktopData.findIndex((item) => item.area === activeArea),
+    () => attendeeData.findIndex((item) => item.area === activeArea),
     [activeArea],
   );
-  const areas = React.useMemo(() => desktopData.map((item) => item.area), []);
+  const areas = React.useMemo(() => attendeeData.map((item) => item.area), []);
 
   const renderPieShape = React.useCallback(
     ({ index, outerRadius = 0, ...props }: PieSectorShapeProps) => {
@@ -172,8 +166,8 @@ function ChartPieInteractive() {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={desktopData}
-              dataKey="desktop"
+              data={attendeeData}
+              dataKey="attendees"
               nameKey="area"
               innerRadius={60}
               strokeWidth={5}
@@ -195,7 +189,7 @@ function ChartPieInteractive() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {desktopData[activeIndex]?.desktop.toLocaleString()}
+                          {attendeeData[activeIndex]?.attendees.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
@@ -289,8 +283,33 @@ function AdditionalComponent() {
 
 export default function TabbedViewDemo() {
   const [currentTab, setCurrentTab] = useState("active");
+  const [selectedVariant, setSelectedVariant] = React.useState<"wrap" | "scroll">("scroll");
   return (
     <div className="w-full max-w-4xl mx-auto space-y-12 py-6">
+      <div className="flex bg-muted p-1 rounded-lg border text-xs gap-1 font-medium select-none w-fit">
+        <button
+          onClick={() => {
+            setSelectedVariant("wrap");
+          }}
+          className={`px-3 py-1.5 rounded-md transition-all ${selectedVariant === "wrap"
+            ? "bg-background text-foreground shadow-xs font-semibold"
+            : "text-muted-foreground hover:text-foreground"
+            }`}
+        >
+          Wrap Tabs List
+        </button>
+        <button
+          onClick={() => {
+            setSelectedVariant("scroll");
+          }}
+          className={`px-3 py-1.5 rounded-md transition-all ${selectedVariant === "scroll"
+            ? "bg-background text-foreground shadow-xs font-semibold"
+            : "text-muted-foreground hover:text-foreground"
+            }`}
+        >
+          Scroll Tabs List
+        </button>
+      </div>
       <TabbedView
         keepMounted={true}
         tabs={[
@@ -336,7 +355,7 @@ export default function TabbedViewDemo() {
         onValueChange={setCurrentTab}
         value={currentTab}
         defaultValue="active"
-        tabListWrap="wrap"
+        tabListWrap={selectedVariant}
       />
     </div>
   );
