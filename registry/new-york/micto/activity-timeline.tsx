@@ -160,7 +160,7 @@ export const ActivityTimelineConnector = React.forwardRef<
           : "top-8 right-auto bottom-0 left-1/2 my-1.5 w-[2px] -translate-x-1/2 sm:top-1/2 sm:right-[calc(-50%+16px)] sm:bottom-auto sm:left-[calc(50%+16px)] sm:mx-1.5 sm:my-0 sm:h-[2px] sm:w-auto sm:translate-x-0 sm:-translate-y-1/2",
         status === "completed" ? "bg-primary" : "bg-border",
         status === "in-progress"
-          ? "animate-pulse bg-primary/50 bg-[length:200%_200%]"
+          ? "animate-pulse bg-primary/50 bg-size-[200%_200%]"
           : "",
         status === "pending" || status === "muted"
           ? "border-l-2 border-dashed border-border/60 bg-transparent"
@@ -223,7 +223,7 @@ export const ActivityTimelineDot = React.forwardRef<
           {status === "completed" && (
             <Check className="size-4.5 stroke-[2.5]" />
           )}
-          {status === "in-progress" && <Clock className="size-4 stroke-[2]" />}
+          {status === "in-progress" && <Clock className="size-4 stroke-2" />}
           {status === "error" && (
             <AlertCircle className="size-4.5 stroke-[2.5]" />
           )}

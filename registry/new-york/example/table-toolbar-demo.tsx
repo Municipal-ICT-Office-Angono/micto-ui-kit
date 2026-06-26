@@ -236,7 +236,7 @@ export default function TableToolbarDemo() {
                     <tr
                       key={citizen.id}
                       className={`transition-colors hover:bg-muted/5 ${
-                        isChecked ? "bg-primary/[0.03]" : ""
+                        isChecked ? "bg-primary/3" : ""
                       }`}
                     >
                       <td className="p-3 w-10 text-center">

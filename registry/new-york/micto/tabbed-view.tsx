@@ -11,6 +11,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import { cn } from "@/lib/utils";
 
 // ─── Types & Context ──────────────────────────────────────────────────────────
 
@@ -36,25 +37,33 @@ export interface TabbedViewProps {
      */
     keepMounted?: boolean;
     className?: string;
+    tabListWrap?: "wrap" | "scroll";
 }
 
-export function TabbedView({ tabs, defaultValue, value, onValueChange, keepMounted, className }: TabbedViewProps) {
+export function TabbedView({ tabs, defaultValue, value, onValueChange, keepMounted, className, tabListWrap = "scroll" }: TabbedViewProps) {
     return (
         <Tabs
             defaultValue={defaultValue ?? tabs[0]?.tabValue}
             onValueChange={onValueChange}
             value={value}
-            className={className}
+            className={cn(className)}
         >
-            <TabsList className="flex flex-wrap h-auto">
+            <TabsList className={
+                cn(
+                    "w-full p-1 justify-start! items-start! h-full!",
+                    tabListWrap === "wrap"
+                        ? "flex flex-wrap gap-1.5"
+                        : "flex flex-row overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-thin"
+                )
+            }>
                 {tabs.map((tab) => {
                     const Icon = tab.icon;
                     return (
-                        <TabsTrigger 
-                            key={tab.tabValue} 
+                        <TabsTrigger
+                            key={tab.tabValue}
                             value={tab.tabValue}
                             disabled={tab.disabled}
-                            className={tab.className}
+                            className={cn(tab.className, 'justify-start')}
                         >
                             {Icon && <Icon className="w-4 h-4 mr-2" />}
                             {tab.label}
@@ -63,8 +72,8 @@ export function TabbedView({ tabs, defaultValue, value, onValueChange, keepMount
                 })}
             </TabsList>
             {tabs.map((tab) => (
-                <TabsContent 
-                    key={tab.tabValue} 
+                <TabsContent
+                    key={tab.tabValue}
                     value={tab.tabValue}
                     forceMount={keepMounted ? true : undefined}
                     className={keepMounted && value !== tab.tabValue ? "hidden" : ""}

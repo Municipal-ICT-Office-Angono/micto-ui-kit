@@ -250,7 +250,7 @@ export function SearchSelect({
         </div>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-xl border p-0 shadow-xl"
+        className="w-(--radix-popover-trigger-width) overflow-hidden rounded-xl border p-0 shadow-xl"
         align="start"
       >
         <Command

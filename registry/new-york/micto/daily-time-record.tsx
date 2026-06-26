@@ -316,7 +316,7 @@ export const DailyTimeRecord = React.forwardRef<
           return <span className="text-muted-foreground/30">-</span>;
 
         return (
-          <div className="group relative flex items-center justify-center min-h-[2.25rem] w-full">
+          <div className="group relative flex items-center justify-center min-h-9 w-full">
             <span className="text-red-500/70 font-semibold text-xs transition-opacity group-hover:opacity-0">
               ---
             </span>
@@ -335,7 +335,7 @@ export const DailyTimeRecord = React.forwardRef<
       }
 
       return (
-        <div className="group relative flex items-center justify-center min-h-[2.25rem] w-full">
+        <div className="group relative flex items-center justify-center min-h-9 w-full">
           <span className="text-foreground transition-opacity group-hover:opacity-30">
             {time}
           </span>
